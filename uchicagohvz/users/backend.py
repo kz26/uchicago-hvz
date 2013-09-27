@@ -20,7 +20,7 @@ class UChicagoLDAPBackend(object):
 				result = conn.search_ext_s("dc=uchicago,dc=edu", ldap.SCOPE_SUBTREE, query)
 				if result:
 					user_data = result[0]
-					user = User.objects.create_user(username=cnetid, email=user_data['email'], first_name=user_data['givenName'], last_name=user_data['sn'])
+					user = User.objects.create_user(username=cnetid, email=user_data['mail'], first_name=user_data['givenName'], last_name=user_data['sn'])
 					return user
 		return None
 
