@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model()
+from django.contrib.auth import get_user_model
 import ldap
 
 User = get_user_model()
