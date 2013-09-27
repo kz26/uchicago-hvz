@@ -42,3 +42,4 @@ node_modules/
 settings.py
 static/CACHE/
 secret_key.py
+db.sqlite3

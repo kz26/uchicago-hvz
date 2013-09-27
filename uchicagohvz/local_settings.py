@@ -39,7 +39,8 @@ INSTALLED_APPS = (
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	'uchicagohvz.users',
+	'mptt', 'localflavor',
+	'uchicagohvz.users', 'uchicagohvz.game',
 )
 
 MIDDLEWARE_CLASSES = (
