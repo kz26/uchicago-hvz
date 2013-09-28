@@ -125,7 +125,7 @@ class Kill(MPTTModel):
 
 	parent = TreeForeignKey('self', null=True, blank=True, related_name='children', editable=False)
 	killer = models.ForeignKey(Player, related_name="+")
-	victim = models.ForeignKey(Player, related_name="+", unique=True)
+	victim = models.ForeignKey(Player, related_name="+")
 	date = models.DateTimeField(default=timezone.now)
 	points = models.IntegerField(default=settings.HUMAN_KILL_POINTS)
 

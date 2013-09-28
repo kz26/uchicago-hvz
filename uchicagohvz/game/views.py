@@ -48,7 +48,11 @@ class SubmitBiteCode(BaseFormView):
 		victim = form.victim
 		victim.human = False
 		victim.save()
-		parent_kill = Kill.objects.get(victim=self.player)
+		parent_kills = Kill.objects.filter(victim=self.player).order_by('-date')
+		if parent_kills.exists():
+			parent_kill = parent_kills[0]
+		else:
+			parent_kill = None
 		Kill.objects.create(parent=parent_kill, killer=self.player, victim=victim, date=timezone.now())
 		messages.success(self.request, "Bite code entered successfully! %s has joined the ranks of the undead." % (victim.user.get_full_name()))
 		return HttpResponseRedirect(self.game.get_absolute_url())
