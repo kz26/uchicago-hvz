@@ -6,7 +6,7 @@
 		<h2><a href="{% url 'game|show' pk=game.pk %}">{{ game.name }}</a></h2>
 		<h3>
 			{% if game.status == "registration" %}
-			<span class="text-info">Accepting registrations now</span>
+			<span class="text-info">Open for registration</span>
 			{% elif game.status == "in_progress" %}
 			<span class="text-success">LIVE</span>
 			{% elif game.status == "finished" %}
