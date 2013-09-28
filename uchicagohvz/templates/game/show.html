@@ -38,7 +38,10 @@
 		{% endif %}
 		{% elif game.status == "in_progress" %}
 		<h4 class="text-success">LIVE</h4> 
-		<p>{{ game.end_date|timeuntil }} until it all ends.</p>
+		<p><b>{{ game.end_date|timeuntil }}</b> until it all ends.</p>
+		{% if user.is_authenticated and not player %}
+		<p>Interested in joining this game? Please contact a moderator.</p>
+		{% endif %}
 		{% endif %}
 	</div>
 	<div class="col-lg-4">
@@ -77,7 +80,7 @@
 	<div class="col-lg-4">
 		{% if player.human %}
 		<h2>My Bite Code</h2>
-		<p style="font-weight: bold;">{{ player.bite_code }}</p>
+		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
 		{% else %}
 		<h2>Enter Bite Code</h2>
 		<form role="form" action="{% url 'game|bite' pk=game.pk %}" method="post">

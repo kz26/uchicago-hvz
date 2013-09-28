@@ -25,8 +25,9 @@ class ShowGame(DetailView):
 		#if self.object.status == "finished":
 		context['kill_tree'] = Kill.objects.filter(killer__game=self.object)
 		if self.object.status in ('in_progress', 'finished'):
-			context['humans_percent'] = int(round(100 * float(self.object.get_humans().count()) / self.object.get_active_players().count(), 0))
-			context['zombies_percent'] = int(round(100 * float(self.object.get_zombies().count()) / self.object.get_active_players().count(), 0))
+			if self.object.get_active_players().count() > 0:
+				context['humans_percent'] = int(round(100 * float(self.object.get_humans().count()) / self.object.get_active_players().count(), 0))
+				context['zombies_percent'] = int(round(100 * float(self.object.get_zombies().count()) / self.object.get_active_players().count(), 0))
 		if self.request.user.is_authenticated():
 			in_game = Player.objects.filter(game=self.object, user=self.request.user).exists()
 			if in_game:
