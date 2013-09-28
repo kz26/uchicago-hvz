@@ -39,6 +39,7 @@ INSTALLED_APPS = (
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	'ckeditor', 'htmlpurifier',
 	'mptt', 'localflavor',
 	'uchicagohvz.users', 'uchicagohvz.game',
 )
