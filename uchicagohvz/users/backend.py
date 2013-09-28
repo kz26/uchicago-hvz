@@ -14,15 +14,23 @@ class UChicagoLDAPBackend(object):
 				conn.simple_bind_s("uid=%s,ou=people,dc=uchicago,dc=edu" % cnetid, password)
 			except ldap.INVALID_CREDENTIALS:
 				return None
+			query = "(&(uid=%s)(objectclass=inetOrgPerson))" % (cnetid)
+			result = conn.search_ext_s("dc=uchicago,dc=edu", ldap.SCOPE_SUBTREE, query)
+			if result:
+				user_data = results[0][1]
+			else:
+				user_data = None
 			try:
 				user = User.objects.get(username=cnetid)
+				if user_data:
+					user.username = user_data['uid'][0]
+					user.email = user_data['mail'][0]
+					user.first_name = user_data['givenName'][0]
+					user.last_name = user_data['sn'][0]
+					user.save()
 				return user
 			except User.DoesNotExist:
-				query = "(&(uid=%s)(objectclass=inetOrgPerson))" % (cnetid)
-				result = conn.search_ext_s("dc=uchicago,dc=edu", ldap.SCOPE_SUBTREE, query)
-				print result
-				if result:
-					user_data = result[0][1]
+				if user_data:
 					user = User.objects.create_user(username=user_data['uid'][0], email=user_data['mail'][0], first_name=user_data['givenName'][0], last_name=user_data['sn'][0])
 					return user
 		return None

@@ -20,6 +20,7 @@ class Game(models.Model):
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
 	rules = models.FileField(upload_to=gen_rules_filename, storage=OverwriteFileSystemStorage())
+	terms = models.TextField()
 
 class Player(models.Model):
 	class Meta:
@@ -33,10 +34,13 @@ class Player(models.Model):
 	points = models.IntegerField(default=0)
 
 class Kill(MPTTModel):
+	class MPTTMeta:
+		order_insertion_by = ['date']
+
 	parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 	killer = models.ForeignKey(Player, related_name="+")
 	victim = models.ForeignKey(Player, related_name="+")
-	date = models.DateTimeField(auto_now_add=True)
+	date = models.DateTimeField()
 
 class Award(models.Model):
 	game = models.ForeignKey(Game, related_name="+")
