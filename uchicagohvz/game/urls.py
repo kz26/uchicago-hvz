@@ -8,5 +8,6 @@ urlpatterns = patterns('',
 
     url(r'^$', ListGames.as_view(), name="game|list"),
     url(r'^game/(?P<pk>[0-9]+)/$', ShowGame.as_view(), name="game|show"),
+    url(r'^game/(?P<pk>[0-9]+)/register/$', RegisterForGame.as_view(), name="game|register"),
     url(r'^game/(?P<pk>[0-9]+)/bite/$', SubmitBiteCode.as_view(), name="game|bite"),
 )

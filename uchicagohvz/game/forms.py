@@ -1,6 +1,15 @@
 from django import forms
 from uchicagohvz.game.models import *
 
+class GameRegistrationForm(forms.Form):
+	dorm = forms.TypedChoiceField(choices=DORMS)
+	agree_terms = forms.BooleanField()
+
+	def __init__(self, *args, **kwargs):
+		super(GameRegistrationForm, self).__init__(*args, **kwargs)
+		self.fields['dorm'].widget.attrs['class'] = "form-control" # for Bootstrap 3
+		self.fields['dorm'].widget.attrs['required'] = "required"
+
 class BiteCodeForm(forms.Form):
 	bite_code = forms.CharField()
 

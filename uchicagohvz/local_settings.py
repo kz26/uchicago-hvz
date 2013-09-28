@@ -100,11 +100,13 @@ SHORT_DATETIME_FORMAT = 'm/d/Y g:i A'
 
 # User-uploaded media
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 
 # Authentication
 AUTHENTICATION_BACKENDS = (
 	'uchicagohvz.users.backend.UChicagoLDAPBackend',
 )
+LOGIN_URL = "/users/login/"
 LOGIN_REDIRECT_URL = "/"
 
 # Message framework settings

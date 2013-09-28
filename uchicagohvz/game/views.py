@@ -68,4 +68,25 @@ class SubmitBiteCode(BaseFormView):
 		kwargs['player'] = self.player
 		return kwargs
 
+class RegisterForGame(FormView):
+	form_class = GameRegistrationForm
+	template_name = "game/register.html"
 
+	@method_decorator(login_required)
+	def dispatch(self, request, *args, **kwargs):
+		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
+		if not (self.game.registration_date < timezone.now() < self.game.start_date):
+			return HttpResponseForbidden()
+		if Player.objects.filter(game=self.game, user=request.user).exists():
+			return HttpResponseForbidden()
+		return super(RegisterForGame, self).dispatch(request, *args, **kwargs)
+
+	def form_valid(self, form):
+		Player.objects.create(user=self.request.user, game=self.game, dorm=form.cleaned_data['dorm'])
+		messages.success(self.request, "You are now registered for %s!" % (self.game.name))
+		return HttpResponseRedirect(self.game.get_absolute_url())
+
+	def get_context_data(self, **kwargs):
+		context = super(RegisterForGame, self).get_context_data(**kwargs)
+		context['game'] = self.game
+		return context

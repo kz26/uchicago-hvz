@@ -128,6 +128,7 @@ class Kill(MPTTModel):
 	victim = models.ForeignKey(Player, related_name="+")
 	date = models.DateTimeField(default=timezone.now)
 	points = models.IntegerField(default=settings.HUMAN_KILL_POINTS)
+	notes = models.TextField(blank=True)
 
 	def __unicode__(self):
 		return "%s --> %s" % (self.killer.user.get_full_name(), self.victim.user.get_full_name())
@@ -169,6 +170,13 @@ class Award(models.Model):
 
 class HighValueTarget(models.Model):
 	player = models.OneToOneField(Player)
+	start_date = models.DateTimeField()
+	end_date = models.DateTimeField()
+	points = models.IntegerField()
+
+class HighValueDorm(models.Model):
+	game = models.ForeignKey(Game)
+	dorm = models.CharField(max_length=4, choices=DORMS)
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
 	points = models.IntegerField()

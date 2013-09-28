@@ -8,6 +8,13 @@
 <div class="alert alert-{{ message.tags }}">{{ message }}</div>
 {% endfor %}
 
+<div>
+	<h2>Rules</h2>
+	<p class="text-primary">
+		Make sure you have read the <a href="{{ game.rules.url }}">game rules</a> before playing.
+	</p>
+</div>
+
 <div class="row">
 	<div class="col-lg-4">
 		<h2>Important Dates</h2>
@@ -27,7 +34,7 @@
 		{% if player %}
 		<p class="text-success">You have already registered for this game. Sit tight!</p>
 		{% else %}
-		<p><a class="btn btn-primary" href="#">Register</a></p>
+		<p><a class="btn btn-primary" href="{% url 'game|register' pk=game.pk %}">Register</a></p>
 		{% endif %}
 		{% elif game.status == "in_progress" %}
 		<h4 class="text-success">LIVE</h4> 
@@ -76,7 +83,7 @@
 		<form role="form" action="{% url 'game|bite' pk=game.pk %}" method="post">
 			{% csrf_token %}
 			<div class="form-group col-lg-8">
-				<input type="text" class="form-control" name="bite_code">
+				<input type="text" class="form-control" name="bite_code" required>
 			</div>
 			<div class="form-group">
 				<button class="btn btn-danger" type="submit">Kill!</button>
@@ -114,7 +121,7 @@
 		<form role="form" method="post">
 			{% csrf_token %}
 			<div class="form-group col-lg-8">
-				<input type="text" class="form-control" name="award_code" placeholder="Enter mission code">
+				<input type="text" class="form-control" name="award_code" placeholder="Enter mission code" required>
 			</div>
 			<div class="form-group">
 				<button class="btn btn-success" type="submit">Submit</button>
@@ -144,7 +151,3 @@
 </ul>
 {% endif %}
 {% endblock %}
-
-status
-bite code entry / show bite code
-point breakdown
