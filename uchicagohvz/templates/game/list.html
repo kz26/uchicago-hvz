@@ -2,10 +2,10 @@
 {% block content %}
 {% for game in object_list %}
 <div class="row">
-	<div class="col-lg-6">
+	<div class="col-md-6">
 		<h2 style="text-align: center;"><a href="{% url 'game|show' pk=game.pk %}">{{ game.name }}</a></h2>
 	</div>
-	<div class="col-lg-6">
+	<div class="col-md-6">
 		<dl class="dl-horizontal" style="margin-top: 20px;">
 			<dt>Registration starts</dt>
 			<dd>{{ game.registration_date }}</dd>

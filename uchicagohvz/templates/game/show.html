@@ -24,7 +24,7 @@
 		<h2>Game Status</h2>
 		{% if game.status == "registration" %}
 		<p class="text-info">Registration for this game is currently underway.</p>
-		{% if show_register_link %}
+		{% if not user.is_authenticated or show_register_link %}
 		<p><a class="btn btn-primary" href="#">Register</a></p>
 		{% endif %}
 		{% elif game.status == "in_progress" %}
@@ -49,7 +49,9 @@
 	</div>
 </div>
 {% if game.status == "in_progress" %}
-{% if player and player.active %}
+{% if player %}
+{% if player.active %}
+<hr>
 <div class="row">
 	<div class="col-lg-4">
 		<h2>I am a...</h2>
@@ -119,6 +121,7 @@
 </div>
 {% else %}
 <h3 class="text-danger">You have not been activated for this game. Please contact a moderator for assistance.</h3>
+{% endif %}
 {% endif %}
 {% endif %}
 

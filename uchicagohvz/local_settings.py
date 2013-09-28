@@ -94,6 +94,10 @@ STATICFILES_DIRS = (
 	os.path.join(BASE_DIR, "static"),
 )
 
+# Datetime settings
+DATETIME_FORMAT = 'N j, Y g:i A'
+SHORT_DATETIME_FORMAT = 'm/d/Y g:i A'
+
 # User-uploaded media
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
