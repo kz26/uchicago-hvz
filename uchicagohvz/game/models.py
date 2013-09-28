@@ -22,6 +22,21 @@ class Game(models.Model):
 	rules = models.FileField(upload_to=gen_rules_filename, storage=OverwriteFileSystemStorage())
 	terms = models.TextField()
 
+DORMS = (
+	"BS", "Blackstone",
+	"BR", "Breckinridge",
+	"BV", "Broadview",
+	"BJ", "Burton-Judson Courts",
+	"IH", "International House",
+	"MC", "Maclean",
+	"MAX", "Max Palevsky",
+	"NG", "New Graduate Residence Hall"
+	"SH", "Snell-Hitchcock",
+	"SC", "South Campus",
+	"ST", "Stony Island",
+	"OFF", "Off campus"
+)
+
 class Player(models.Model):
 	class Meta:
 		unique_together = ("user", "game")
@@ -30,6 +45,8 @@ class Player(models.Model):
 	game = models.ForeignKey(Game, related_name="players")
 	active = models.BooleanField(default=False)
 	bite_code = models.CharField(max_length=255)
+	dorm = models.CharField(max_length=4, choices=DORMS)
+	major = models.CharField(max_length=255)
 	is_human = models.CharField(max_length=255)
 	points = models.IntegerField(default=0)
 
@@ -49,3 +66,9 @@ class Award(models.Model):
 	players = models.ManyToManyField(Player, related_name="awards")
 	code = models.CharField(max_length=255)
 	redeem_limit = models.IntegerField(default=0)
+
+class HighValueTarget(models.Model):
+	player = models.OneToOneField(Player)
+	start_date = models.DateTimeField()
+	end_date = models.DateTimeField()
+	points = models.IntegerField()
