@@ -29,13 +29,10 @@ class ShowGame(DetailView):
 			context['zombies_percent'] = int(round(100 * float(self.object.get_zombies().count()) / self.object.get_active_players().count(), 0))
 		if self.request.user.is_authenticated():
 			in_game = Player.objects.filter(game=self.object, user=self.request.user).exists()
-			if self.object.status == "registration" and not in_game:
-				context['show_register_link'] = True
-			elif self.object.status == "in_progress" and in_game:
+			if in_game:
 				player = Player.objects.get(game=self.object, user=self.request.user)
-				context['player'] = Player.objects.get(game=self.object, user=self.request.user)
-				if player.active:
-					if not player.human:
+				context['player'] = player
+				if self.object.status in ('in_progress', 'finished') and player.active and not player.human:
 						context['killed_by'] = player.killed_by
 		return context
 

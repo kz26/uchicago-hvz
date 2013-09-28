@@ -23,12 +23,15 @@
 	<div class="col-lg-4">
 		<h2>Game Status</h2>
 		{% if game.status == "registration" %}
-		<p class="text-info">Registration for this game is currently underway.</p>
-		{% if not user.is_authenticated or show_register_link %}
+		<h4 class="text-info">Registration</p>
+		{% if player %}
+		<p class="text-success">You have already registered for this game. Sit tight!</p>
+		{% else %}
 		<p><a class="btn btn-primary" href="#">Register</a></p>
 		{% endif %}
 		{% elif game.status == "in_progress" %}
-		<p class="text-success">This game is live! {{ game.end_date|timeuntil }} until it all ends.</p>
+		<h4 class="text-success">LIVE</h4> 
+		<p>{{ game.end_date|timeuntil }} until it all ends.</p>
 		{% endif %}
 	</div>
 	<div class="col-lg-4">
