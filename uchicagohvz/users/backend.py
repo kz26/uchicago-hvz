@@ -15,8 +15,8 @@ class UChicagoLDAPBackend(object):
 			except ldap.INVALID_CREDENTIALS:
 				return None
 			query = "(&(uid=%s)(objectclass=inetOrgPerson))" % (cnetid)
-			result = conn.search_ext_s("dc=uchicago,dc=edu", ldap.SCOPE_SUBTREE, query)
-			if result:
+			results = conn.search_ext_s("dc=uchicago,dc=edu", ldap.SCOPE_SUBTREE, query)
+			if results:
 				user_data = results[0][1]
 			else:
 				user_data = None
@@ -40,3 +40,19 @@ class UChicagoLDAPBackend(object):
 			return User.objects.get(pk=user_id)
 		except User.DoesNotExist:
 			return None
+
+	@staticmethod
+	def get_user_major(username):
+		cnetid = ldap.filter.escape_filter_chars(username)
+		conn = ldap.initialize(UChicagoLDAPBackend.LDAP_SERVER)
+		query = "(&(uid=%s)(objectclass=inetOrgPerson))" % (cnetid)
+		results = conn.search_ext_s("dc=uchicago,dc=edu", ldap.SCOPE_SUBTREE, query)
+		if results:
+			user_data = results[0][1]
+			ou = user_data["ou"]
+			if ou:
+				for v in ou:
+					if v.find("College:") == 0:
+						return v
+				return ou[0]
+		return "N/A"

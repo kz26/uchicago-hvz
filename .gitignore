@@ -39,6 +39,7 @@ Thumbs.db
 # MISC #
 ######################
 node_modules/
+media/
 settings.py
 static/CACHE/
 secret_key.py

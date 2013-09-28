@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for game in object_list %}
+<div class="row">
+	<div class="col-lg-6">
+		<h2 style="text-align: center;">{{ game.name }}</h2>
+	</div>
+	<div class="col-lg-6">
+		<dl class="dl-horizontal" style="margin-top: 20px;">
+			<dt>Registration starts</dt>
+			<dd>{{ game.registration_date }}</dd>
+			<dt>Game starts</dt>
+			<dd>{{ game.start_date }}</dd>
+			<dt>Game ends</dt>
+			<dd>{{ game.end_date }}</dd>
+		</dl>
+	</div>
+</div>
+{% endfor %}
+{% endblock %}
