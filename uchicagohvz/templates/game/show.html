@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %}{% load mptt_tags %}
 {% block content %}
 <div class="page-header">
 	<h1>{{ game.name }}</h1>
@@ -34,23 +34,22 @@
 	<div class="col-lg-4">
 		<h2>Players</h2>
 		<dl class="dl-horizontal">
-			{% if game.status == "registration" %}
+			{% if game.status == "registration" or game.status == "future" %}
 			<dt>Registered players</dt>
 			<dd>{{ game.get_registered_players.count }}</dd>
 			{% else %}
 			<dt>Active players</dt>
 			<dd>{{ game.get_active_players.count }}</dd>
 			<dt>Humans</dt>
-			<dd>{{ game.get_humans.count }}</dd>
+			<dd>{{ game.get_humans.count }} ({{ humans_percent }}%)</dd>
 			<dt>Zombies</dt>
-			<dd>{{ game.get_zombies.count }}</dd>
+			<dd>{{ game.get_zombies.count }} ({{ zombies_percent }}%)</dd>
 			{% endif %}
 		</dl>
 	</div>
 </div>
-{% if player %}
 {% if game.status == "in_progress" %}
-{% if player.active %}
+{% if player and player.active %}
 <div class="row">
 	<div class="col-lg-4">
 		<h2>I am a...</h2>
@@ -86,8 +85,10 @@
 		{% if player.points != 0 or player.kills %}
 		<table class="table table-bordered">
 			<thead>
-				<th>Points</th>
-				<th>Reason</th>
+				<tr>
+					<th>Points</th>
+					<th>For</th>
+				</tr>
 			</thead>
 			<tbody>
 				{% for kill in player.kills %}
@@ -120,6 +121,21 @@
 <h3 class="text-danger">You have not been activated for this game. Please contact a moderator for assistance.</h3>
 {% endif %}
 {% endif %}
+
+{% if kill_tree %}
+<h2>Kill Tree</h2>
+<ul>
+    {% recursetree kill_tree %}
+        <li>
+            {{ node.victim.user.get_full_name }} ({{ node.victim.bite_code }})
+            {% if not node.is_leaf_node %}
+                <ul>
+                    {{ children }}
+                </ul>
+            {% endif %}
+        </li>
+    {% endrecursetree %}
+</ul>
 {% endif %}
 {% endblock %}
 

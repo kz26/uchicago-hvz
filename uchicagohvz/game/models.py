@@ -49,7 +49,7 @@ class Game(models.Model):
 		elif now > self.end_date:
 			return "finished"
 		else:
-			return "inactive"
+			return "future"
 
 	@models.permalink
 	def get_absolute_url(self):
@@ -123,14 +123,22 @@ class Kill(MPTTModel):
 	class MPTTMeta:
 		order_insertion_by = ['date']
 
-	parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+	parent = TreeForeignKey('self', null=True, blank=True, related_name='children', editable=False)
 	killer = models.ForeignKey(Player, related_name="+")
-	victim = models.ForeignKey(Player, related_name="+")
+	victim = models.ForeignKey(Player, related_name="+", unique=True)
 	date = models.DateTimeField(default=timezone.now)
 	points = models.IntegerField(default=settings.HUMAN_KILL_POINTS)
 
 	def __unicode__(self):
 		return "%s --> %s" % (self.killer.user.get_full_name(), self.victim.user.get_full_name())
+
+	def save(self, *args, **kwargs):
+		try:
+			parent = Kill.objects.get(victim=self.killer)
+		except Kill.DoesNotExist:
+			parent = None
+		self.parent = parent
+		super(Kill, self).save(*args, **kwargs)
 
 REDEEM_TYPES = (
 	('H', "Humans only"),
