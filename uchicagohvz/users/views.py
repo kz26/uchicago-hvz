@@ -5,3 +5,6 @@ from django.contrib.auth import views as auth_views
 
 def login(request):
 	return auth_views.login(request, "users/login.html")
+
+def logout(request):
+	return auth_views.logout(request, "/")

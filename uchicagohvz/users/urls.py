@@ -7,4 +7,5 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^login/$', login, name="users|login"),
+    url(r'^logout/$', logout, name="users|logout"),
 )

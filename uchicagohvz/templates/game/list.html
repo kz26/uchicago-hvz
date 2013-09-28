@@ -3,7 +3,7 @@
 {% for game in object_list %}
 <div class="row">
 	<div class="col-lg-6">
-		<h2 style="text-align: center;">{{ game.name }}</h2>
+		<h2 style="text-align: center;"><a href="{% url 'game|show' pk=game.pk %}">{{ game.name }}</a></h2>
 	</div>
 	<div class="col-lg-6">
 		<dl class="dl-horizontal" style="margin-top: 20px;">

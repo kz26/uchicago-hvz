@@ -27,6 +27,18 @@ class Game(models.Model):
 	def __unicode__(self):
 		return self.name
 
+	def get_registered_players(self):
+		return self.players.all()
+
+	def get_active_players(self):
+		return self.players.filter(active=True)
+
+	def get_humans(self):
+		return self.get_active_players().filter(human=True)
+
+	def get_zombies(self):
+		return self.get_active_players().filter(human=False)
+
 	@property
 	def status(self):
 		now = timezone.now()
@@ -39,6 +51,9 @@ class Game(models.Model):
 		else:
 			return "inactive"
 
+	@models.permalink
+	def get_absolute_url(self):
+		return ('game|show', [self.pk])
 
 DORMS = (
 	("BS", "Blackstone"),
@@ -64,7 +79,7 @@ def gen_bite_code():
 class Player(models.Model):
 	class Meta:
 		unique_together = (("user", "game"), ("game", "bite_code"))
-		ordering = ['user__last_name']
+		ordering = ['-game__start_date', 'user__last_name']
 
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+")
 	game = models.ForeignKey(Game, related_name="players")
@@ -90,8 +105,19 @@ class Player(models.Model):
 					break
 		super(Player, self).save(*args, **kwargs)
 
+	@property
+	def killed_by(self):
+		try:
+			return Kill.objects.get(victim__id=self.id).killer
+		except Kill.DoesNotExist:
+			return None
+
+	@property
+	def kills(self):
+		return Kill.objects.filter(killer__id=self.id).exclude(victim__id=self.id)
+
 	def __unicode__(self):
-		return self.user.get_full_name()
+		return "%s (%s)" % (self.user.get_full_name(), self.game.name)
 
 class Kill(MPTTModel):
 	class MPTTMeta:
@@ -100,15 +126,38 @@ class Kill(MPTTModel):
 	parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 	killer = models.ForeignKey(Player, related_name="+")
 	victim = models.ForeignKey(Player, related_name="+")
-	date = models.DateTimeField()
+	date = models.DateTimeField(default=timezone.now)
+	points = models.IntegerField(default=settings.HUMAN_KILL_POINTS)
+
+	def __unicode__(self):
+		return "%s --> %s" % (self.killer.user.get_full_name(), self.victim.user.get_full_name())
+
+REDEEM_TYPES = (
+	('H', "Humans only"),
+	('Z', "Zombies only"),
+	('A', "All players"),
+)
 
 class Award(models.Model):
 	game = models.ForeignKey(Game, related_name="+")
 	name = models.CharField(max_length=255)
 	points = models.IntegerField()
-	players = models.ManyToManyField(Player, related_name="awards")
-	code = models.CharField(max_length=255)
+	players = models.ManyToManyField(Player, related_name="awards", null=True, blank=True)
+	code = models.CharField(max_length=255, blank=True)
 	redeem_limit = models.IntegerField(default=0)
+	redeem_type = models.CharField(max_length=1, choices=REDEEM_TYPES)
+
+	def __unicode__(self):
+		return self.name
+
+	def save(self, *args, **kwargs):
+		if not self.code:
+			while True:
+				code = gen_bite_code()
+				if not Award.objects.filter(game=self.game, code=code).exists():
+					self.code = code
+					break
+		super(Award, self).save(*args, **kwargs)
 
 class HighValueTarget(models.Model):
 	player = models.OneToOneField(Player)

@@ -101,3 +101,16 @@ AUTHENTICATION_BACKENDS = (
 	'uchicagohvz.users.backend.UChicagoLDAPBackend',
 )
 LOGIN_REDIRECT_URL = "/"
+
+# Message framework settings
+from django.contrib.messages import constants as message_constants
+MESSAGE_TAGS = {
+    message_constants.DEBUG: 'info',
+    message_constants.INFO: 'info',
+    message_constants.SUCCESS: 'success',
+    message_constants.WARNING: 'warning',
+    message_constants.ERROR: 'danger'
+} # Bootstrap 3 alert integration
+
+# HvZ game configuration
+HUMAN_KILL_POINTS = 1 # how many points killing a human is worth

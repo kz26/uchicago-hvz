@@ -12,7 +12,7 @@
 <div class="alert alert-{{ message.tags }}">{{ message }}</div>
 {% endfor %}
 
-<form class="form-horizontal" role="form" method="post">
+<form class="form-horizontal" role="form" action="{% url 'users|login' %}" method="post">
 	{% csrf_token %}
 	<div class="form-group">
 		<label for="username" class="col-lg-4 control-label">CNetID</label>

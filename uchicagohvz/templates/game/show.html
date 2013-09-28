@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+	<h1>{{ game.name }}</h1>
+</div>
+
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+
+<div class="row">
+	<div class="col-lg-4">
+		<h2>Important Dates</h2>
+		<dl class="dl-horizontal">
+			<dt>Registration starts</dt>
+			<dd>{{ game.registration_date }}</dd>
+			<dt>Game starts</dt>
+			<dd>{{ game.start_date }}</dd>
+			<dt>Game ends</dt>
+			<dd>{{ game.end_date }}</dd>
+		</dl>
+	</div>
+	<div class="col-lg-4">
+		<h2>Game Status</h2>
+		{% if game.status == "registration" %}
+		<p class="text-info">Registration for this game is currently underway.</p>
+		{% if show_register_link %}
+		<p><a class="btn btn-primary" href="#">Register</a></p>
+		{% endif %}
+		{% elif game.status == "in_progress" %}
+		<p class="text-success">This game is live! {{ game.end_date|timeuntil }} until it all ends.</p>
+		{% endif %}
+	</div>
+	<div class="col-lg-4">
+		<h2>Players</h2>
+		<dl class="dl-horizontal">
+			{% if game.status == "registration" %}
+			<dt>Registered players</dt>
+			<dd>{{ game.get_registered_players.count }}</dd>
+			{% else %}
+			<dt>Active players</dt>
+			<dd>{{ game.get_active_players.count }}</dd>
+			<dt>Humans</dt>
+			<dd>{{ game.get_humans.count }}</dd>
+			<dt>Zombies</dt>
+			<dd>{{ game.get_zombies.count }}</dd>
+			{% endif %}
+		</dl>
+	</div>
+</div>
+{% if player %}
+{% if game.status == "in_progress" %}
+{% if player.active %}
+<div class="row">
+	<div class="col-lg-4">
+		<h2>I am a...</h2>
+		{% if player.human %}
+		<h3 class="text-success">HUMAN</h3>
+		{% else %}
+		<h3 class="text-danger">ZOMBIE</h3>
+		{% if killed_by and killed_by != player %}
+		<p class="text-danger">Killed by {{ killed_by.user.get_full_name }} ({{ killed_by.bite_code }})
+		{% endif %}
+		{% endif %}
+	</div>
+	<div class="col-lg-4">
+		{% if player.human %}
+		<h2>My Bite Code</h2>
+		<p style="font-weight: bold;">{{ player.bite_code }}</p>
+		{% else %}
+		<h2>Enter Bite Code</h2>
+		<form role="form" action="{% url 'game|bite' pk=game.pk %}" method="post">
+			{% csrf_token %}
+			<div class="form-group col-lg-8">
+				<input type="text" class="form-control" name="bite_code">
+			</div>
+			<div class="form-group">
+				<button class="btn btn-danger" type="submit">Kill!</button>
+			</div>
+		</form>
+		{% endif %}
+	</div>
+	<div class="col-lg-4">
+		<h2>My Score</h2>
+		<h3 style="font-weight: bold; font-size: 15pt;">{{ player.points }}</h3>
+		{% if player.points != 0 or player.kills %}
+		<table class="table table-bordered">
+			<thead>
+				<th>Points</th>
+				<th>Reason</th>
+			</thead>
+			<tbody>
+				{% for kill in player.kills %}
+				<tr>
+					<td>{{ kill.points }}</td>
+					<td>Kill: {{ kill.victim.user.get_full_name }}</td>
+				</tr>
+				{% endfor %}
+				{% for award in player.awards.all %}
+				<tr>
+					<td>{{ award.points }}</td>
+					<td>{{ award.name }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+		<form role="form" method="post">
+			{% csrf_token %}
+			<div class="form-group col-lg-8">
+				<input type="text" class="form-control" name="award_code" placeholder="Enter mission code">
+			</div>
+			<div class="form-group">
+				<button class="btn btn-success" type="submit">Submit</button>
+			</div>
+		</form>
+	</div>
+</div>
+{% else %}
+<h3 class="text-danger">You have not been activated for this game. Please contact a moderator for assistance.</h3>
+{% endif %}
+{% endif %}
+{% endif %}
+{% endblock %}
+
+status
+bite code entry / show bite code
+point breakdown

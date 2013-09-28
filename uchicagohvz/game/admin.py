@@ -6,7 +6,7 @@ from uchicagohvz.game.models import *
 admin.site.register(Game)
 
 class PlayerAdmin(admin.ModelAdmin):
-	list_filter = ('game', 'active', 'human', 'dorm')
+	list_filter = ('game__name', 'active', 'human', 'dorm')
 	readonly_fields = ('major',)
 
 admin.site.register(Player, PlayerAdmin)
