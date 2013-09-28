@@ -12,7 +12,7 @@ class UChicagoLDAPBackend(object):
 			conn = ldap.initialize(self.LDAP_SERVER)
 			try:
 				conn.simple_bind_s("uid=%s,ou=people,dc=uchicago,dc=edu" % cnetid, password)
-			except ldap.INVALID_CREDENTIALS:
+			except:
 				return None
 			query = "(&(uid=%s)(objectclass=inetOrgPerson))" % (cnetid)
 			results = conn.search_ext_s("dc=uchicago,dc=edu", ldap.SCOPE_SUBTREE, query)

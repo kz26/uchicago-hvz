@@ -30,9 +30,13 @@
 	<div class="col-lg-4">
 		<h2>Game Status</h2>
 		{% if game.status == "registration" %}
-		<h4 class="text-info">Open for registration</p>
+		<h4 class="text-info">Open for registration</h4>
 		{% if player %}
 		<p class="text-success">You have already registered for this game. Sit tight!</p>
+		<ul class="list-unstyled">
+			<li><b>Dorm:</b> {{ player.get_dorm_display }}</li>
+			<li><b>Major:</b> {{ player.major }}</li>
+		</ul>
 		{% else %}
 		<p><a class="btn btn-primary" href="{% url 'game|register' pk=game.pk %}">Register</a></p>
 		{% endif %}
@@ -76,6 +80,12 @@
 		<p class="text-danger">Killed by {{ killed_by.user.get_full_name }} ({{ killed_by.bite_code }})
 		{% endif %}
 		{% endif %}
+		<dl class="dl-horizontal">
+			<dt>Dorm</dt>
+			<dd>{{ player.get_dorm_display }}</dd>
+			<dt>Major</dt>
+			<dd>{{ player.major }}
+		</dl>
 	</div>
 	<div class="col-lg-4">
 		{% if player.human %}
@@ -96,7 +106,7 @@
 	</div>
 	<div class="col-lg-4">
 		<h2>My Score</h2>
-		<h3 style="font-weight: bold; font-size: 15pt;">{{ player.points }}</h3>
+		<h3 style="font-weight: bold; font-size: 15pt;">{{ player.points }} points</h3>
 		{% if player.points != 0 or player.kills %}
 		<table class="table table-bordered">
 			<thead>
