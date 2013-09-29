@@ -13,20 +13,30 @@
 	{% csrf_token %}
 	<div class="form-group">
 		<label for="dorm" class="col-lg-2 control-label">Where do you live?</label>
-    	<div class="col-lg-3">
-    		{{ form.dorm }}
-    		{{ form.dorm.errors }}
-    	</div>
-    </div>
-    <div class="form-group">
+		<div class="col-lg-3">
+			{{ form.dorm }}
+			{{ form.dorm.errors }}
+		</div>
+	</div>
+	<div class="form-group">
     	<div class="col-lg-offset-2 col-lg-10">
     		<div class="checkbox">
     			<label>
-    				<input type="checkbox" name="agree_terms"> I have read and agree to the above Terms and Conditions.
+    				<input type="checkbox" name="renting_gun"> I am renting a gun for this game.
     			</label>
-    			{{ form.agree_terms.errors }}
+    			{{ form.renting_gun.errors }}
     		</div>
     	</div>
+	</div>
+	<div class="form-group">
+		<div class="col-lg-offset-2 col-lg-10">
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" name="agree_terms"> I have read and agree to the above Terms and Conditions.
+				</label>
+				{{ form.agree_terms.errors }}
+			</div>
+		</div>
 	</div>
 	<div class="form-group">
 		<div class="col-lg-offset-2 col-lg-10">

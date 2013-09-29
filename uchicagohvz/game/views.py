@@ -83,7 +83,7 @@ class RegisterForGame(FormView):
 		return super(RegisterForGame, self).dispatch(request, *args, **kwargs)
 
 	def form_valid(self, form):
-		Player.objects.create(user=self.request.user, game=self.game, dorm=form.cleaned_data['dorm'])
+		Player.objects.create(user=self.request.user, game=self.game, dorm=form.cleaned_data['dorm'], renting_gun=form.cleaned_data['renting_gun'])
 		messages.success(self.request, "You are now registered for %s!" % (self.game.name))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 

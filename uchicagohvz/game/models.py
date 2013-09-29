@@ -89,6 +89,8 @@ class Player(models.Model):
 	major = models.CharField(max_length=255, editable=False)
 	human = models.BooleanField(default=True)
 	points = models.IntegerField(default=0)
+	renting_gun = models.BooleanField(default=False)
+	gun_returned = models.BooleanField(default=False)
 
 	def save(self, *args, **kwargs):
 		old = None

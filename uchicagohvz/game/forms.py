@@ -4,6 +4,7 @@ from uchicagohvz.game.models import *
 class GameRegistrationForm(forms.Form):
 	dorm = forms.TypedChoiceField(choices=DORMS)
 	agree_terms = forms.BooleanField()
+	renting_gun = forms.BooleanField(required=False)
 
 	def __init__(self, *args, **kwargs):
 		super(GameRegistrationForm, self).__init__(*args, **kwargs)
@@ -20,7 +21,6 @@ class BiteCodeForm(forms.Form):
 	def clean(self):
 		data = super(BiteCodeForm, self).clean()
 		bite_code = data.get('bite_code')
-
 		if bite_code:
 			try:
 				self.victim = Player.objects.get(game__id=self.player.game.id, active=True, human=True, bite_code=bite_code)
