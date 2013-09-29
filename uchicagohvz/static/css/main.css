@@ -7,3 +7,7 @@ div#cke_id_terms {
 .errorlist {
 	color: rgb(238, 95, 91);
 }
+
+.white, .white a {
+  color: #fff;
+}
