@@ -150,16 +150,19 @@ REDEEM_TYPES = (
 )
 
 class Award(models.Model):
+	class Meta:
+		unique_together = (("game", "name"), ("game", "code"))
+	
 	game = models.ForeignKey(Game, related_name="+")
 	name = models.CharField(max_length=255)
 	points = models.IntegerField()
-	players = models.ManyToManyField(Player, related_name="awards", null=True, blank=True)
-	code = models.CharField(max_length=255, blank=True)
-	redeem_limit = models.IntegerField(default=0)
+	players = models.ManyToManyField(Player, related_name="awards", null=True, blank=True, help_text="Players that have earned this award")
+	code = models.CharField(max_length=255, blank=True, help_text="leave blank for automatic (re-)generation")
+	redeem_limit = models.IntegerField(help_text="Maximum number of players that can redeem award via code entry (set to 0 for moderator-added awards/points)")
 	redeem_type = models.CharField(max_length=1, choices=REDEEM_TYPES)
 
 	def __unicode__(self):
-		return self.name
+		return "%s (%s)" % (self.name, self.game.name)
 
 	def save(self, *args, **kwargs):
 		if not self.code:
@@ -182,3 +185,24 @@ class HighValueDorm(models.Model):
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
 	points = models.IntegerField()
+
+
+def update_score(sender, **kwargs):
+	print kwargs
+	if sender == Kill:
+		players = [kwargs['instance'].killer.id]
+	elif sender == Award.players.through:
+		players = kwargs.get("pk_set")
+		if players is None:
+			players = []
+	else:
+		return
+	for pid in players:
+		p = Player.objects.get(pk=pid)
+		kill_points = Kill.objects.filter(killer=p).aggregate(points=models.Sum('points'))['points'] or 0
+		award_points = p.awards.aggregate(points=models.Sum('points'))['points'] or 0
+		p.points = kill_points + award_points
+		p.save()
+
+models.signals.post_save.connect(update_score, sender=Kill)
+models.signals.m2m_changed.connect(update_score, sender=Award.players.through)

@@ -23,8 +23,33 @@ class BiteCodeForm(forms.Form):
 		bite_code = data.get('bite_code')
 		if bite_code:
 			try:
-				self.victim = Player.objects.get(game__id=self.player.game.id, active=True, human=True, bite_code=bite_code)
+				self.victim = Player.objects.get(game__id=self.player.game.id, active=True, bite_code=bite_code)
 			except Player.DoesNotExist:
-				print "No victim with bite code found"
-				raise forms.ValidationError("Invalid bite code")
+				raise forms.ValidationError("Invalid bite code entered.")
+			if not self.victim.human:
+				raise forms.ValidationError("%s is already dead!" % (self.victim.user.get_full_name()))
+		return data
+
+class AwardCodeForm(forms.Form):
+	code = forms.CharField()
+
+	def __init__(self, *args, **kwargs):
+		self.player = kwargs.pop('player')
+		super(AwardCodeForm, self).__init__(*args, **kwargs)
+
+	def clean(self):
+		data = super(AwardCodeForm, self).clean()
+		code = data.get('code')
+		if code:
+			redeem_types = ["A"]
+			if self.player.human:
+				redeem_types.append("H")
+			else:
+				redeem_types.append("Z")
+			try:
+				self.award = Award.objects.get(game__id=self.player.game.id, code=code, redeem_type__in=redeem_types)
+			except Award.DoesNotExist:
+				raise forms.ValidationError("Invalid code entered.")
+			if self.award.players.all().count() >= self.award.redeem_limit:
+				raise forms.ValidationError("Sorry, the redemption limit for this code has been reached.")
 		return data

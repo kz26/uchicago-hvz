@@ -31,14 +31,10 @@
 		<h2>Game Status</h2>
 		{% if game.status == "registration" %}
 		<h4 class="text-info">Open for registration</h4>
-		{% if player %}
-		<p class="text-success">You have already registered for this game. Sit tight!</p>
-		<ul class="list-unstyled">
-			<li><b>Dorm:</b> {{ player.get_dorm_display }}</li>
-			<li><b>Major:</b> {{ player.major }}</li>
-		</ul>
-		{% else %}
+		{% if not player %}
 		<p><a class="btn btn-primary" href="{% url 'game|register' pk=game.pk %}">Register</a></p>
+		{% else %}
+		<p class="text-success">You have already registered for this game. Sit tight!</p>
 		{% endif %}
 		{% elif game.status == "in_progress" %}
 		<h4 class="text-success">LIVE</h4> 
@@ -46,16 +42,35 @@
 		{% if user.is_authenticated and not player %}
 		<p>Interested in joining this game? Please contact a moderator.</p>
 		{% endif %}
+		{% elif game.status == "finished" %}
+		<h4 class="text-info">Finished</h4>
+		{% elif game.status == "future" %}
+		<h4 class="text-warning">Future game</h4>
 		{% endif %}
+		{% if player and game.status != "in_progress" or not player.active %}
+		<dl class="dl-horizontal">
+			<dt>Your dorm</dt>
+			<dd>{{ player.get_dorm_display }}</dd>
+			<dt>Your major</dt>
+			<dd>{{ player.major }}</dd>
+			<dt>Renting Gun</dt>
+			<dd>{{ player.renting_gun|yesno:"Yes,No,N/A" }}</dd>
+		</dl>
+		{% if game.status == "finished" and player.renting_gun and not player.gun_returned %}
+		<p class="text-danger">Please return your gun as soon as possible!</p>
+		{% endif %}
+		{% endif %}
+		
+		
 	</div>
 	<div class="col-lg-4">
 		<h2>Players</h2>
 		<dl class="dl-horizontal">
 			{% if game.status == "registration" or game.status == "future" %}
-			<dt>Registered players</dt>
+			<dt>Registered</dt>
 			<dd>{{ game.get_registered_players.count }}</dd>
 			{% else %}
-			<dt>Active players</dt>
+			<dt>Total</dt>
 			<dd>{{ game.get_active_players.count }}</dd>
 			<dt>Humans</dt>
 			<dd>{{ game.get_humans.count }} ({{ humans_percent }}%)</dd>
@@ -81,10 +96,14 @@
 		{% endif %}
 		{% endif %}
 		<dl class="dl-horizontal">
-			<dt>Dorm</dt>
+			<dt>Your dorm</dt>
 			<dd>{{ player.get_dorm_display }}</dd>
-			<dt>Major</dt>
-			<dd>{{ player.major }}
+			<dt>Your major</dt>
+			<dd>{{ player.major }}</dd>
+			<dt>Renting Gun</dt>
+			<dd>{{ player.renting_gun|yesno:"Yes,No,N/A" }}</dd>
+			<dt>Gun returned</dt>
+			<dd>{{ player.gun_returned|yesno:"Yes,No,N/A" }}</dd>
 		</dl>
 	</div>
 	<div class="col-lg-4">
@@ -107,7 +126,7 @@
 	<div class="col-lg-4">
 		<h2>My Score</h2>
 		<h3 style="font-weight: bold; font-size: 15pt;">{{ player.points }} points</h3>
-		{% if player.points != 0 or player.kills %}
+		{% if player.kills.count or player.awards.all.count %}
 		<table class="table table-bordered">
 			<thead>
 				<tr>
@@ -131,10 +150,10 @@
 			</tbody>
 		</table>
 		{% endif %}
-		<form role="form" method="post">
+		<form role="form" action="{% url 'game|code' pk=game.pk %}" method="post">
 			{% csrf_token %}
 			<div class="form-group col-lg-8">
-				<input type="text" class="form-control" name="award_code" placeholder="Enter mission code" required>
+				<input type="text" class="form-control" name="code" placeholder="Enter mission code" required>
 			</div>
 			<div class="form-group">
 				<button class="btn btn-success" type="submit">Submit</button>

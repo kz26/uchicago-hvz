@@ -37,38 +37,6 @@ class ShowGame(DetailView):
 						context['killed_by'] = player.killed_by
 		return context
 
-class SubmitBiteCode(BaseFormView):
-	form_class = BiteCodeForm
-	http_method_names = ['post']
-
-	@method_decorator(login_required)
-	def dispatch(self, request, *args, **kwargs):
-		return super(SubmitBiteCode, self).dispatch(request, *args, **kwargs)
-
-	def form_valid(self, form):
-		victim = form.victim
-		victim.human = False
-		victim.save()
-		parent_kills = Kill.objects.filter(victim=self.player).order_by('-date')
-		if parent_kills.exists():
-			parent_kill = parent_kills[0]
-		else:
-			parent_kill = None
-		Kill.objects.create(parent=parent_kill, killer=self.player, victim=victim, date=timezone.now())
-		messages.success(self.request, "Bite code entered successfully! %s has joined the ranks of the undead." % (victim.user.get_full_name()))
-		return HttpResponseRedirect(self.game.get_absolute_url())
-
-	def form_invalid(self, form):
-		messages.error(self.request, "Invalid bite code entered.")
-		return HttpResponseRedirect(self.game.get_absolute_url())
-
-	def get_form_kwargs(self):
-		kwargs = super(SubmitBiteCode, self).get_form_kwargs()
-		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
-		self.player = get_object_or_404(Player, game=self.game, active=True, human=False, user=self.request.user)
-		kwargs['player'] = self.player
-		return kwargs
-
 class RegisterForGame(FormView):
 	form_class = GameRegistrationForm
 	template_name = "game/register.html"
@@ -91,3 +59,64 @@ class RegisterForGame(FormView):
 		context = super(RegisterForGame, self).get_context_data(**kwargs)
 		context['game'] = self.game
 		return context
+
+class SubmitBiteCode(BaseFormView):
+	form_class = BiteCodeForm
+	http_method_names = ['post']
+
+	@method_decorator(login_required)
+	def dispatch(self, request, *args, **kwargs):
+		return super(SubmitBiteCode, self).dispatch(request, *args, **kwargs)
+
+	def form_valid(self, form):
+		victim = form.victim
+		victim.human = False
+		victim.save()
+		parent_kills = Kill.objects.filter(victim=self.player).order_by('-date')
+		if parent_kills.exists():
+			parent_kill = parent_kills[0]
+		else:
+			parent_kill = None
+		Kill.objects.create(parent=parent_kill, killer=self.player, victim=victim, date=timezone.now())
+		messages.success(self.request, "Bite code entered successfully! %s has joined the ranks of the undead." % (victim.user.get_full_name()))
+		return HttpResponseRedirect(self.game.get_absolute_url())
+
+	def form_invalid(self, form):
+		for e in form.non_field_errors():
+			messages.error(self.request, e)
+		return HttpResponseRedirect(self.game.get_absolute_url())
+
+	def get_form_kwargs(self):
+		kwargs = super(SubmitBiteCode, self).get_form_kwargs()
+		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
+		self.player = get_object_or_404(Player, game=self.game, active=True, human=False, user=self.request.user)
+		kwargs['player'] = self.player
+		return kwargs
+
+class SubmitAwardCode(BaseFormView):
+	form_class = AwardCodeForm
+	http_method_names = ['post']
+
+	@method_decorator(login_required)
+	def dispatch(self, request, *args, **kwargs):
+		return super(SubmitAwardCode, self).dispatch(request, *args, **kwargs)
+
+	def form_valid(self, form):
+		award = form.award
+		award.players.add(self.player)
+		award.redeem_limit += 1
+		award.save()
+		messages.success(self.request, "Code entry accepted!")
+		return HttpResponseRedirect(self.game.get_absolute_url())
+
+	def form_invalid(self, form):
+		for e in form.non_field_errors():
+			messages.error(self.request, e)
+		return HttpResponseRedirect(self.game.get_absolute_url())
+
+	def get_form_kwargs(self):
+		kwargs = super(SubmitAwardCode, self).get_form_kwargs()
+		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
+		self.player = get_object_or_404(Player, game=self.game, active=True, user=self.request.user)
+		kwargs['player'] = self.player
+		return kwargs
