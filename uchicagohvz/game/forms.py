@@ -26,6 +26,8 @@ class BiteCodeForm(forms.Form):
 				self.victim = Player.objects.get(game__id=self.player.game.id, active=True, bite_code=bite_code)
 			except Player.DoesNotExist:
 				raise forms.ValidationError("Invalid bite code entered.")
+			if self.victim.game.status != "in_progress":
+				raise forms.ValidationError("Game is not in progress.")
 			if not self.victim.human:
 				raise forms.ValidationError("%s is already dead!" % (self.victim.user.get_full_name()))
 		return data
@@ -50,6 +52,8 @@ class AwardCodeForm(forms.Form):
 				self.award = Award.objects.get(game__id=self.player.game.id, code=code, redeem_type__in=redeem_types)
 			except Award.DoesNotExist:
 				raise forms.ValidationError("Invalid code entered.")
+			if self.award.game.status != "in_progress":
+				raise forms.ValidationError("Game is not in progress.")
 			if self.award.players.all().count() >= self.award.redeem_limit:
 				raise forms.ValidationError("Sorry, the redemption limit for this code has been reached.")
 		return data
