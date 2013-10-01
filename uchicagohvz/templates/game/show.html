@@ -134,14 +134,20 @@
 			<dd>{{ player.gun_returned|yesno:"Yes,No,N/A" }}</dd>
 		</dl>
 		{% if player.user.profile.phone_number %}
+		{% if player.user.profile.subscribe_death_notifications %}
 		<p class="text-success">We'll send death notifications to you via text message.
 			To disable this, go to your profile and remove your phone number.
 		</p>
 		{% else %}
+		<p class="text-danger">
+			You have elected not to received death notifications.
+		</p>
+		{% endif %}
+		{% else %}
 		<p class="text-warning">We don't have a phone number on file for you! Set one in your profile so you can 
 			receive death notifications via text message.*
 		</p>
-		<p class="text-default">* Standard text messaging rates may apply.</p>
+		<p class="text-default">* Standard text messaging rates apply.</p>
 		{% endif %}
 	</div>
 	<div class="col-lg-4">
@@ -307,7 +313,7 @@ $.get("data/kbtod/")
 			xAxis: {
 				tickInterval: 1,
 				title: {
-					text: 'Hour of day (0 = midnight)',
+					text: 'Time of Day',
 					style: whiteStyle
 				},
 				labels: {

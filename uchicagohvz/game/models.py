@@ -193,7 +193,6 @@ class HighValueDorm(models.Model):
 		return "%s (%s)" % (self.get_dorm_display(), self.game.name)
 
 def update_score(sender, **kwargs):
-	print kwargs
 	players = []
 	if sender == Kill:
 		players = [kwargs['instance'].killer.id]

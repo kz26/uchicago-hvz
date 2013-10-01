@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+	<h1>My Profile</h1>
+</div>
+
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+
+<form class="form-horizontal" method="post">
+	{% csrf_token %}
+	<div class="form-group">
+		<label for="id_phone_number" class="col-lg-2 control-label">Phone number (XXX-XXX-XXXX)</label>
+		<div class="col-lg-3">
+			<input id="id_phone_number" class="form-control" type="text" name="phone_number" value="{{ form.phone_number.value|default_if_none:"" }}">
+			{{ form.phone_number.errors }}
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="id_phone_carrier" class="col-lg-2 control-label">Phone carrier</label>
+		<div class="col-lg-3">
+			{{ form.phone_carrier }}
+			{{ form.phone_carrier.errors }}
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-lg-offset-2 col-lg-10">
+			<div class="checkbox">
+				<label>
+					{{ form.subscribe_death_notifications }} Send me death notifications via text*
+				</label>
+				{{ form.subscribe_death_notifications.errors }}
+				<p class="text-default">* Standard text messaging rates apply.</p>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-lg-offset-2 col-lg-10">
+			<div class="checkbox">
+				<label>
+					{{ form.subscribe_chatter_listhost }} Subscribe me to the HvZ-chatter listhost
+				</label>
+				{{ form.subscribe_chatter_listhost.errors }}
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-lg-offset-2 col-lg-10">
+			<button type="submit" class="btn btn-primary">Update</button>
+		</div>
+	</div>
+</form>
+{% endblock %}
