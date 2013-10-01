@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% load mptt_tags %}
+{% extends 'base.html' %}{% load mptt_tags %}{% load compress %}
 {% block content %}
 <div class="page-header">
 	<h1>{{ game.name }}</h1>
@@ -167,7 +167,20 @@
 {% endif %}
 {% endif %}
 
+<hr>
+<div class="row">
+	<div class="col-md-6">
+		<h2>Human Survival</h2>
+		<div id="hphChart"></div>
+		{% if kills_per_hour %}
+		<h2>Average Kills per Hour</h2>
+		<p>{{ kills_per_hour|floatformat:2 }}</p>
+		{% endif %}
+	</div>
+</div>
+
 {% if kill_tree %}
+<hr>
 <h2>Kill Tree</h2>
 <ul>
     {% recursetree kill_tree %}
@@ -182,4 +195,40 @@
     {% endrecursetree %}
 </ul>
 {% endif %}
+{% endblock %}
+
+{% block script %}
+<script src="{{ STATIC_URL }}js/vendor/highcharts.js"></script>
+{% compress js %}
+<script type="text/coffeescript">
+
+$.get("data/hph/")
+	.done (data) ->
+		$("#hphChart").highcharts {
+			chart: {
+				type: 'line',
+				backgroundColor: '#333',
+			},
+			legend: {
+				backgroundColor: 'white';
+			}
+			title: {
+				text: null,
+			}
+			xAxis: {
+				tickInterval: null,
+				title: {
+					text: "Hours into game"
+				}
+			},
+			yAxis: {
+				title: {
+					text: '# humans'
+				}
+				tickInterval: 1
+			},
+			series: data
+		}
+</script>
+{% endcompress %}
 {% endblock %}

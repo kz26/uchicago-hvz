@@ -39,6 +39,12 @@ class Game(models.Model):
 	def get_zombies(self):
 		return self.get_active_players().filter(human=False)
 
+	def get_kph(self): # kills per hour
+		kills = Kill.objects.filter(victim__game=self)
+		delta = timezone.now() - self.start_date
+		hours = delta.days * 24 + float(delta.seconds) / 3600
+		return float(kills.count()) / hours
+
 	@property
 	def status(self):
 		now = timezone.now()
@@ -137,7 +143,7 @@ class Kill(MPTTModel):
 
 	def save(self, *args, **kwargs):
 		try:
-			parent = Kill.objects.get(victim=self.killer)
+			parent = Kill.objects.exclude(id=self.id).get(victim=self.killer)
 		except Kill.DoesNotExist:
 			parent = None
 		self.parent = parent
@@ -189,14 +195,20 @@ class HighValueDorm(models.Model):
 
 def update_score(sender, **kwargs):
 	print kwargs
+	players = []
 	if sender == Kill:
 		players = [kwargs['instance'].killer.id]
 	elif sender == Award.players.through:
-		players = kwargs.get("pk_set")
-		if players is None:
-			players = []
-	else:
-		return
+		if kwargs['action'] in ("post_add", "post_remove"):
+			players = kwargs.get("pk_set")
+			if players is None:
+				return
+		elif kwargs['action'] == "post_clear":
+			players = Player.objects.filter(active=True, game=kwargs['instance'].game).values_list('id', flat=True)
+		else:
+			return
+	elif sender == Award:
+		players = Player.objects.filter(active=True, game=kwargs['instance'].game).values_list('id', flat=True)
 	for pid in players:
 		p = Player.objects.get(pk=pid)
 		kill_points = Kill.objects.filter(killer=p).aggregate(points=models.Sum('points'))['points'] or 0
@@ -205,4 +217,15 @@ def update_score(sender, **kwargs):
 		p.save()
 
 models.signals.post_save.connect(update_score, sender=Kill)
+models.signals.post_delete.connect(update_score, sender=Kill)
 models.signals.m2m_changed.connect(update_score, sender=Award.players.through)
+models.signals.post_delete.connect(update_score, sender=Award)
+
+def unzombify(sender, **kwargs):
+	victim = kwargs['instance'].victim
+	if not Kill.objects.filter(victim=victim).exists():
+		victim.human = True
+		victim.save()
+
+models.signals.post_delete.connect(unzombify, sender=Kill)
+
