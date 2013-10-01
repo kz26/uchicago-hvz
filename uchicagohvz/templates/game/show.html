@@ -47,7 +47,8 @@
 		{% elif game.status == "future" %}
 		<h4 class="text-warning">Future game</h4>
 		{% endif %}
-		{% if player and game.status != "in_progress" or not player.active %}
+		{% if player %}
+		{% if game.status != "in_progress" or not player.active %}
 		<dl class="dl-horizontal">
 			<dt>Your dorm</dt>
 			<dd>{{ player.get_dorm_display }}</dd>
@@ -56,11 +57,11 @@
 			<dt>Renting Gun</dt>
 			<dd>{{ player.renting_gun|yesno:"Yes,No,N/A" }}</dd>
 		</dl>
+		{% endif %}
 		{% if game.status == "finished" and player.renting_gun and not player.gun_returned %}
 		<p class="text-danger">Please return your gun as soon as possible!</p>
 		{% endif %}
 		{% endif %}
-		
 		
 	</div>
 	<div class="col-lg-4">
@@ -80,7 +81,7 @@
 		</dl>
 	</div>
 </div>
-{% if game.status == "in_progress" %}
+
 {% if player %}
 {% if player.active %}
 <hr>
@@ -89,12 +90,39 @@
 		<h2>I am a...</h2>
 		{% if player.human %}
 		<h3 class="text-success">HUMAN</h3>
+		<h2>My Bite Code</h2>
+		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
 		{% else %}
 		<h3 class="text-danger">ZOMBIE</h3>
 		{% if killed_by and killed_by != player %}
 		<p class="text-danger">Killed by {{ killed_by.user.get_full_name }} ({{ killed_by.bite_code }})
 		{% endif %}
+		{% if game.status == "in_progress" %}
+		<h2>Enter Bite Code</h2>
+		<form role="form" action="{% url 'game|bite' pk=game.pk %}" method="post">
+			{% csrf_token %}
+			<div class="form-group col-lg-8">
+				<input type="text" class="form-control" name="bite_code" placeholder="Enter bite code" required>
+			</div>
+			<div class="form-group">
+				<button class="btn btn-danger" type="submit">Kill!</button>
+			</div>
+		</form>
+		<h2>Enter Mission Code</h2>
+		<form role="form" action="{% url 'game|code' pk=game.pk %}" method="post">
+			{% csrf_token %}
+			<div class="form-group col-lg-8">
+				<input type="text" class="form-control" name="code" placeholder="Enter mission code" required>
+			</div>
+			<div class="form-group">
+				<button class="btn btn-success" type="submit">Submit</button>
+			</div>
+		</form>
 		{% endif %}
+		{% endif %}
+	</div>
+	<div class="col-lg-4">
+		<h2>My Info</h2>
 		<dl class="dl-horizontal">
 			<dt>Your dorm</dt>
 			<dd>{{ player.get_dorm_display }}</dd>
@@ -105,22 +133,15 @@
 			<dt>Gun returned</dt>
 			<dd>{{ player.gun_returned|yesno:"Yes,No,N/A" }}</dd>
 		</dl>
-	</div>
-	<div class="col-lg-4">
-		{% if player.human %}
-		<h2>My Bite Code</h2>
-		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
+		{% if player.user.profile.phone_number %}
+		<p class="text-success">We'll send death notifications to you via text message.
+			To disable this, go to your profile and remove your phone number.
+		</p>
 		{% else %}
-		<h2>Enter Bite Code</h2>
-		<form role="form" action="{% url 'game|bite' pk=game.pk %}" method="post">
-			{% csrf_token %}
-			<div class="form-group col-lg-8">
-				<input type="text" class="form-control" name="bite_code" required>
-			</div>
-			<div class="form-group">
-				<button class="btn btn-danger" type="submit">Kill!</button>
-			</div>
-		</form>
+		<p class="text-warning">We don't have a phone number on file for you! Set one in your profile so you can 
+			receive death notifications via text message.*
+		</p>
+		<p class="text-default">* Standard text messaging rates may apply.</p>
 		{% endif %}
 	</div>
 	<div class="col-lg-4">
@@ -138,7 +159,7 @@
 				{% for kill in player.kills %}
 				<tr>
 					<td>{{ kill.points }}</td>
-					<td>Kill: {{ kill.victim.user.get_full_name }}</td>
+					<td>Kill: {{ kill.victim.user.get_full_name }}{% if kill.notes %} [{{ kill.notes}}]{% endif %}</td>
 				</tr>
 				{% endfor %}
 				{% for award in player.awards.all %}
@@ -150,34 +171,63 @@
 			</tbody>
 		</table>
 		{% endif %}
-		<form role="form" action="{% url 'game|code' pk=game.pk %}" method="post">
-			{% csrf_token %}
-			<div class="form-group col-lg-8">
-				<input type="text" class="form-control" name="code" placeholder="Enter mission code" required>
-			</div>
-			<div class="form-group">
-				<button class="btn btn-success" type="submit">Submit</button>
-			</div>
-		</form>
+		
 	</div>
 </div>
 {% else %}
 <h3 class="text-danger">You have not been activated for this game. Please contact a moderator for assistance.</h3>
 {% endif %}
 {% endif %}
-{% endif %}
 
+{% if game.status == "in_progress" or game.status == "finished" %}
 <hr>
 <div class="row">
 	<div class="col-md-6">
 		<h2>Human Survival</h2>
 		<div id="hphChart"></div>
-		{% if kills_per_hour %}
+		<h2>Kills by Time of Day</h2>
+		<div id="todChart"></div>
 		<h2>Average Kills per Hour</h2>
-		<p>{{ kills_per_hour|floatformat:2 }}</p>
-		{% endif %}
+		<p class="lead">{{ kills_per_hour|floatformat:2 }}</p>
+	</div>
+	<div class="col-md-6">
+		<h2>Most Courageous Dorms</h2>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Dorm</th>
+					<th>Points</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for e in most_courageous_dorms %}
+				<tr>
+					<td>{{ e.dorm }}</td>
+					<td>{{ e.points }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<h2>Most Infectious Dorms</h2>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Dorm</th>
+					<th>Infectivity</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for e in most_infectious_dorms %}
+				<tr>
+					<td>{{ e.dorm }}</td>
+					<td>{{ e.points }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</div>
 </div>
+{% endif %}
 
 {% if kill_tree %}
 <hr>
@@ -198,9 +248,12 @@
 {% endblock %}
 
 {% block script %}
+{% if game.status == "in_progress" or game.status == "finished" %}
 <script src="{{ STATIC_URL }}js/vendor/highcharts.js"></script>
 {% compress js %}
 <script type="text/coffeescript">
+
+whiteStyle = {color: "white"}
 
 $.get("data/hph/")
 	.done (data) ->
@@ -211,24 +264,79 @@ $.get("data/hph/")
 			},
 			legend: {
 				backgroundColor: 'white';
-			}
+			},
 			title: {
 				text: null,
-			}
+			},
 			xAxis: {
 				tickInterval: null,
 				title: {
-					text: "Hours into game"
+					text: 'Hours into game',
+					style: whiteStyle
+				},
+				labels: {
+					style: whiteStyle
 				}
 			},
 			yAxis: {
 				title: {
-					text: '# humans'
+					text: '# humans',
+					style: whiteStyle,
+				},
+				tickInterval: null,
+				labels: {
+					style: whiteStyle
 				}
-				tickInterval: 1
 			},
 			series: data
 		}
+
+$.get("data/kbtod/")
+	.done (data) ->
+		$("#todChart").highcharts {
+			chart: {
+				type: 'column',
+				backgroundColor: '#333',
+			},
+			legend: {
+				enabled: false
+			},
+			title: {
+				text: null,
+			},
+			xAxis: {
+				tickInterval: 1,
+				title: {
+					text: 'Hour of day (0 = midnight)',
+					style: whiteStyle
+				},
+				labels: {
+					style: whiteStyle
+				},
+				categories: [
+					'12a', '1a', '2a', '3a', '4a', '5a', '6a', '7a', '8a', '9a', '10a', '11a',
+					'12p', '1p', '2p', '3p', '4p', '5p', '6p', '7p', '8p', '9p', '10p', '11p'
+				]
+			},
+			yAxis: {
+				title: {
+					text: 'cumulative # of kills',
+					style: whiteStyle
+				},
+				tickInterval: 1,
+				labels: {
+					style: whiteStyle
+				}
+			},
+			series: [
+				{
+					data: data,
+					color: '#800000',
+					name: 'Kills'
+				}
+			]
+		}
 </script>
 {% endcompress %}
+{% endif %}
 {% endblock %}

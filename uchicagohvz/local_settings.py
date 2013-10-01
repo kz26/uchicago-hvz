@@ -133,3 +133,5 @@ MESSAGE_TAGS = {
 
 # HvZ game configuration
 HUMAN_KILL_POINTS = 1 # how many points killing a human is worth
+HVT_KILL_POINTS = 5 # how many points a high-value target is worth (replaces regular human kill points)
+HVD_KILL_POINTS = 5 # how many points a target from a high-value dorm is worth (can stack on top of regular and HVT points)

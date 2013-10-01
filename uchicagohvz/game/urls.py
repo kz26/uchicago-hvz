@@ -12,5 +12,6 @@ urlpatterns = patterns('',
     url(r'^game/(?P<pk>[0-9]+)/register/$', RegisterForGame.as_view(), name="game|register"),
     url(r'^game/(?P<pk>[0-9]+)/bite/$', SubmitBiteCode.as_view(), name="game|bite"),
     url(r'^game/(?P<pk>[0-9]+)/code/$', SubmitAwardCode.as_view(), name="game|code"),
-    url(r'^game/(?P<pk>[0-9]+)/data/hph/$', HumansPerHour.as_view(), name="game|data|HPH"),
+    url(r'^game/(?P<pk>[0-9]+)/data/hph/$', HumansPerHour.as_view(), name="game|data|hph"),
+    url(r'^game/(?P<pk>[0-9]+)/data/kbtod/$', KillsByTimeOfDay.as_view(), name="game|data|kbtod"),
 )

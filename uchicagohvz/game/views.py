@@ -9,6 +9,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import *
 from uchicagohvz.game.models import *
 from uchicagohvz.game.forms import *
+from uchicagohvz.game.data_apis import *
 
 # Create your views here.
 
@@ -29,7 +30,9 @@ class ShowGame(DetailView):
 				context['humans_percent'] = int(round(100 * float(self.object.get_humans().count()) / self.object.get_active_players().count(), 0))
 				context['zombies_percent'] = int(round(100 * float(self.object.get_zombies().count()) / self.object.get_active_players().count(), 0))
 				if self.object.status == "in_progress":
-					context['kills_per_hour'] = self.object.get_kph()
+					context['kills_per_hour'] = kills_per_hour(self.object)
+				context['most_courageous_dorms'] = most_courageous_dorms(self.object)
+				context['most_infectious_dorms'] = most_infectious_dorms(self.object)
 		if self.request.user.is_authenticated():
 			in_game = Player.objects.filter(game=self.object, user=self.request.user).exists()
 			if in_game:
@@ -79,7 +82,25 @@ class SubmitBiteCode(BaseFormView):
 			parent_kill = parent_kills[0]
 		else:
 			parent_kill = None
-		Kill.objects.create(parent=parent_kill, killer=self.player, victim=victim, date=timezone.now())
+		points = settings.HUMAN_KILL_POINTS
+		tags = []
+		now = timezone.now()
+		try:
+			hvt = HighValueTarget.objects.get(player=victim)
+			if hvt.start_date < now < hvt.end_date:
+				points = hvt.points
+				tags.append("HVT")
+		except HighValueTarget.DoesNotExist:
+			pass
+		try:
+			hvd = HighValueDorm.objects.get(game=victim.game, dorm=victim.dorm)
+			if hvd.start_date < now < hvd.end_date:
+				points += hvd.points
+				tags.append("HVD")
+		except HighValueDorm.DoesNotExist:
+			pass
+		tagtxt = ", ".join(tags)
+		Kill.objects.create(parent=parent_kill, killer=self.player, victim=victim, points=points, notes=tagtxt, date=timezone.now())
 		messages.success(self.request, "Bite code entered successfully! %s has joined the ranks of the undead." % (victim.user.get_full_name()))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 

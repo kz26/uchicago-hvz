@@ -39,12 +39,6 @@ class Game(models.Model):
 	def get_zombies(self):
 		return self.get_active_players().filter(human=False)
 
-	def get_kph(self): # kills per hour
-		kills = Kill.objects.filter(victim__game=self)
-		delta = timezone.now() - self.start_date
-		hours = delta.days * 24 + float(delta.seconds) / 3600
-		return float(kills.count()) / hours
-
 	@property
 	def status(self):
 		now = timezone.now()
@@ -183,15 +177,20 @@ class HighValueTarget(models.Model):
 	player = models.OneToOneField(Player)
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
-	points = models.IntegerField()
+	points = models.IntegerField(default=settings.HVT_KILL_POINTS)
+
+	def __unicode__(self):
+		return "%s" % (self.player)
 
 class HighValueDorm(models.Model):
 	game = models.ForeignKey(Game)
 	dorm = models.CharField(max_length=4, choices=DORMS)
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
-	points = models.IntegerField()
+	points = models.IntegerField(default=settings.HVD_KILL_POINTS)
 
+	def __unicode__(self):
+		return "%s (%s)" % (self.get_dorm_display(), self.game.name)
 
 def update_score(sender, **kwargs):
 	print kwargs
