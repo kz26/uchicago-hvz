@@ -23,12 +23,15 @@ class Profile(models.Model):
 def get_or_create_profile(sender, **kwargs):
 	profile, created = Profile.objects.get_or_create(user=kwargs['instance'])
 	if created:
-		pass # do email signup here
+		do_sympa_update.delay(profile.user, 'hvz-chatter', True)
 models.signals.post_save.connect(get_or_create_profile, sender=get_user_model())
 
 def sympa_update(sender, **kwargs):
 	from uchicagohvz.users.tasks import do_sympa_update
-	old_profile = Profile.objects.get(id=kwargs['instance'].id)
+	try:
+		old_profile = Profile.objects.get(id=kwargs['instance'].id)
+	except:
+		return
 	new_profile = kwargs['instance']
 	user = new_profile.user
 	if (not old_profile.subscribe_chatter_listhost) and new_profile.subscribe_chatter_listhost:
