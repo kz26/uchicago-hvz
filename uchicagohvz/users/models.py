@@ -9,7 +9,7 @@ from uchicagohvz.users.phone import CARRIERS
 class Profile(models.Model):
 	user = models.OneToOneField(settings.AUTH_USER_MODEL)
 	phone_number = PhoneNumberField(blank=True)
-	phone_carrier = models.CharField(max_length=32, blank=True, choices=[(x[0], x[0]) for x in CARRIERS])
+	phone_carrier = models.CharField(max_length=32, blank=True, choices=[(k, k) for k in sorted(CARRIERS.keys())])
 	subscribe_death_notifications = models.BooleanField(default=False)
 	subscribe_chatter_listhost = models.BooleanField(default=True)
 

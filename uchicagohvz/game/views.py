@@ -15,6 +15,7 @@ from uchicagohvz.game.models import *
 from uchicagohvz.game.forms import *
 from uchicagohvz.game.data_apis import *
 from uchicagohvz.game.serializers import *
+from uchicagohvz.game.tasks import *
 
 # Create your views here.
 
@@ -82,7 +83,9 @@ class SubmitBiteCode(BaseFormView):
 
 	def form_valid(self, form):
 		victim = form.victim
-		victim.kill_me(self.player)	
+		kill = victim.kill_me(self.player)
+		if kill:
+			send_death_notification.delay(kill.id)
 		messages.success(self.request, "Bite code entered successfully! %s has joined the ranks of the undead." % (victim.user.get_full_name()))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
@@ -119,7 +122,9 @@ class SubmitCodeSMS(APIView):
 				form = BiteCodeForm(data={'bite_code': code}, player=player)
 				# player is the killer
 				if form.is_valid() and not player.human:
-					form.victim.kill_me(player)
+					kill = form.victim.kill_me(player)
+					if kill:
+						send_death_notification.delay(kill.id)
 					return Response()
 				form = AwardCodeForm(data={'code': code}, player=player)
 				if form.is_valid():
@@ -128,8 +133,6 @@ class SubmitCodeSMS(APIView):
 						award.players.add(self.player)
 						award.save()
 		return Response()
-
-
 
 class SubmitAwardCode(BaseFormView):
 	form_class = AwardCodeForm

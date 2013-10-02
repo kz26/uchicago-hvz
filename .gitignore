@@ -42,5 +42,5 @@ node_modules/
 media/
 settings.py
 static/CACHE/
-secret_key.py
+secrets.py
 db.sqlite3

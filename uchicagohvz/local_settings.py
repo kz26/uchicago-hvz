@@ -18,7 +18,7 @@ BASE_DIR = os.path.dirname(__file__)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 try:
-	from secret_key import SECRET_KEY
+	from secrets import SECRET_KEY
 except:
 	SECRET_KEY = "SECRET KEY PLACEHOLDER"
 
@@ -40,7 +40,7 @@ INSTALLED_APPS = (
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'ckeditor', 'htmlpurifier',
-	'mptt', 'localflavor', 'compressor', 'rest_framework',
+	'mptt', 'localflavor', 'compressor', 'rest_framework', 'djcelery',
 	'uchicagohvz.users', 'uchicagohvz.game',
 )
 
@@ -121,6 +121,9 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_URL = "/users/login/"
 LOGIN_REDIRECT_URL = "/"
 
+# HTTPS settings
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+
 # Message framework settings
 from django.contrib.messages import constants as message_constants
 MESSAGE_TAGS = {
@@ -130,6 +133,15 @@ MESSAGE_TAGS = {
     message_constants.WARNING: 'warning',
     message_constants.ERROR: 'danger'
 } # Bootstrap 3 alert integration
+
+# Celery configuration
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = 'redis://localhost:6379/0'
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'UChicago HvZ <noreply@uchicagohvz.org>'
 
 # HvZ game configuration
 HUMAN_KILL_POINTS = 1 # how many points killing a human is worth

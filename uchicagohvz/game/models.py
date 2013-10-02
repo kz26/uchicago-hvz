@@ -41,6 +41,9 @@ class Game(models.Model):
 	def get_zombies(self):
 		return self.get_active_players().filter(human=False)
 
+	def get_players_in_dorm(self, dorm):
+		return self.get_active_players().filter(dorm=dorm)
+
 	@property
 	def status(self):
 		now = timezone.now()
@@ -123,7 +126,7 @@ class Player(models.Model):
 	@transaction.atomic
 	def kill_me(self, killer):
 		if not self.human:
-			return
+			return None
 		self.human = False
 		self.save()
 		parent_kills = Kill.objects.filter(victim=killer).order_by('-date')
@@ -149,7 +152,7 @@ class Player(models.Model):
 		except HighValueDorm.DoesNotExist:
 			pass
 		tagtxt = ", ".join(tags)
-		Kill.objects.create(parent=parent_kill, killer=killer, victim=self, points=points, notes=tagtxt, date=now)
+		return Kill.objects.create(parent=parent_kill, killer=killer, victim=self, points=points, notes=tagtxt, date=now)
 
 	@property
 	def display_name(self): # real name when game is over; otherwise, dorm + obfuscated code for humans and bite code for zombies
