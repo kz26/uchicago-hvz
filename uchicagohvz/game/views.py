@@ -121,11 +121,12 @@ class SubmitCodeSMS(APIView):
 				code = data['text'].lower().strip()
 				form = BiteCodeForm(data={'bite_code': code}, player=player)
 				# player is the killer
-				if form.is_valid() and not player.human:
-					kill = form.victim.kill_me(player)
-					if kill:
-						send_sms_confirmation.delay(player, kill)
-						send_death_notification.delay(kill)
+				if form.is_valid():
+					if not player.human:
+						kill = form.victim.kill_me(player)
+						if kill:
+							send_sms_confirmation.delay(player, kill)
+							send_death_notification.delay(kill)
 					return Response()
 				form = AwardCodeForm(data={'code': code}, player=player)
 				if form.is_valid():
