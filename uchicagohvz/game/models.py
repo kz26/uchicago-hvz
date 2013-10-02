@@ -170,7 +170,9 @@ class Player(models.Model):
 
 	@property
 	def zombie_points(self):
-		return self.awards.filter(redeem_type__in=('Z', 'A')).aggregate(points=models.Sum('points'))['points'] or 0
+		kill_points = Kill.objects.filter(killer=self).exclude(victim=self).aggregate(points=models.Sum('points'))['points'] or 0
+		award_points =  self.awards.filter(redeem_type__in=('Z', 'A')).aggregate(points=models.Sum('points'))['points'] or 0
+		return kill_points + award_points
 
 	def __unicode__(self):
 		return "%s - %s (%s)" % (self.user.get_full_name(), self.bite_code, self.game.name)
