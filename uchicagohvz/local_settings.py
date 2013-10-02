@@ -121,6 +121,15 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_URL = "/users/login/"
 LOGIN_REDIRECT_URL = "/"
 
+# Caching and sessions
+CACHES = {
+	'default': {
+		'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+		'LOCATION': '127.0.0.1:11211',
+	}
+}
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
 # HTTPS settings
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
@@ -142,9 +151,12 @@ BROKER_URL = 'redis://localhost:6379/0'
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'UChicago HvZ <noreply@uchicagohvz.org>'
+SYMPA_FROM_EMAIL = 'admin@uchicagohvz.org'
+SYMPA_TO_EMAIL = 'sympa@lists.uchicago.edu'
 
 # HvZ game configuration
 HUMAN_KILL_POINTS = 1 # how many points killing a human is worth
 HVT_KILL_POINTS = 5 # how many points a high-value target is worth (replaces regular human kill points)
 HVD_KILL_POINTS = 5 # how many points a target from a high-value dorm is worth (can stack on top of regular and HVT points)
+LEADERBOARD_CACHE_DURATION = 3600 # how many seconds to cache the leaderboard (Top Humans/Zombies)
 NEXMO_NUMBER = '339-204-1936'

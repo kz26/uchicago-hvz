@@ -1,11 +1,10 @@
 from celery import task
 from django.core import mail
-from uchicagohvz.game.models import Kill
+from uchicagohvz.game.models import Kill, Award
 from uchicagohvz.users.phone import CARRIERS
 
 @task
-def send_death_notification(kill_id):
-	kill = Kill.objects.get(id=kill_id)
+def send_death_notification(kill):
 	killer = kill.killer
 	victim = kill.victim
 	game = kill.killer.game
@@ -24,3 +23,22 @@ def send_death_notification(kill_id):
 			yield email
 	conn = mail.get_connection()
 	conn.send_messages(tuple(gen_emails()))
+
+@task
+def send_sms_confirmation(player, obj): # obj is either a kill or an award object
+	if isinstance(obj, Kill):
+		subject = "UChicago HvZ - kill confirmed"
+		kill_text = "%s (%s)" % (obj.victim.user.get_full_name(), obj.victim.bite_code)
+		if obj.notes:
+			kill_text += " [%s]" % (obj.notes)
+		body = "Kill: %s confirmed. Points earned: %s" % (kill_text, obj.points)		
+	elif isinstance(obj, Award):
+		subject = "UChicago HvZ - mission code redeemed"
+		body = "Code '%s' redeemed. Name: %s. Points: %s" % (award.code, award.name, award.points)
+	else:
+		return
+	phone_number = player.user.profile.phone_number.replace('-', '')
+	to_addr = CARRIERS[player.user.profile.phone_carrier] % (phone_number)
+	email = mail.EmailMessage(subject=subject, body=body, to=[to_addr])
+	email.send()
+

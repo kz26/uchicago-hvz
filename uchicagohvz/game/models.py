@@ -115,7 +115,7 @@ class Player(models.Model):
 	@property
 	def killed_by(self):
 		try:
-			return Kill.objects.get(victim__id=self.id).killer
+			return Kill.objects.filter(victim__game=self.game).order_by('-date').get(victim=self).killer
 		except Kill.DoesNotExist:
 			return None
 
@@ -163,6 +163,14 @@ class Player(models.Model):
 				return self.bite_code
 		else:
 			return self.user.get_full_name()
+
+	@property
+	def human_points(self):
+		return self.awards.filter(redeem_type__in=('H', 'A')).aggregate(points=models.Sum('points'))['points'] or 0
+
+	@property
+	def zombie_points(self):
+		return self.awards.filter(redeem_type__in=('Z', 'A')).aggregate(points=models.Sum('points'))['points'] or 0
 
 	def __unicode__(self):
 		return "%s - %s (%s)" % (self.user.get_full_name(), self.bite_code, self.game.name)

@@ -1,8 +1,9 @@
 from django.db import models
 from django.shortcuts import *
 from django.utils import timezone
+from django.conf import settings
+from django.core.cache import cache
 from rest_framework.views import APIView
-from django.utils import timezone
 from rest_framework.response import Response
 from uchicagohvz.game.models import *
 from datetime import timedelta
@@ -14,10 +15,21 @@ def kills_per_hour(game):
 	return float(kills.count()) / hours
 
 def top_humans(game):
-	return Player.objects.filter(active=True, game=game, human=True).order_by('-points')
+	players = cache.get('top_humans')
+	if settings.DEBUG or players is None:
+		players = list(Player.objects.filter(active=True, game=game))
+		players.sort(key=lambda x: x.human_points, reverse=True)
+		cache.set('top_humans', players, settings.LEADERBOARD_CACHE_DURATION)
+	return players
 
 def top_zombies(game):
-	return Player.objects.filter(active=True, game=game, human=False).order_by('-points')
+	players = cache.get('top_zombies')
+	if settings.DEBUG or players is None:
+		players = list(Player.objects.filter(active=True, game=game, human=False))
+		players.sort(key=lambda x: x.kills.count(), reverse=True)
+		players.sort(key=lambda x: x.zombie_points, reverse=True)
+		cache.set('top_zombies', players, settings.LEADERBOARD_CACHE_DURATION)
+	return players
 
 def most_courageous_dorms(game): # defined as (1 / humans in dorm) * dorm's current human points
 	data = []

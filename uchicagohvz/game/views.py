@@ -124,7 +124,8 @@ class SubmitCodeSMS(APIView):
 				if form.is_valid() and not player.human:
 					kill = form.victim.kill_me(player)
 					if kill:
-						send_death_notification.delay(kill.id)
+						send_sms_confirmation.delay(player, kill)
+						send_death_notification.delay(kill)
 					return Response()
 				form = AwardCodeForm(data={'code': code}, player=player)
 				if form.is_valid():
@@ -132,6 +133,7 @@ class SubmitCodeSMS(APIView):
 						award = form.award
 						award.players.add(self.player)
 						award.save()
+						send_sms_confirmation.delay(player, award)
 		return Response()
 
 class SubmitAwardCode(BaseFormView):
