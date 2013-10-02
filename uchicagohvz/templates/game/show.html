@@ -104,7 +104,7 @@
 			<div class="form-group col-lg-8">
 				<input type="text" class="form-control" name="bite_code" placeholder="Enter bite code" required>
 			</div>
-			<div class="form-group">
+			<div class="form-group col-lg-4">
 				<button class="btn btn-danger" type="submit">Kill!</button>
 			</div>
 		</form>
@@ -114,7 +114,7 @@
 			<div class="form-group col-lg-8">
 				<input type="text" class="form-control" name="code" placeholder="Enter mission code" required>
 			</div>
-			<div class="form-group">
+			<div class="form-group col-lg-4">
 				<button class="btn btn-success" type="submit">Submit</button>
 			</div>
 		</form>
@@ -160,7 +160,7 @@
 		<h2>My Score</h2>
 		<h3 style="font-weight: bold; font-size: 15pt;">{{ player.points }} points</h3>
 		{% if player.kills.count or player.awards.all.count %}
-		<table class="table table-bordered">
+		<table class="table table-bordered table-striped">
 			<thead>
 				<tr>
 					<th>Points</th>
@@ -195,6 +195,23 @@
 <hr>
 <div class="row">
 	<div class="col-md-6">
+		<h2>Top Humans</h2>
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Points</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for p in top_humans %}
+				<tr>
+					<td>{{ p.display_name }}</td>
+					<td>{{ p.points }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 		<h2>Human Survival</h2>
 		<div id="hphChart"></div>
 		<h2>Kills by Time of Day</h2>
@@ -203,8 +220,27 @@
 		<p class="lead">{{ kills_per_hour|floatformat:2 }}</p>
 	</div>
 	<div class="col-md-6">
+		<h2>Top Zombies</h2>
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Kills</th>
+					<th>Points</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for p in top_zombies %}
+				<tr>
+					<td>{{ p.display_name }}</td>
+					<td>{{ p.kills.count }}</td>
+					<td>{{ p.points }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 		<h2>Most Courageous Dorms</h2>
-		<table class="table">
+		<table class="table table-bordered table-striped">
 			<thead>
 				<tr>
 					<th>Dorm</th>
@@ -221,7 +257,7 @@
 			</tbody>
 		</table>
 		<h2>Most Infectious Dorms</h2>
-		<table class="table">
+		<table class="table table-bordered table-striped">
 			<thead>
 				<tr>
 					<th>Dorm</th>

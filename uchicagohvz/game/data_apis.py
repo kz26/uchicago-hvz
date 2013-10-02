@@ -8,10 +8,16 @@ from uchicagohvz.game.models import *
 from datetime import timedelta
 
 def kills_per_hour(game):
-		kills = Kill.objects.filter(victim__game=game)
-		delta = min(timezone.now(), game.end_date) - game.start_date
-		hours = delta.days * 24 + float(delta.seconds) / 3600
-		return float(kills.count()) / hours
+	kills = Kill.objects.filter(victim__game=game)
+	delta = min(timezone.now(), game.end_date) - game.start_date
+	hours = delta.days * 24 + float(delta.seconds) / 3600
+	return float(kills.count()) / hours
+
+def top_humans(game):
+	return Player.objects.filter(active=True, game=game, human=True).order_by('-points')
+
+def top_zombies(game):
+	return Player.objects.filter(active=True, game=game, human=False).order_by('-points')
 
 def most_courageous_dorms(game): # defined as (1 / humans in dorm) * dorm's current human points
 	data = []

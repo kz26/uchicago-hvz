@@ -39,6 +39,8 @@ class ShowGame(DetailView):
 					context['sms_code_number'] = settings.NEXMO_NUMBER
 				context['most_courageous_dorms'] = most_courageous_dorms(self.object)
 				context['most_infectious_dorms'] = most_infectious_dorms(self.object)
+				context['top_humans'] = top_humans(self.object)[:10]
+				context['top_zombies'] = top_zombies(self.object)[:10]
 		if self.request.user.is_authenticated():
 			in_game = Player.objects.filter(game=self.object, user=self.request.user).exists()
 			if in_game:

@@ -6,6 +6,7 @@ from uchicagohvz.overwrite_fs import OverwriteFileSystemStorage
 from uchicagohvz.users.backend import UChicagoLDAPBackend
 from mptt.models import MPTTModel, TreeForeignKey
 
+import hashlib
 import os
 import random
 
@@ -149,6 +150,16 @@ class Player(models.Model):
 			pass
 		tagtxt = ", ".join(tags)
 		Kill.objects.create(parent=parent_kill, killer=killer, victim=self, points=points, notes=tagtxt, date=now)
+
+	@property
+	def display_name(self): # real name when game is over; otherwise, dorm + obfuscated code for humans and bite code for zombies
+		if self.game.status == "in_progress":
+			if self.human:
+				return "%s %s" % (self.get_dorm_display(), hashlib.sha256(self.bite_code).hexdigest()[:2].upper())
+			else:
+				return self.bite_code
+		else:
+			return self.user.get_full_name()
 
 	def __unicode__(self):
 		return "%s (%s)" % (self.user.get_full_name(), self.game.name)
