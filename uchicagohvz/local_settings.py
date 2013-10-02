@@ -40,7 +40,7 @@ INSTALLED_APPS = (
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'ckeditor', 'htmlpurifier',
-	'mptt', 'localflavor', 'compressor', 'rest_framework', 'djcelery',
+	'mptt', 'localflavor', 'compressor', 'rest_framework', 'djcelery', 'south',
 	'uchicagohvz.users', 'uchicagohvz.game',
 )
 

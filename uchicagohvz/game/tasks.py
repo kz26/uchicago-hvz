@@ -8,7 +8,7 @@ def send_death_notification(kill):
 	killer = kill.killer
 	victim = kill.victim
 	game = kill.killer.game
-	players = game.players.filter(user__profile__phone_number__isnull=False, user__profile__subscribe_death_notifications=True)
+	players = game.players.filter(active=True, user__profile__phone_number__isnull=False, user__profile__subscribe_death_notifications=True)
 	def gen_emails(): # email generator
 		subject = "UChicago HvZ - death notification"
 		victim_dorm = victim.dorm
