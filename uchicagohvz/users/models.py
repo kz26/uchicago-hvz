@@ -12,6 +12,7 @@ class Profile(models.Model):
 	phone_carrier = models.CharField(max_length=32, blank=True, choices=[(k, k) for k in sorted(CARRIERS.keys())])
 	subscribe_death_notifications = models.BooleanField(default=False)
 	subscribe_chatter_listhost = models.BooleanField(default=True)
+	subscribe_zombies_listhost = models.BooleanField(default=True)
 
 	def __unicode__(self):
 		return self.user.get_full_name()
@@ -25,6 +26,7 @@ def get_or_create_profile(sender, **kwargs):
 	if created:
 		from uchicagohvz.users.tasks import do_sympa_update
 		do_sympa_update.delay(profile.user, 'hvz-chatter', True)
+		do_sympa_update.delay(profile.user, 'zombies', True)
 models.signals.post_save.connect(get_or_create_profile, sender=get_user_model())
 
 def sympa_update(sender, **kwargs):
@@ -39,4 +41,10 @@ def sympa_update(sender, **kwargs):
 		do_sympa_update.delay(user, 'hvz-chatter', True)
 	elif old_profile.subscribe_chatter_listhost and (not new_profile.subscribe_chatter_listhost):
 		do_sympa_update.delay(user, 'hvz-chatter', False)
+	
+	if (not old_profile.subscribe_zombies_listhost) and new_profile.subscribe_zombies_listhost:
+		do_sympa_update.delay(user, 'zombies', True)
+	elif old_profile.subscribe_zombies_listhost and (not new_profile.subscribe_zombies_listhost):
+		do_sympa_update.delay(user, 'zombies', False)
+
 models.signals.pre_save.connect(sympa_update, sender=Profile)
