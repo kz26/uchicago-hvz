@@ -37,8 +37,8 @@
 					<ul class="nav navbar-nav">
 						<li class="active"><a href="/">Home</a></li>
 						{% if user.is_staff %}<li><a href="{% url "admin:index" %}">Admin Panel</a></li>{% endif %}
-						<li><a href="#">Contact</a></li>
-						<li><a href="#">About</a></li>
+						<li><a href="{% url 'contact' %}">Contact</a></li>
+						<li><a href="{% url 'about' %}">About</a></li>
 					</ul>
 					{% if user.is_authenticated %}
 					<ul class="nav navbar-nav navbar-right">
