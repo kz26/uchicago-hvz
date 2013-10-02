@@ -4,7 +4,7 @@
 	<h1>Register for {{ game.name }}</h1>
 </div>
 
-<p>Please read the following Terms and Conditions carefully.</p>
+<p>Please read the <a href="{{ game.rules.url }}">game rules</a> and the  following Terms and Conditions carefully.</p>
 
 <div class="well">
 	{{ game.terms|safe }}
