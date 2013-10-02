@@ -23,6 +23,7 @@ class Profile(models.Model):
 def get_or_create_profile(sender, **kwargs):
 	profile, created = Profile.objects.get_or_create(user=kwargs['instance'])
 	if created:
+		from uchicagohvz.users.tasks import do_sympa_update
 		do_sympa_update.delay(profile.user, 'hvz-chatter', True)
 models.signals.post_save.connect(get_or_create_profile, sender=get_user_model())
 
