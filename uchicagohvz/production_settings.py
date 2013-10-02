@@ -1,5 +1,7 @@
 from local_settings import *
 
+ALLOWED_HOSTS = ['uchicagohvz.org']
+
 # Database
 DATABASES = {
     'default': {
