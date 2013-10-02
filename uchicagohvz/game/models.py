@@ -1,4 +1,5 @@
 from django.db import models
+from django.db import transaction
 from django.conf import settings
 from django.utils import timezone
 from uchicagohvz.overwrite_fs import OverwriteFileSystemStorage
@@ -102,7 +103,7 @@ class Player(models.Model):
 			# generate unique bite code
 			while True:
 				bc = gen_bite_code()
-				if not Player.objects.filter(game=self.game, bite_code=bc).exists():
+				if not Player.objects.filter(game=self.game, bite_code=bc).exists() and not Award.objects.filter(game=self.game, code=bc).exists():
 					self.bite_code = bc
 					break
 		super(Player, self).save(*args, **kwargs)
@@ -117,6 +118,34 @@ class Player(models.Model):
 	@property
 	def kills(self):
 		return Kill.objects.filter(killer__id=self.id).exclude(victim__id=self.id)
+
+	@transaction.atomic
+	def kill_me(self, killer):
+		killer = Player.objects.get(game=self.game, user=killer, active=True, human=False)
+		parent_kills = Kill.objects.filter(victim=killer).order_by('-date')
+		if parent_kills.exists():
+			parent_kill = parent_kills[0]
+		else:
+			parent_kill = None
+		points = settings.HUMAN_KILL_POINTS
+		tags = []
+		now = timezone.now()
+		try:
+			hvt = HighValueTarget.objects.get(player=self)
+			if hvt.start_date < now < hvt.end_date:
+				points = hvt.points
+				tags.append("HVT")
+		except HighValueTarget.DoesNotExist:
+			pass
+		try:
+			hvd = HighValueDorm.objects.get(game=self.game, dorm=self.dorm)
+			if hvd.start_date < now < hvd.end_date:
+				points += hvd.points
+				tags.append("HVD")
+		except HighValueDorm.DoesNotExist:
+			pass
+		tagtxt = ", ".join(tags)
+		Kill.objects.create(parent=parent_kill, killer=killer, victim=self, points=points, notes=tagtxt, date=now)
 
 	def __unicode__(self):
 		return "%s (%s)" % (self.user.get_full_name(), self.game.name)
@@ -168,7 +197,7 @@ class Award(models.Model):
 		if not self.code:
 			while True:
 				code = gen_bite_code()
-				if not Award.objects.filter(game=self.game, code=code).exists():
+				if not Award.objects.filter(game=self.game, code=code).exists() and not Player.objects.filter(game=self.game, bite_code=code).exists():
 					self.code = code
 					break
 		super(Award, self).save(*args, **kwargs)
@@ -209,7 +238,7 @@ def update_score(sender, **kwargs):
 		players = Player.objects.filter(active=True, game=kwargs['instance'].game).values_list('id', flat=True)
 	for pid in players:
 		p = Player.objects.get(pk=pid)
-		kill_points = Kill.objects.filter(killer=p).aggregate(points=models.Sum('points'))['points'] or 0
+		kill_points = Kill.objects.filter(killer=p).exclude(victim=p).aggregate(points=models.Sum('points'))['points'] or 0
 		award_points = p.awards.aggregate(points=models.Sum('points'))['points'] or 0
 		p.points = kill_points + award_points
 		p.save()

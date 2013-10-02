@@ -75,32 +75,7 @@ class SubmitBiteCode(BaseFormView):
 
 	def form_valid(self, form):
 		victim = form.victim
-		victim.human = False
-		victim.save()
-		parent_kills = Kill.objects.filter(victim=self.player).order_by('-date')
-		if parent_kills.exists():
-			parent_kill = parent_kills[0]
-		else:
-			parent_kill = None
-		points = settings.HUMAN_KILL_POINTS
-		tags = []
-		now = timezone.now()
-		try:
-			hvt = HighValueTarget.objects.get(player=victim)
-			if hvt.start_date < now < hvt.end_date:
-				points = hvt.points
-				tags.append("HVT")
-		except HighValueTarget.DoesNotExist:
-			pass
-		try:
-			hvd = HighValueDorm.objects.get(game=victim.game, dorm=victim.dorm)
-			if hvd.start_date < now < hvd.end_date:
-				points += hvd.points
-				tags.append("HVD")
-		except HighValueDorm.DoesNotExist:
-			pass
-		tagtxt = ", ".join(tags)
-		Kill.objects.create(parent=parent_kill, killer=self.player, victim=victim, points=points, notes=tagtxt, date=timezone.now())
+		victim.kill_me(self.request.user)	
 		messages.success(self.request, "Bite code entered successfully! %s has joined the ranks of the undead." % (victim.user.get_full_name()))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
