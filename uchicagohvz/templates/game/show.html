@@ -171,7 +171,7 @@
 				{% for kill in player.kills %}
 				<tr>
 					<td>{{ kill.points }}</td>
-					<td>Kill: {{ kill.victim.user.get_full_name }}{% if kill.notes %} [{{ kill.notes}}]{% endif %}</td>
+					<td>Kill: {{ kill.victim.user.get_full_name }} on {{ kill.date|date:"SHORT_DATE_FORMAT" }} {% if kill.notes %} [{{ kill.notes}}]{% endif %}</td>
 				</tr>
 				{% endfor %}
 				{% for award in player.awards.all %}
@@ -193,6 +193,10 @@
 
 {% if game.status == "in_progress" or game.status == "finished" %}
 <hr>
+<div class="center">
+	<h2>Average Kills per Hour</h2>
+	<p class="lead text-danger">{{ kills_per_hour|floatformat:2 }}</p>
+</div>
 <div class="row">
 	<div class="col-md-6">
 		<h2>Top Humans</h2>
@@ -219,8 +223,6 @@
 		<div id="hphChart"></div>
 		<h2>Kills by Time of Day</h2>
 		<div id="todChart"></div>
-		<h2>Average Kills per Hour</h2>
-		<p class="lead">{{ kills_per_hour|floatformat:2 }}</p>
 	</div>
 	<div class="col-md-6">
 		<h2>Top Zombies</h2>

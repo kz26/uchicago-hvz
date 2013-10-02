@@ -11,3 +11,7 @@ div#cke_id_terms {
 .white, .white a {
   color: #fff;
 }
+
+.center {
+	text-align: center;
+}

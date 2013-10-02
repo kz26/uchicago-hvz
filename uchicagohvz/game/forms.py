@@ -48,12 +48,15 @@ class AwardCodeForm(forms.Form):
 				redeem_types.append("H")
 			else:
 				redeem_types.append("Z")
+			redeem_types = set(redeem_types)
 			try:
-				self.award = Award.objects.get(game__id=self.player.game.id, code=code, redeem_type__in=redeem_types)
+				self.award = Award.objects.get(game__id=self.player.game.id, code=code)
 			except Award.DoesNotExist:
 				raise forms.ValidationError("Invalid code entered.")
 			if self.award.game.status != "in_progress":
 				raise forms.ValidationError("Game is not in progress.")
+			if self.award.redeem_type not in redeem_types:
+				raise forms.ValidationError("You are not eligible to redeem this code.")
 			if self.award.players.filter(id=self.player.id):
 				raise forms.ValidationError("You have already redeemed this code.")
 			if self.award.players.all().count() >= self.award.redeem_limit:

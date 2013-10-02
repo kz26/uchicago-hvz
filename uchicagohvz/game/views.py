@@ -117,7 +117,8 @@ class SubmitCodeSMS(APIView):
 					return Response()
 				code = data['text'].lower().strip()
 				form = BiteCodeForm(data={'bite_code': code}, player=player)
-				if form.is_valid():
+				# player is the killer
+				if form.is_valid() and not player.human:
 					form.victim.kill_me(player)
 					return Response()
 				form = AwardCodeForm(data={'code': code}, player=player)

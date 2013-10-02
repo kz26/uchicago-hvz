@@ -24,7 +24,7 @@ admin.site.register(Game, GameAdmin)
 class PlayerAdmin(admin.ModelAdmin):
 	list_filter = ('game__name', 'active', 'human', 'dorm', 'renting_gun', 'gun_returned')
 	readonly_fields = ('major', 'points')
-	search_fields = ('user__username', 'user__first_name', 'user__last_name')
+	search_fields = ('user__username', 'user__first_name', 'user__last_name', 'bite_code')
 
 class KillAdmin(admin.ModelAdmin):
 	list_filter = ('killer__game__name',)

@@ -118,7 +118,7 @@ class Player(models.Model):
 
 	@property
 	def kills(self):
-		return Kill.objects.filter(killer__id=self.id).exclude(victim__id=self.id)
+		return Kill.objects.filter(killer__id=self.id).exclude(victim__id=self.id).order_by('-date')
 
 	@transaction.atomic
 	def kill_me(self, killer):
@@ -162,7 +162,7 @@ class Player(models.Model):
 			return self.user.get_full_name()
 
 	def __unicode__(self):
-		return "%s (%s)" % (self.user.get_full_name(), self.game.name)
+		return "%s - %s (%s)" % (self.user.get_full_name(), self.bite_code, self.game.name)
 
 class Kill(MPTTModel):
 	class MPTTMeta:
@@ -176,7 +176,7 @@ class Kill(MPTTModel):
 	notes = models.TextField(blank=True)
 
 	def __unicode__(self):
-		return "%s --> %s" % (self.killer.user.get_full_name(), self.victim.user.get_full_name())
+		return "%s --> %s (%s)" % (self.killer.user.get_full_name(), self.victim.user.get_full_name(), self.killer.game.name)
 
 	def save(self, *args, **kwargs):
 		try:
