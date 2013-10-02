@@ -4,7 +4,7 @@
 	<h1>Register for {{ game.name }}</h1>
 </div>
 
-<p>Please read the <a href="{{ game.rules.url }}">game rules</a> and the  following Terms and Conditions carefully.</p>
+<p>Please read the <a href="{{ game.rules.url }}">game rules</a> and the following Terms and Conditions carefully.</p>
 
 <div class="well">
 	{{ game.terms|safe }}
@@ -32,7 +32,8 @@
 		<div class="col-lg-offset-2 col-lg-10">
 			<div class="checkbox">
 				<label>
-					<input type="checkbox" name="agree_terms"> I have read and agree to the above Terms and Conditions.
+					<input type="checkbox" name="agree_terms"> 
+					I have read and agree to the <a href="{{ game.rules.url }}">game rules</a> and the above Terms and Conditions.
 				</label>
 				{{ form.agree_terms.errors }}
 			</div>
