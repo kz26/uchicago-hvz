@@ -1,5 +1,7 @@
 from local_settings import *
 
+settings.DEBUG = False
+
 ALLOWED_HOSTS = ['uchicagohvz.org']
 
 # Database
