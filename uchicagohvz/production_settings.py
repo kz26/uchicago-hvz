@@ -1,6 +1,6 @@
 from local_settings import *
 
-settings.DEBUG = False
+DEBUG = False
 
 ALLOWED_HOSTS = ['uchicagohvz.org']
 
