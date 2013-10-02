@@ -28,8 +28,8 @@ class ShowGame(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(ShowGame, self).get_context_data(**kwargs)
-		#if self.object.status == "finished":
-		context['kill_tree'] = Kill.objects.filter(killer__game=self.object)
+		if self.object.status == "finished":
+			context['kill_tree'] = Kill.objects.filter(killer__game=self.object)
 		if self.object.status in ('in_progress', 'finished'):
 			if self.object.get_active_players().count() > 0:
 				context['humans_percent'] = int(round(100 * float(self.object.get_humans().count()) / self.object.get_active_players().count(), 0))
@@ -115,11 +115,12 @@ class SubmitCodeSMS(APIView):
 					player = Player.objects.get(game=game, user__profile__phone_number=phone_number)
 				except Player.DoesNotExist:
 					return Response()
-				form = BiteCodeForm(data={'bite_code': data['text'].lower().strip()}, player=player)
+				code = data['text'].lower().strip()
+				form = BiteCodeForm(data={'bite_code': code}, player=player)
 				if form.is_valid():
 					form.victim.kill_me(player)
 					return Response()
-				form = AwardCodeForm(data={'code': data['text'].lower().strip()}, player=player)
+				form = AwardCodeForm(data={'code': code}, player=player)
 				if form.is_valid():
 					with transaction.atomic():
 						award = form.award
