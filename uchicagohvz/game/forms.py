@@ -54,6 +54,8 @@ class AwardCodeForm(forms.Form):
 				raise forms.ValidationError("Invalid code entered.")
 			if self.award.game.status != "in_progress":
 				raise forms.ValidationError("Game is not in progress.")
+			if self.award.players.filter(id=self.player.id):
+				raise forms.ValidationError("You have already redeemed this code.")
 			if self.award.players.all().count() >= self.award.redeem_limit:
 				raise forms.ValidationError("Sorry, the redemption limit for this code has been reached.")
 		return data

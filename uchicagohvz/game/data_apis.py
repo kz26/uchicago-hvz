@@ -9,7 +9,7 @@ from datetime import timedelta
 
 def kills_per_hour(game):
 		kills = Kill.objects.filter(victim__game=game)
-		delta = timezone.now() - game.start_date
+		delta = min(timezone.now(), game.end_date) - game.start_date
 		hours = delta.days * 24 + float(delta.seconds) / 3600
 		return float(kills.count()) / hours
 

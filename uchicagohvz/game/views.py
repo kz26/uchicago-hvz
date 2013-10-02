@@ -1,5 +1,6 @@
 from django.shortcuts import *
 from django.conf import settings
+from django.db import transaction
 from django.contrib import messages
 from django.http import *
 from django.views.generic import *
@@ -7,9 +8,13 @@ from django.views.generic.edit import BaseFormView
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import *
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from uchicagohvz.game.models import *
 from uchicagohvz.game.forms import *
 from uchicagohvz.game.data_apis import *
+from uchicagohvz.game.serializers import *
 
 # Create your views here.
 
@@ -31,6 +36,7 @@ class ShowGame(DetailView):
 				context['zombies_percent'] = int(round(100 * float(self.object.get_zombies().count()) / self.object.get_active_players().count(), 0))
 				if self.object.status == "in_progress":
 					context['kills_per_hour'] = kills_per_hour(self.object)
+					context['sms_code_number'] = settings.NEXMO_NUMBER
 				context['most_courageous_dorms'] = most_courageous_dorms(self.object)
 				context['most_infectious_dorms'] = most_infectious_dorms(self.object)
 		if self.request.user.is_authenticated():
@@ -67,7 +73,6 @@ class RegisterForGame(FormView):
 
 class SubmitBiteCode(BaseFormView):
 	form_class = BiteCodeForm
-	http_method_names = ['post']
 
 	@method_decorator(login_required)
 	def dispatch(self, request, *args, **kwargs):
@@ -75,7 +80,7 @@ class SubmitBiteCode(BaseFormView):
 
 	def form_valid(self, form):
 		victim = form.victim
-		victim.kill_me(self.request.user)	
+		victim.kill_me(self.player)	
 		messages.success(self.request, "Bite code entered successfully! %s has joined the ranks of the undead." % (victim.user.get_full_name()))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
@@ -91,18 +96,48 @@ class SubmitBiteCode(BaseFormView):
 		kwargs['player'] = self.player
 		return kwargs
 
+class SubmitCodeSMS(APIView):
+	@method_decorator(csrf_exempt)
+	def post(self, request, *args, **kwargs):
+		data = {k: v for (k, v) in request.DATA.iteritems()}
+		data['message_timestamp'] = data.pop('message-timestamp', '') # workaround for hyphen in field name
+		data['network_code'] = data.pop('network-code', '')
+		serializer = NexmoSMSSerializer(data=data)
+		if serializer.is_valid():
+			data = serializer.object
+			games = Game.objects.all().order_by('-start_date')
+			if games.exists() and games[0].status == "in_progress":
+				game = games[0]
+				try:
+					phone_number = "%s-%s-%s" % (data['msisdn'][1:4], data['msisdn'][4:7], data['msisdn'][7:11])
+					player = Player.objects.get(game=game, user__profile__phone_number=phone_number)
+				except Player.DoesNotExist:
+					return Response()
+				form = BiteCodeForm(data={'bite_code': data['text'].lower().strip()}, player=player)
+				if form.is_valid():
+					form.victim.kill_me(player)
+					return Response()
+				form = AwardCodeForm(data={'code': data['text'].lower().strip()}, player=player)
+				if form.is_valid():
+					with transaction.atomic():
+						award = form.award
+						award.players.add(self.player)
+						award.save()
+		return Response()
+
+
+
 class SubmitAwardCode(BaseFormView):
 	form_class = AwardCodeForm
-	http_method_names = ['post']
 
 	@method_decorator(login_required)
 	def dispatch(self, request, *args, **kwargs):
 		return super(SubmitAwardCode, self).dispatch(request, *args, **kwargs)
 
+	@transaction.atomic
 	def form_valid(self, form):
 		award = form.award
 		award.players.add(self.player)
-		award.redeem_limit += 1
 		award.save()
 		messages.success(self.request, "Code entry accepted!")
 		return HttpResponseRedirect(self.game.get_absolute_url())

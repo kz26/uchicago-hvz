@@ -121,7 +121,10 @@ class Player(models.Model):
 
 	@transaction.atomic
 	def kill_me(self, killer):
-		killer = Player.objects.get(game=self.game, user=killer, active=True, human=False)
+		if not self.human:
+			return
+		self.human = False
+		self.save()
 		parent_kills = Kill.objects.filter(victim=killer).order_by('-date')
 		if parent_kills.exists():
 			parent_kill = parent_kills[0]

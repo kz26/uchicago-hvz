@@ -90,13 +90,13 @@
 		<h2>I am a...</h2>
 		{% if player.human %}
 		<h3 class="text-success">HUMAN</h3>
-		<h2>My Bite Code</h2>
-		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
 		{% else %}
 		<h3 class="text-danger">ZOMBIE</h3>
 		{% if killed_by and killed_by != player %}
 		<p class="text-danger">Killed by {{ killed_by.user.get_full_name }} ({{ killed_by.bite_code }})
 		{% endif %}
+		<h3>My Bite Code</h3>
+		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
 		{% if game.status == "in_progress" %}
 		<h2>Enter Bite Code</h2>
 		<form role="form" action="{% url 'game|bite' pk=game.pk %}" method="post">
@@ -118,6 +118,12 @@
 				<button class="btn btn-success" type="submit">Submit</button>
 			</div>
 		</form>
+		{% if player.user.profile.phone_number %}
+		<p class="lead text-info">
+			You can also text bite codes and mission codes to <b>{{ sms_code_number }}</b>!*
+		</p>
+		<p class="text-default">* Standard text messaging rates apply.</p>
+		{% endif %}
 		{% endif %}
 		{% endif %}
 	</div>
@@ -241,7 +247,7 @@
 <ul>
     {% recursetree kill_tree %}
         <li>
-            {{ node.victim.user.get_full_name }} ({{ node.victim.bite_code }})
+            {{ node.victim.user.get_full_name }} - {{ node.victim.bite_code }} - killed {{ node.date }}
             {% if not node.is_leaf_node %}
                 <ul>
                     {{ children }}
@@ -261,7 +267,7 @@
 
 whiteStyle = {color: "white"}
 
-$.get("data/hph/")
+$.get("data/humans-per-hour/")
 	.done (data) ->
 		$("#hphChart").highcharts {
 			chart: {
@@ -297,7 +303,7 @@ $.get("data/hph/")
 			series: data
 		}
 
-$.get("data/kbtod/")
+$.get("data/kills-by-tod/")
 	.done (data) ->
 		$("#todChart").highcharts {
 			chart: {
