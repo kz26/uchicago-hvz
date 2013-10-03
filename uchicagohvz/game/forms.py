@@ -3,7 +3,7 @@ from uchicagohvz.game.models import *
 
 class GameRegistrationForm(forms.Form):
 	dorm = forms.TypedChoiceField(choices=DORMS)
-	agree_terms = forms.BooleanField()
+	agree = forms.BooleanField()
 	renting_gun = forms.BooleanField(required=False)
 
 	def __init__(self, *args, **kwargs):

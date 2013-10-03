@@ -24,7 +24,6 @@ class Game(models.Model):
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
 	rules = models.FileField(upload_to=gen_rules_filename, storage=OverwriteFileSystemStorage())
-	terms = models.TextField()
 
 	def __unicode__(self):
 		return self.name

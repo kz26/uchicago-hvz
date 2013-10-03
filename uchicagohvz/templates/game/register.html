@@ -1,14 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="page-header">
-	<h1>Register for {{ game.name }}</h1>
+	<h1>Register for game: {{ game.name }}</h1>
 </div>
 
-<p>Please read the <a href="{{ game.rules.url }}">game rules</a> and the following Terms and Conditions carefully.</p>
-
-<div class="well">
-	{{ game.terms|safe }}
-</div>
 <form class="form-horizontal" method="post">
 	{% csrf_token %}
 	<div class="form-group">
@@ -32,10 +27,11 @@
 		<div class="col-lg-offset-2 col-lg-10">
 			<div class="checkbox">
 				<label>
-					<input type="checkbox" name="agree_terms"> 
-					I have read and agree to the <a href="{{ game.rules.url }}">game rules</a> and the above Terms and Conditions.
+					<input type="checkbox" name="agree"> 
+					I have read and agree to the <a href="{{ game.rules.url }}" target="_blank">game rules</a> and the 
+					<a href="{% url 'terms' %}" target="_blank">Terms and Conditions</a>.
 				</label>
-				{{ form.agree_terms.errors }}
+				{{ form.agree.errors }}
 			</div>
 		</div>
 	</div>
