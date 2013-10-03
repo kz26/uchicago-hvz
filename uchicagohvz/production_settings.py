@@ -4,6 +4,10 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['uchicagohvz.org']
 
+ADMINS = (
+    ('Administrator', 'admin@uchicagohvz.org'),
+)
+
 # Database
 DATABASES = {
     'default': {
