@@ -29,7 +29,7 @@ class ShowGame(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(ShowGame, self).get_context_data(**kwargs)
-		if self.object.status == "finished":
+		if self.object.status == 'finished':
 			context['kill_tree'] = Kill.objects.filter(killer__game=self.object)
 		if self.object.status in ('in_progress', 'finished'):
 			if self.object.get_active_players().count() > 0:
@@ -58,7 +58,7 @@ class RegisterForGame(FormView):
 	@method_decorator(login_required)
 	def dispatch(self, request, *args, **kwargs):
 		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
-		if not (self.game.registration_date < timezone.now() < self.game.start_date):
+		if self.game.status != 'registration':
 			return HttpResponseForbidden()
 		if Player.objects.filter(game=self.game, user=request.user).exists():
 			return HttpResponseForbidden()
@@ -111,30 +111,31 @@ class SubmitCodeSMS(APIView):
 		if serializer.is_valid():
 			data = serializer.object
 			games = Game.objects.all().order_by('-start_date')
-			if games.exists() and games[0].status == "in_progress":
-				game = games[0]
-				try:
-					phone_number = "%s-%s-%s" % (data['msisdn'][1:4], data['msisdn'][4:7], data['msisdn'][7:11])
-					player = Player.objects.get(game=game, user__profile__phone_number=phone_number)
-				except Player.DoesNotExist:
-					return Response()
-				code = data['text'].lower().strip()
-				form = BiteCodeForm(data={'bite_code': code}, player=player)
-				# player is the killer
-				if form.is_valid():
-					if not player.human:
-						kill = form.victim.kill_me(player)
-						if kill:
-							send_sms_confirmation.delay(player, kill)
-							send_death_notification.delay(kill)
-					return Response()
-				form = AwardCodeForm(data={'code': code}, player=player)
-				if form.is_valid():
-					with transaction.atomic():
-						award = form.award
-						award.players.add(self.player)
-						award.save()
-						send_sms_confirmation.delay(player, award)
+			for game in games:
+				if game.status == "in_progress":
+					try:
+						phone_number = "%s-%s-%s" % (data['msisdn'][1:4], data['msisdn'][4:7], data['msisdn'][7:11])
+						player = Player.objects.get(game=game, user__profile__phone_number=phone_number)
+					except Player.DoesNotExist:
+						return Response()
+					code = data['text'].lower().strip()
+					form = BiteCodeForm(data={'bite_code': code}, player=player)
+					# player is the killer
+					if form.is_valid():
+						if not player.human:
+							kill = form.victim.kill_me(player)
+							if kill:
+								send_sms_confirmation.delay(player, kill)
+								send_death_notification.delay(kill)
+						return Response()
+					form = AwardCodeForm(data={'code': code}, player=player)
+					if form.is_valid():
+						with transaction.atomic():
+							award = form.award
+							award.players.add(player)
+							award.save()
+							send_sms_confirmation.delay(player, award)
+						return
 		return Response()
 
 class SubmitAwardCode(BaseFormView):

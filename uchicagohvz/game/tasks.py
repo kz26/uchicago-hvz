@@ -36,7 +36,7 @@ def send_sms_confirmation(player, obj): # obj is either a kill or an award objec
 			kill_text += " [%s]" % (obj.notes)
 		body = "Kill: %s confirmed. Points earned: %s" % (kill_text, obj.points)		
 	elif isinstance(obj, Award):
-		body = "Code redeemed. Name: %s. Points: %s" % (award.name, award.points)
+		body = "Code redeemed. Name: %s. Points: %s" % (obj.name, obj.points)
 	else:
 		return
 	phone_number = player.user.profile.phone_number.replace('-', '')

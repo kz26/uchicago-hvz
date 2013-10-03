@@ -47,13 +47,13 @@ class Game(models.Model):
 	def status(self):
 		now = timezone.now()
 		if self.registration_date < now < self.start_date:
-			return "registration"
+			return 'registration'
 		elif self.start_date < now < self.end_date:
-			return "in_progress"
+			return 'in_progress'
 		elif now > self.end_date:
-			return "finished"
+			return 'finished'
 		else:
-			return "future"
+			return 'future'
 
 	@models.permalink
 	def get_absolute_url(self):
