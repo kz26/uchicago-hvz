@@ -100,7 +100,8 @@ class Player(models.Model):
 	def save(self, *args, **kwargs):
 		old = None
 		if not self.id:
-			self.major = UChicagoLDAPBackend.get_user_major(self.user.username)
+			backend = UChicagoLDAPBackend()
+			self.major = backend.get_user_major(self.user.username)
 		else:
 			old = Player.objects.get(id=self.id)
 		if (old and (not old.active) and self.active) or (old is None and self.active) or self.bite_code == "":
