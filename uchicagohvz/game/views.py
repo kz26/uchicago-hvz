@@ -117,7 +117,7 @@ class SubmitCodeSMS(APIView):
 						phone_number = "%s-%s-%s" % (data['msisdn'][1:4], data['msisdn'][4:7], data['msisdn'][7:11])
 						player = Player.objects.get(game=game, user__profile__phone_number=phone_number)
 					except Player.DoesNotExist:
-						return Response()
+						break
 					code = data['text'].lower().strip()
 					form = BiteCodeForm(data={'bite_code': code}, player=player)
 					# player is the killer
@@ -127,7 +127,7 @@ class SubmitCodeSMS(APIView):
 							if kill:
 								send_sms_confirmation.delay(player, kill)
 								send_death_notification.delay(kill)
-						return Response()
+						break
 					form = AwardCodeForm(data={'code': code}, player=player)
 					if form.is_valid():
 						with transaction.atomic():
@@ -135,7 +135,7 @@ class SubmitCodeSMS(APIView):
 							award.players.add(player)
 							award.save()
 							send_sms_confirmation.delay(player, award)
-						return
+						break
 		return Response()
 
 class SubmitAwardCode(BaseFormView):
