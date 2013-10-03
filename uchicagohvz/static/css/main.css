@@ -15,3 +15,7 @@ div#cke_id_terms {
 .center {
 	text-align: center;
 }
+
+.bold {
+	font-weight: bold;
+}

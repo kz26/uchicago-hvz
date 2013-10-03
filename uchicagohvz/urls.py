@@ -15,5 +15,6 @@ urlpatterns = patterns('',
     url(r'^', include('uchicagohvz.game.urls')),
     url(r'^users/', include('uchicagohvz.users.urls')),
     url(r'^contact/$', TemplateView.as_view(template_name='contact.html'), name='contact'),
+    url(r'^faq/$', TemplateView.as_view(template_name='faq.html'), name='faq'),
     url(r'^about/$', TemplateView.as_view(template_name='about.html'), name='about'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
