@@ -8,6 +8,7 @@ class UChicagoLDAPBackend(object):
 
 	def __init__(self):
 		self.conn = ldap.initialize(self.LDAP_SERVER)
+		self._udCache = {}
 
 	def bind(self, cnetid, password):
 		cnetid = ldap.filter.escape_filter_chars(cnetid)
@@ -18,11 +19,15 @@ class UChicagoLDAPBackend(object):
 		return True
 
 	def get_user_data(self, cnetid): # look up a user by CNetID
+		if cnetid in self._udCache:
+			return self._udCache[cnetid]
 		cnetid = ldap.filter.escape_filter_chars(cnetid)
 		query = "(&(uid=%s)(objectclass=inetOrgPerson))" % (cnetid)
 		results = self.conn.search_ext_s("dc=uchicago,dc=edu", ldap.SCOPE_SUBTREE, query)
 		if results:
-			return results[0][1]
+			user_data = results[0][1]
+			self._udCache[user_data['uid'][0]] = user_data
+			return user_data
 		else:
 			return None
 
