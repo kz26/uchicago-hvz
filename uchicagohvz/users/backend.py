@@ -26,6 +26,13 @@ class UChicagoLDAPBackend(object):
 		else:
 			return None
 
+	def provision_user(self, user_data):
+		try:
+			return (User.objects.get(username=user_data['uid'][0]), False)
+		except User.DoesNotExist:
+			user = User.objects.create_user(username=user_data['uid'][0], email=user_data['mail'][0], first_name=user_data['givenName'][0], last_name=user_data['sn'][0])
+			return (user, True)
+
 	def authenticate(self, username=None, password=None):
 		if username and password:
 			cnetid = ldap.filter.escape_filter_chars(username)
@@ -43,8 +50,7 @@ class UChicagoLDAPBackend(object):
 					return user
 				except User.DoesNotExist:
 					if user_data:
-						user = User.objects.create_user(username=user_data['uid'][0], email=user_data['mail'][0], first_name=user_data['givenName'][0], last_name=user_data['sn'][0])
-						return user
+						return self.provision_user(user_data)[0]
 		return None
 
 	def get_user(self, user_id):
