@@ -118,12 +118,15 @@
 				<button class="btn btn-success" type="submit">Submit</button>
 			</div>
 		</form>
-		{% if player.user.profile.phone_number %}
 		<p class="lead text-info">
+		{% if player.user.profile.phone_number %}
 			You can also text bite codes and mission codes to <b>{{ sms_code_number }}</b>!*
+		{% else %}
+			Add your phone number to your <a href="{% url 'users|profile' %}">profile</a> so you can submit
+			bite codes and mission codes via text message!
+		{% endif %}
 		</p>
 		<p class="text-default">* Standard text messaging rates apply.</p>
-		{% endif %}
 		{% endif %}
 		{% endif %}
 	</div>
@@ -150,8 +153,8 @@
 		</p>
 		{% endif %}
 		{% else %}
-		<p class="text-warning">We don't have a phone number on file for you! Set one in your profile so you can 
-			receive death notifications via text message.*
+		<p class="text-warning">We don't have a phone number on file for you! Add it to your <a href="{% url 'users|profile' %}">profile</a>
+			and check the appropriate box if you want to receive death notifications via text message.*
 		</p>
 		<p class="text-default">* Standard text messaging rates apply.</p>
 		{% endif %}
@@ -192,7 +195,7 @@
 	</div>
 </div>
 {% elif game.status == "in_progress" %}
-<h3 class="text-danger">You have not been activated for this game. Please contact a moderator for assistance.</h3>
+<h3 class="text-danger">You have not been activated yet for this game. Please contact a moderator for assistance.</h3>
 {% endif %}
 {% endif %}
 
