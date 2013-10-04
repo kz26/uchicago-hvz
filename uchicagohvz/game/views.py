@@ -61,7 +61,7 @@ class RegisterForGame(FormView):
 		if self.game.status != 'registration':
 			return HttpResponseForbidden()
 		if Player.objects.filter(game=self.game, user=request.user).exists():
-			return HttpResponseForbidden()
+			return HttpResponseRedirect(self.game.get_absolute_url())
 		return super(RegisterForGame, self).dispatch(request, *args, **kwargs)
 
 	def form_valid(self, form):
