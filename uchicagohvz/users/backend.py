@@ -67,10 +67,10 @@ class UChicagoLDAPBackend(object):
 	def get_user_major(self, cnetid):
 		user_data = self.get_user_data(cnetid)
 		if user_data:
-			ou = user_data["ou"]
+			ou = user_data.get('ou')
 			if ou:
 				for v in ou:
-					if v.find("College:") == 0:
+					if v.find('College:') == 0:
 						return v
 				return ou[0]
-		return "N/A"
+		return 'N/A'

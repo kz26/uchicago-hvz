@@ -78,17 +78,17 @@ NOUNS = open(os.path.join(settings.BASE_DIR, "game/word-lists/nouns.txt")).read(
 ADJECTIVES = open(os.path.join(settings.BASE_DIR, "game/word-lists/adjs.txt")).read().split('\n')[:-1]
 
 def gen_bite_code():
-	return random.choice(ADJECTIVES) + " " + random.choice(NOUNS)
+	return random.choice(ADJECTIVES) + ' ' + random.choice(NOUNS)
 
 class Player(models.Model):
 	class Meta:
-		unique_together = (("user", "game"), ("game", "bite_code"))
+		unique_together = (('user', 'game'), ('game', 'bite_code'))
 		ordering = ['-game__start_date', 'user__last_name']
 
-	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+")
-	game = models.ForeignKey(Game, related_name="players")
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='+')
+	game = models.ForeignKey(Game, related_name='players')
 	active = models.BooleanField(default=False)
-	bite_code = models.CharField(max_length=255, blank=True, help_text="leave blank for automatic (re-)generation")
+	bite_code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
 	dorm = models.CharField(max_length=4, choices=DORMS)
 	major = models.CharField(max_length=255, editable=False)
 	human = models.BooleanField(default=True)
@@ -97,14 +97,12 @@ class Player(models.Model):
 	gun_returned = models.BooleanField(default=False)
 
 	def save(self, *args, **kwargs):
-		old = None
-		if not self.id:
+		if self.game.status == 'registration': # allow updates to major during registration
 			backend = UChicagoLDAPBackend()
 			self.major = backend.get_user_major(self.user.username)
-		else:
-			old = Player.objects.get(id=self.id)
-		if (old and (not old.active) and self.active) or (old is None and self.active) or self.bite_code == "":
-			# generate unique bite code
+		old = Player.objects.get(id=self.id) if self.id else None
+		if (old and (not old.active) and self.active) or self.bite_code == '':
+			# (re-)generate unique bite code
 			while True:
 				bc = gen_bite_code()
 				if not Player.objects.filter(game=self.game, bite_code=bc).exists() and not Award.objects.filter(game=self.game, code=bc).exists():
