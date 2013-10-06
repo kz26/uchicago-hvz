@@ -1,4 +1,6 @@
 from django import forms
+from django.conf import settings
+from django.core.exceptions import ValidationError
 from uchicagohvz.game.models import *
 
 class GameRegistrationForm(forms.Form):
@@ -11,25 +13,45 @@ class GameRegistrationForm(forms.Form):
 		self.fields['dorm'].widget.attrs['class'] = "form-control" # for Bootstrap 3
 		self.fields['dorm'].widget.attrs['required'] = "required"
 
+def validate_lat(value):
+	if not (settings.GAME_SW_BOUND[0] <= value <= settings.GAME_NE_BOUND[0]):
+		raise ValidationError('Latitude is outside of game boundaries')
+
+def validate_lng(value):
+	if not (settings.GAME_SW_BOUND[1] <= value <= settings.GAME_NE_BOUND[1]):
+		raise ValidationError('Longitude is outside of game boundaries')
+
 class BiteCodeForm(forms.Form):
 	bite_code = forms.CharField()
+	lat = forms.FloatField(required=False, validators=[validate_lat])
+	lng = forms.FloatField(required=False, validators=[validate_lng])
 
 	def __init__(self, *args, **kwargs):
 		self.player = kwargs.pop('player')
+		require_location = kwargs.pop('require_location', False)
 		super(BiteCodeForm, self).__init__(*args, **kwargs)
+		if require_location:
+			self.fields['lat'].required = True
+			self.fields['lng'].required = True
+
+	def clean_bite_code(self):
+		bite_code = self.cleaned_data['bite_code']
+		try:
+			self.victim = Player.objects.get(game__id=self.player.game.id, active=True, bite_code=bite_code)
+		except Player.DoesNotExist:
+			raise forms.ValidationError("Invalid bite code entered.")
+		if self.victim.game.status != "in_progress":
+			raise forms.ValidationError("Game is not in progress.")
+		if not self.victim.human:
+			raise forms.ValidationError("%s is already dead!" % (self.victim.user.get_full_name()))
 
 	def clean(self):
 		data = super(BiteCodeForm, self).clean()
-		bite_code = data.get('bite_code')
-		if bite_code:
-			try:
-				self.victim = Player.objects.get(game__id=self.player.game.id, active=True, bite_code=bite_code)
-			except Player.DoesNotExist:
-				raise forms.ValidationError("Invalid bite code entered.")
-			if self.victim.game.status != "in_progress":
-				raise forms.ValidationError("Game is not in progress.")
-			if not self.victim.human:
-				raise forms.ValidationError("%s is already dead!" % (self.victim.user.get_full_name()))
+		lat = data.get('lat')
+		lng = data.get('lng')
+		if lat or lng:
+			if not (lat and lng):
+				raise forms.ValidationError('Both lat and lng must both be specified')			
 		return data
 
 class AwardCodeForm(forms.Form):

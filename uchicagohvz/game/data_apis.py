@@ -4,7 +4,9 @@ from django.utils import timezone
 from django.conf import settings
 from django.core.cache import cache
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from rest_framework import serializers
 from uchicagohvz.game.models import *
 from datetime import timedelta
 
@@ -59,6 +61,34 @@ def most_infectious_dorms(game): # defined as (1 / zombies in dorm) * total zomb
 	data.sort(key=lambda x: x['dorm'])
 	return data
 
+class KillSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Kill
+		fields = ('killer', 'victim', 'location', 'date', 'points', 'notes')
+
+	killer = serializers.SerializerMethodField('get_killer')
+	victim = serializers.SerializerMethodField('get_victim')
+	location = serializers.SerializerMethodField('get_location')
+
+	def get_killer(self, obj):
+		return obj.killer.display_name
+
+	def get_victim(self, obj):
+		return obj.victim.display_name
+
+	def get_location(self, obj):
+		if not (obj.lat and obj.lng):
+			return None
+		return (obj.lat, obj.lng)
+
+
+class KillFeed(ListAPIView):
+	serializer_class = KillSerializer
+
+	def get_queryset(self):
+		game = get_object_or_404(Game, id=self.kwargs['pk'])
+		return Kill.objects.exclude(parent=None).filter(victim__game=game).order_by('-date')
+
 class HumansPerHour(APIView):
 	def get(self, request, *args, **kwargs):
 		game = get_object_or_404(Game, id=kwargs['pk'])
@@ -73,7 +103,7 @@ class HumansPerHour(APIView):
 				d.append((hours, sh - index))
 			data.append({'name': dormName, 'data': d})
 		# add dataset for all dorms
-		sh = game.get_active_players().count() - Kill.objects.filter(parent=None, killer__game=game).count()
+		sh = game.get_active_players().count() - Kill.objects.filter(parent=None, killer__game=game).count() # subtract LZs
 		d = [(0, sh)]
 		kills = Kill.objects.exclude(parent=None).filter(victim__game=game).order_by('date')
 		for index, kill in enumerate(kills, 1):

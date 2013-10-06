@@ -36,12 +36,14 @@ class ShowGame(DetailView):
 				context['humans_percent'] = int(round(100 * float(self.object.get_humans().count()) / self.object.get_active_players().count(), 0))
 				context['zombies_percent'] = int(round(100 * float(self.object.get_zombies().count()) / self.object.get_active_players().count(), 0))
 				if self.object.status == "in_progress":
-					context['kills_per_hour'] = kills_per_hour(self.object)
 					context['sms_code_number'] = settings.NEXMO_NUMBER
+				context['kills_per_hour'] = kills_per_hour(self.object)
 				context['most_courageous_dorms'] = most_courageous_dorms(self.object)
 				context['most_infectious_dorms'] = most_infectious_dorms(self.object)
 				context['top_humans'] = top_humans(self.object)[:10]
 				context['top_zombies'] = top_zombies(self.object)[:10]
+				context['GAME_SW_BOUND'] = settings.GAME_SW_BOUND
+				context['GAME_NE_BOUND'] = settings.GAME_NE_BOUND
 		if self.request.user.is_authenticated():
 			in_game = Player.objects.filter(game=self.object, user=self.request.user).exists()
 			if in_game:
@@ -74,32 +76,38 @@ class RegisterForGame(FormView):
 		context['game'] = self.game
 		return context
 
-class SubmitBiteCode(BaseFormView):
+class EnterBiteCode(FormView):
 	form_class = BiteCodeForm
+	template_name = 'game/enter-bite-code.html'
 
 	@method_decorator(login_required)
 	def dispatch(self, request, *args, **kwargs):
-		return super(SubmitBiteCode, self).dispatch(request, *args, **kwargs)
+		return super(EnterBiteCode, self).dispatch(request, *args, **kwargs)
 
 	def form_valid(self, form):
 		victim = form.victim
 		kill = victim.kill_me(self.player)
 		if kill:
 			send_death_notification.delay(kill.id)
+			kill.lat = form.cleaned_data.get('lat')
+			kill.lng = form.cleaned_data.get('lng')
+			kill.save()
 		messages.success(self.request, "Bite code entered successfully! %s has joined the ranks of the undead." % (victim.user.get_full_name()))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
-	def form_invalid(self, form):
-		for e in form.non_field_errors():
-			messages.error(self.request, e)
-		return HttpResponseRedirect(self.game.get_absolute_url())
-
 	def get_form_kwargs(self):
-		kwargs = super(SubmitBiteCode, self).get_form_kwargs()
+		kwargs = super(EnterBiteCode, self).get_form_kwargs()
 		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
 		self.player = get_object_or_404(Player, game=self.game, active=True, human=False, user=self.request.user)
 		kwargs['player'] = self.player
+		kwargs['require_location'] = True
 		return kwargs
+
+	def get_context_data(self, **kwargs):
+		context = super(EnterBiteCode, self).get_context_data(**kwargs)
+		context['GAME_SW_BOUND'] = settings.GAME_SW_BOUND
+		context['GAME_NE_BOUND'] = settings.GAME_NE_BOUND
+		return context
 
 class SubmitCodeSMS(APIView):
 	@method_decorator(csrf_exempt)

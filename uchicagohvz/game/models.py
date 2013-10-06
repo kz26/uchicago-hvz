@@ -185,6 +185,8 @@ class Kill(MPTTModel):
 	date = models.DateTimeField(default=timezone.now)
 	points = models.IntegerField(default=settings.HUMAN_KILL_POINTS)
 	notes = models.TextField(blank=True)
+	lat = models.FloatField(null=True, blank=True, verbose_name='latitude')
+	lng = models.FloatField(null=True, blank=True, verbose_name='longitude')
 
 	def __unicode__(self):
 		return "%s --> %s (%s)" % (self.killer.user.get_full_name(), self.victim.user.get_full_name(), self.killer.game.name)

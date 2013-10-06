@@ -159,3 +159,5 @@ HVT_KILL_POINTS = 3 # how many points a high-value target is worth (replaces reg
 HVD_KILL_POINTS = 3 # how many points a target from a high-value dorm is worth (can stack on top of regular and HVT points)
 LEADERBOARD_CACHE_DURATION = 3600 # how many seconds to cache the leaderboard (Top Humans/Zombies)
 NEXMO_NUMBER = '339-204-1936'
+GAME_SW_BOUND = (41.780244, -87.615116)
+GAME_NE_BOUND = (41.809519,-87.592025)

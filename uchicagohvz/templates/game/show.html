@@ -97,28 +97,23 @@
 		{% endif %}
 		<h3>My Bite Code</h3>
 		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
-		{% if game.status == "in_progress" %}
-		<h2>Enter Bite Code</h2>
-		<form role="form" action="{% url 'game|bite' pk=game.pk %}" method="post">
-			{% csrf_token %}
-			<div class="form-group col-lg-8">
-				<input type="text" class="form-control" name="bite_code" placeholder="Enter bite code" required>
-			</div>
-			<div class="form-group col-lg-4">
-				<button class="btn btn-danger" type="submit">Kill!</button>
-			</div>
-		</form>
+		{% if game.status == 'in_progress' %}
+		<a class="btn btn-danger btn-block" href="{% url 'game|bite' pk=game.pk %}">Enter bite code...</a>
+		<p class="bold text-info">
+			***Kills are timestamped at the time of submission, so enter bite codes as soon as possible!***
+		</p>
+		
 		<h2>Enter Mission Code</h2>
-		<form role="form" action="{% url 'game|code' pk=game.pk %}" method="post">
+		<form class="form-inline" role="form" action="{% url 'game|code' pk=game.pk %}" method="post">
 			{% csrf_token %}
-			<div class="form-group col-lg-8">
+			<div class="form-group">
 				<input type="text" class="form-control" name="code" placeholder="Enter mission code" required>
 			</div>
-			<div class="form-group col-lg-4">
+			<div class="form-group">
 				<button class="btn btn-success" type="submit">Submit</button>
 			</div>
 		</form>
-		<p class="lead text-info">
+		<p class="text-warning" style="margin-top: 1em;">
 		{% if player.user.profile.phone_number %}
 			You can also text bite codes and mission codes to <b>{{ sms_code_number }}</b>!*
 		{% else %}
@@ -126,7 +121,10 @@
 			bite codes and mission codes via text message!
 		{% endif %}
 		</p>
-		<p class="text-default">* Standard text messaging rates apply.</p>
+		<p class="text-default">
+			* Standard text messaging rates apply. We recommend that you submit bite codes online whenever possible, as we cannot
+			acquire kill location data from text messages.
+		</p>
 		{% endif %}
 		{% endif %}
 	</div>
@@ -142,6 +140,7 @@
 			<dt>Gun returned</dt>
 			<dd>{{ player.gun_returned|yesno:"Yes,No,N/A" }}</dd>
 		</dl>
+		{% if game.status == 'in_progress' %}
 		{% if player.user.profile.phone_number %}
 		{% if player.user.profile.subscribe_death_notifications %}
 		<p class="text-success">We'll send death notifications to you via text message.
@@ -157,6 +156,7 @@
 			and check the appropriate box if you want to receive death notifications via text message.*
 		</p>
 		<p class="text-default">* Standard text messaging rates apply.</p>
+		{% endif %}
 		{% endif %}
 	</div>
 	<div class="col-lg-4">
@@ -227,6 +227,14 @@
 				{% endfor %}
 			</tbody>
 		</table>
+		<h2>Kills by Location</h2>
+		<div id="killMap" style="height: 350px;"></div>
+		<div class="center" style="margin-top: 10px;">
+			<a class="btn btn-danger">All</a>
+			<a class="btn btn-danger">Last hour</a>
+			<a class="btn btn-danger">Last 12 hours</a>
+			<a class="btn btn-danger">Last 24 hours</a>
+		</div>
 		<h2>Human Survival</h2>
 		<div id="hphChart"></div>
 		<h2>Kills by Time of Day</h2>
@@ -310,12 +318,27 @@
 
 {% block script %}
 {% if game.status == "in_progress" or game.status == "finished" %}
+{% include 'google-maps-script.html' %}
 <script src="{{ STATIC_URL }}js/vendor/highcharts.js"></script>
 {% compress js %}
 <script type="text/coffeescript">
+swPoint = new google.maps.LatLng({{ GAME_SW_BOUND.0 }}, {{ GAME_SW_BOUND.1 }})
+nePoint = new google.maps.LatLng({{ GAME_NE_BOUND.0 }}, {{ GAME_NE_BOUND.1 }})
+bounds = new google.maps.LatLngBounds(swPoint, nePoint)
+mapOptions = {
+	center: new google.maps.LatLng(41.789553, -87.598586),
+	zoom: 15
+}
+map = new google.maps.Map($('#killMap').get(0), mapOptions)
+lvc = map.getCenter()
+google.maps.event.addListener map, 'center_changed', (e) ->
+	nc = map.getCenter()
+	if bounds.contains(nc)
+		lvc = nc
+	else
+		map.panTo(lvc)
 
 whiteStyle = {color: "white"}
-
 $.get("data/humans-per-hour/")
 	.done (data) ->
 		$("#hphChart").highcharts {
