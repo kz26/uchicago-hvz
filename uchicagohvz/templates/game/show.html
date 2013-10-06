@@ -333,7 +333,7 @@
 {% if game.status == "in_progress" or game.status == "finished" %}
 {% include 'google-maps-script.html' %}
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.2.1/moment.min.js"></script>
-<script src="{{ STATIC_URL }}js/vendor/highcharts.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/3.0.2/highcharts.js"></script>
 {% compress js %}
 <script type="text/coffeescript">
 swPoint = new google.maps.LatLng({{ GAME_SW_BOUND.0 }}, {{ GAME_SW_BOUND.1 }})
@@ -361,6 +361,7 @@ $.get("data/kills/")
 			if k.location != null
 				marker = new google.maps.Marker {
 						map: map,
+						icon: '{{ STATIC_URL }}img/skull.png',
 						position: new google.maps.LatLng(k.location[0], k.location[1])
 					}
 				google.maps.event.addListener marker, 'click', (e) ->
