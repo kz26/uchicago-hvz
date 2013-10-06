@@ -58,7 +58,7 @@ $(document).ready ->
 		else
 			map.panTo(lvc)
 
-	marker = new google.maps.Marker({map: map})
+	marker = new google.maps.Marker({map: map, icon: '{{ STATIC_URL }}img/skull.png'})
 	google.maps.event.addListener map, 'click', (e) ->
 		marker.setPosition(e.latLng)
 
