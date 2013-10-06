@@ -122,8 +122,8 @@
 		{% endif %}
 		</p>
 		<p class="text-default">
-			* Standard text messaging rates apply. We recommend that you submit bite codes online whenever possible, as we cannot
-			acquire kill location data from text messages.
+			* Standard text messaging rates apply. We recommend that you submit bite codes online using the above button
+			whenever possible, as it is not possible to acquire kill location data from text messages.
 		</p>
 		{% endif %}
 		{% endif %}
@@ -229,12 +229,6 @@
 		</table>
 		<h2>Kills by Location</h2>
 		<div id="killMap" style="height: 350px;"></div>
-		<div class="center" style="margin-top: 10px;">
-			<a class="btn btn-danger">All</a>
-			<a class="btn btn-danger">Last hour</a>
-			<a class="btn btn-danger">Last 12 hours</a>
-			<a class="btn btn-danger">Last 24 hours</a>
-		</div>
 		<h2>Human Survival</h2>
 		<div id="hphChart"></div>
 		<h2>Kills by Time of Day</h2>
@@ -319,6 +313,7 @@
 {% block script %}
 {% if game.status == "in_progress" or game.status == "finished" %}
 {% include 'google-maps-script.html' %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.2.1/moment.min.js"></script>
 <script src="{{ STATIC_URL }}js/vendor/highcharts.js"></script>
 {% compress js %}
 <script type="text/coffeescript">
@@ -337,6 +332,25 @@ google.maps.event.addListener map, 'center_changed', (e) ->
 		lvc = nc
 	else
 		map.panTo(lvc)
+
+$.get("data/kills/")
+	.done (data) ->
+		infoWin = new google.maps.InfoWindow()
+		now = Date.now()
+		for k in data
+			if k.location != null
+				marker = new google.maps.Marker {
+						map: map,
+						position: new google.maps.LatLng(k.location[0], k.location[1])
+					}
+				google.maps.event.addListener marker, 'click', (e) ->
+					killDT = moment(k.date).format('M/D/YY h:mm:ss A')
+					content = $("<ul><li><b>Killer:</b> #{k.killer}</li><li><b>Victim:</b> #{k.victim}</li><li><b>Date:</b> #{killDT}</li></ul>")
+					content.css('width', '300px')
+					infoWin.setContent(content.get(0))
+					infoWin.open(map, marker)
+
+
 
 whiteStyle = {color: "white"}
 $.get("data/humans-per-hour/")
