@@ -7,6 +7,7 @@ ALLOWED_HOSTS = ['uchicagohvz.org']
 ADMINS = (
     ('Administrator', 'admin@uchicagohvz.org'),
 )
+SERVER_EMAIL = 'noreply@uchicagohvz.org'
 
 # Database
 DATABASES = {
