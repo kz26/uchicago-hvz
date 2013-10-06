@@ -229,6 +229,25 @@
 		</table>
 		<h2>Kills by Location</h2>
 		<div id="killMap" style="height: 350px;"></div>
+		<div class="center">
+			<div id="mapTimeFilters" class="btn-group" data-toggle="buttons">
+				<label class="btn btn-danger">
+					<input type="radio" name="mapTime" value="all" checked="checked"> All
+				</label>
+				<label class="btn btn-danger">
+					<input type="radio" name="mapTime" value="1"> last hour
+				</label>
+				<label class="btn btn-danger">
+					<input type="radio" name="mapTime" value="6"> last 6 hours
+				</label>
+				<label class="btn btn-danger">
+					<input type="radio" name="mapTime" value="12"> last 12 hours
+				</label>
+				<label class="btn btn-danger">
+					<input type="radio" name="mapTime" value="24"> last 24 hours
+				</label>
+			</div>
+		</div>
 		<h2>Human Survival</h2>
 		<div id="hphChart"></div>
 		<h2>Kills by Time of Day</h2>
@@ -336,8 +355,9 @@ google.maps.event.addListener map, 'center_changed', (e) ->
 $.get("data/kills/")
 	.done (data) ->
 		infoWin = new google.maps.InfoWindow()
-		now = Date.now()
+		markers = []
 		for k in data
+			k.date = new Date(k.date)
 			if k.location != null
 				marker = new google.maps.Marker {
 						map: map,
@@ -349,6 +369,25 @@ $.get("data/kills/")
 					content.css('width', '300px')
 					infoWin.setContent(content.get(0))
 					infoWin.open(map, marker)
+				markers.push([marker, k])
+		
+		$('#mapTimeFilters label').click (e) ->
+			inp = $(this).children('input')
+			if inp.val() == 'all'
+				markers.forEach (o) ->
+					o[0].setVisible true
+				return
+			else
+				hours = parseInt inp.val()
+				now = Date.now()
+				markers.forEach (o) ->
+					m = o[0]
+					k = o[1]
+					if now - k.date.getTime() <= hours * 3600 * 1000
+						m.setVisible true
+					else
+						m.setVisible false
+
 
 
 
