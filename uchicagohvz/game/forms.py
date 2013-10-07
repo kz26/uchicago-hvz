@@ -10,8 +10,8 @@ class GameRegistrationForm(forms.Form):
 
 	def __init__(self, *args, **kwargs):
 		super(GameRegistrationForm, self).__init__(*args, **kwargs)
-		self.fields['dorm'].widget.attrs['class'] = "form-control" # for Bootstrap 3
-		self.fields['dorm'].widget.attrs['required'] = "required"
+		self.fields['dorm'].widget.attrs['class'] = 'form-control' # for Bootstrap 3
+		self.fields['dorm'].widget.attrs['required'] = 'required'
 
 def validate_lat(value):
 	if not (settings.GAME_SW_BOUND[0] <= value <= settings.GAME_NE_BOUND[0]):
@@ -27,7 +27,7 @@ class BiteCodeForm(forms.Form):
 	lng = forms.FloatField(required=False, validators=[validate_lng])
 
 	def __init__(self, *args, **kwargs):
-		self.player = kwargs.pop('player')
+		self.killer = kwargs.pop('killer')
 		require_location = kwargs.pop('require_location', False)
 		super(BiteCodeForm, self).__init__(*args, **kwargs)
 		if require_location:
@@ -35,13 +35,15 @@ class BiteCodeForm(forms.Form):
 			self.fields['lng'].required = True
 
 	def clean_bite_code(self):
+		if self.killer.human:
+			raise forms.ValidationError('Player entering bite code is not a zombie.')
 		bite_code = self.cleaned_data['bite_code']
 		try:
-			self.victim = Player.objects.get(game__id=self.player.game.id, active=True, bite_code=bite_code)
+			self.victim = Player.objects.get(game=self.killer.game, active=True, bite_code=bite_code)
 		except Player.DoesNotExist:
-			raise forms.ValidationError("Invalid bite code entered.")
-		if self.victim.game.status != "in_progress":
-			raise forms.ValidationError("Game is not in progress.")
+			raise forms.ValidationError('Invalid bite code entered.')
+		if self.killer.game.status != 'in_progress':
+			raise forms.ValidationError('Game is not in progress.')
 		if not self.victim.human:
 			raise forms.ValidationError("%s is already dead!" % (self.victim.user.get_full_name()))
 
@@ -72,15 +74,15 @@ class AwardCodeForm(forms.Form):
 				redeem_types.append("Z")
 			redeem_types = set(redeem_types)
 			try:
-				self.award = Award.objects.get(game__id=self.player.game.id, code=code)
+				self.award = Award.objects.get(game=self.player.game, code=code)
 			except Award.DoesNotExist:
-				raise forms.ValidationError("Invalid code entered.")
-			if self.award.game.status != "in_progress":
-				raise forms.ValidationError("Game is not in progress.")
-			if self.award.redeem_type not in redeem_types:
-				raise forms.ValidationError("You are not eligible to redeem this code.")
+				raise forms.ValidationError('Invalid code entered.')
+			if self.award.game.status != 'in_progress':
+				raise forms.ValidationError('Game is not in progress.')
+			if not (self.award.redeem_type in redeem_types):
+				raise forms.ValidationError('You are not eligible to redeem this code.')
 			if self.award.players.filter(id=self.player.id):
-				raise forms.ValidationError("You have already redeemed this code.")
+				raise forms.ValidationError('You have already redeemed this code.')
 			if self.award.players.all().count() >= self.award.redeem_limit:
-				raise forms.ValidationError("Sorry, the redemption limit for this code has been reached.")
+				raise forms.ValidationError('Sorry, the redemption limit for this code has been reached.')
 		return data

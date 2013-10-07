@@ -86,20 +86,20 @@ class EnterBiteCode(FormView):
 
 	def form_valid(self, form):
 		victim = form.victim
-		kill = victim.kill_me(self.player)
+		kill = victim.kill_me(self.killer)
 		if kill:
-			send_death_notification.delay(kill.id)
+			send_death_notification.delay(kill)
 			kill.lat = form.cleaned_data.get('lat')
 			kill.lng = form.cleaned_data.get('lng')
 			kill.save()
-		messages.success(self.request, "Bite code entered successfully! %s has joined the ranks of the undead." % (victim.user.get_full_name()))
+			messages.success(self.request, "Bite code entered successfully! %s has joined the ranks of the undead." % (victim.user.get_full_name()))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
 	def get_form_kwargs(self):
 		kwargs = super(EnterBiteCode, self).get_form_kwargs()
 		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
-		self.player = get_object_or_404(Player, game=self.game, active=True, human=False, user=self.request.user)
-		kwargs['player'] = self.player
+		self.killer = get_object_or_404(Player, game=self.game, active=True, human=False, user=self.request.user)
+		kwargs['killer'] = self.killer
 		kwargs['require_location'] = True
 		return kwargs
 
@@ -127,14 +127,13 @@ class SubmitCodeSMS(APIView):
 					except Player.DoesNotExist:
 						break
 					code = data['text'].lower().strip()
-					form = BiteCodeForm(data={'bite_code': code}, player=player)
+					form = BiteCodeForm(data={'bite_code': code}, killer=player)
 					# player is the killer
 					if form.is_valid():
-						if not player.human:
-							kill = form.victim.kill_me(player)
-							if kill:
-								send_sms_confirmation.delay(player, kill)
-								send_death_notification.delay(kill)
+						kill = form.victim.kill_me(player)
+						if kill:
+							send_sms_confirmation.delay(player, kill)
+							send_death_notification.delay(kill)
 						break
 					form = AwardCodeForm(data={'code': code}, player=player)
 					if form.is_valid():
