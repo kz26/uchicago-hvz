@@ -147,6 +147,7 @@ class SubmitCodeSMS(APIView):
 
 class SubmitAwardCode(BaseFormView):
 	form_class = AwardCodeForm
+	http_method_names = ['post']
 
 	@method_decorator(login_required)
 	def dispatch(self, request, *args, **kwargs):
