@@ -44,7 +44,6 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
-	'dealer.contrib.django.staff.Middleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
@@ -52,6 +51,10 @@ MIDDLEWARE_CLASSES = (
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
+
+
 
 ROOT_URLCONF = 'uchicagohvz.urls'
 
@@ -162,3 +165,6 @@ LEADERBOARD_CACHE_DURATION = 3600 # how many seconds to cache the leaderboard (T
 NEXMO_NUMBER = '339-204-1936'
 GAME_SW_BOUND = (41.780244, -87.615116)
 GAME_NE_BOUND = (41.809519,-87.592025)
+
+# Dealer settings
+TEMPLATE_CONTEXT_PROCESSORS += 'dealer.contrib.django.staff.context_processor',
