@@ -168,3 +168,4 @@ GAME_NE_BOUND = (41.809519,-87.592025)
 
 # Dealer settings
 TEMPLATE_CONTEXT_PROCESSORS += 'dealer.contrib.django.staff.context_processor',
+DEALER_PATH = os.path.dirname(BASE_DIR)
