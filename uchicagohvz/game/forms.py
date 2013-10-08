@@ -44,6 +44,8 @@ class BiteCodeForm(forms.Form):
 			raise forms.ValidationError('Invalid bite code entered.')
 		if self.killer.game.status != 'in_progress':
 			raise forms.ValidationError('Game is not in progress.')
+		if self.victim == self.killer:
+			raise forms.ValidationError('You can\'t kill yourself. You\'re already dead, anyway...')
 		if not self.victim.human:
 			raise forms.ValidationError("%s is already dead!" % (self.victim.user.get_full_name()))
 
