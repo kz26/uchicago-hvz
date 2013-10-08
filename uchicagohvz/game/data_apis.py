@@ -28,7 +28,6 @@ def top_zombies(game):
 	players = cache.get('top_zombies')
 	if settings.DEBUG or players is None:
 		players = list(Player.objects.filter(active=True, game=game, human=False))
-		players.sort(key=lambda x: x.kills.count(), reverse=True)
 		players.sort(key=lambda x: x.zombie_points, reverse=True)
 		cache.set('top_zombies', players, settings.LEADERBOARD_CACHE_DURATION)
 	return players
