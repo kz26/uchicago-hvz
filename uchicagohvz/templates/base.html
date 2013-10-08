@@ -75,8 +75,11 @@
 			<hr>
 
 			<footer>
-				<p>&copy; UChicago HvZ 2013</p>
-				<p><a href="{% url 'terms' %}">Terms and Conditions</a></p>
+				<ul class="list-unstyled">
+					<li>&copy; UChicago HvZ 2013</li>
+					<li>Git revision {{ view.request.revision }}</li>
+					<li><a href="{% url 'terms' %}">Terms and Conditions</a></li>
+				</ul>
 			</footer>
 		</div> <!-- /container -->        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 				<script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
