@@ -15,6 +15,11 @@ import random
 def gen_rules_filename(instance, fn):
 	return "rules/%s%s" % (instance.name, os.path.splitext(fn)[1])
 
+class GameManager(models.Manager):
+	def games_in_progress(self):
+		now = timezone.now()
+		return self.filter(start_date__lte=now, end_date__gte=now)
+
 class Game(models.Model):
 	class Meta:
 		ordering = ['-start_date']
@@ -24,6 +29,8 @@ class Game(models.Model):
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
 	rules = models.FileField(upload_to=gen_rules_filename, storage=OverwriteFileSystemStorage())
+	
+	objects = GameManager()
 
 	def __unicode__(self):
 		return self.name
@@ -100,14 +107,18 @@ class Player(models.Model):
 		if self.game.status == 'registration': # allow updates to major during registration
 			backend = UChicagoLDAPBackend()
 			self.major = backend.get_user_major(self.user.username)
-		old = Player.objects.get(id=self.id) if self.id else None
-		if (old and (not old.active) and self.active) or self.bite_code == '':
+		if not self.bite_code:
 			# (re-)generate unique bite code
 			while True:
 				bc = gen_bite_code()
 				if not Player.objects.filter(game=self.game, bite_code=bc).exists() and not Award.objects.filter(game=self.game, code=bc).exists():
 					self.bite_code = bc
 					break
+		old = Player.objects.get(id=self.id) if self.id else None
+		if (old and (not old.active) and self.active): # if user was newly activated
+			profile = self.user.profile
+			profile.subscribe_zombies_listhost = True # force subscription to zombies listhost
+			profile.save()
 		super(Player, self).save(*args, **kwargs)
 
 	@property
