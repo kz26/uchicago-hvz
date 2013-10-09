@@ -38,7 +38,7 @@ def most_courageous_dorms(game): # defined as (1 / humans in dorm) * dorm's curr
 		players = Player.objects.filter(active=True, dorm=dorm, game=game, human=True)
 		pc = players.count()
 		if pc != 0:
-			points = 1 / players.count() * players.aggregate(points=models.Count('points'))['points']
+			points = (1 / pc) * players.aggregate(points=models.Count('points'))['points']
 		else:
 			points = 0
 		data.append({'dorm': dormName, 'points': points})
@@ -52,7 +52,7 @@ def most_infectious_dorms(game): # defined as (1 / zombies in dorm) * total zomb
 		players = Player.objects.filter(active=True, dorm=dorm, game=game, human=False)
 		pc = players.count()
 		if pc != 0:
-			points = 1 / players.count() * players.aggregate(points=models.Count('points'))['points']
+			points = (1 / pc) * players.aggregate(points=models.Count('points'))['points']
 		else:
 			points = 0
 		data.append({'dorm': dormName, 'points': points})
