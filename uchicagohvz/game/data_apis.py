@@ -17,6 +17,17 @@ def kills_per_hour(game):
 	hours = delta.days * 24 + float(delta.seconds) / 3600
 	return float(kills.count()) / hours
 
+def survival_by_dorm(game):
+	data = []
+	for dorm, dormName in DORMS:
+		players = game.get_players_in_dorm(dorm)
+		if players.count():
+			e = {'dorm': dormName, 'alive': players.filter(human=True).count(), 'original': players.count()}
+			e['percent']  = 100 * float(e['alive']) / e['original']
+			data.append(e)
+	data.sort(key=lambda x: x['percent'], reverse=True)
+	return data
+
 def top_humans(game):
 	players = cache.get('top_humans')
 	if settings.DEBUG or players is None:

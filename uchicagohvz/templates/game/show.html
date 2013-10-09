@@ -204,26 +204,23 @@
 <div class="center">
 	<h2>Average Kills per Hour</h2>
 	<p class="lead text-danger">{{ kills_per_hour|floatformat:2 }}</p>
-	<p>The leaderboards below are updated hourly.</p>
+	<p>Not all information below is updated in real time.</p>
 </div>
 <div class="row">
 	<div class="col-md-6">
-		<h2>Top Humans</h2>
-		{% if game.status == "in_progress" %}
-		<p>The names of surviving humans have been obfuscated in the interest of national human security.</p>
-		{% endif %}
+		<h2>Survival by Dorm</h2>
 		<table class="table table-bordered table-striped">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Points</th>
+					<th>Dorm</th>
+					<th>Humans Alive</th>
 				</tr>
 			</thead>
 			<tbody>
-				{% for p in top_humans %}
+				{% for e in survival_by_dorm %}
 				<tr>
-					<td>{{ p.display_name }}</td>
-					<td>{{ p.human_points }}</td>
+					<td>{{ e.dorm }}</td>
+					<td>{{ e.alive }}/{{ e.original }} ({{e.percent|floatformat}}%)</td>
 				</tr>
 				{% endfor %}
 			</tbody>
@@ -255,6 +252,26 @@
 		<div id="todChart"></div>
 	</div>
 	<div class="col-md-6">
+		<h2>Top Humans</h2>
+		{% if game.status == "in_progress" %}
+		<p>The names of surviving humans have been obfuscated in the interest of national human security.</p>
+		{% endif %}
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Points</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for p in top_humans %}
+				<tr>
+					<td>{{ p.display_name }}</td>
+					<td>{{ p.human_points }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 		<h2>Top Zombies</h2>
 		<table class="table table-bordered table-striped">
 			<thead>
