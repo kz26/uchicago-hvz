@@ -336,8 +336,8 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/3.0.2/highcharts.js"></script>
 {% compress js %}
 <script type="text/coffeescript">
-swPoint = new google.maps.LatLng({{ GAME_SW_BOUND.0 }}, {{ GAME_SW_BOUND.1 }})
-nePoint = new google.maps.LatLng({{ GAME_NE_BOUND.0 }}, {{ GAME_NE_BOUND.1 }})
+swPoint = new google.maps.LatLng(41.780244, -87.615116)
+nePoint = new google.maps.LatLng(41.809519, -87.592025)
 bounds = new google.maps.LatLngBounds(swPoint, nePoint)
 mapOptions = {
 	center: new google.maps.LatLng(41.789553, -87.598586),

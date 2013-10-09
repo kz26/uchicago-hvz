@@ -42,8 +42,6 @@ class ShowGame(DetailView):
 				context['most_infectious_dorms'] = most_infectious_dorms(self.object)
 				context['top_humans'] = top_humans(self.object)[:10]
 				context['top_zombies'] = top_zombies(self.object)[:10]
-				context['GAME_SW_BOUND'] = settings.GAME_SW_BOUND
-				context['GAME_NE_BOUND'] = settings.GAME_NE_BOUND
 		if self.request.user.is_authenticated():
 			in_game = Player.objects.filter(game=self.object, user=self.request.user).exists()
 			if in_game:
