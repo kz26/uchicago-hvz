@@ -179,7 +179,7 @@
 				{% for kill in player.kills %}
 				<tr>
 					<td>{{ kill.points }}</td>
-					<td>Kill: {{ kill.victim.user.get_full_name }} on {{ kill.date|date:"SHORT_DATE_FORMAT" }} {% if kill.notes %} [{{ kill.notes}}]{% endif %}</td>
+					<td>Kill: {{ kill.victim.user.get_full_name }} ({{ kill.victim.display_name }}) on {{ kill.date|date:"SHORT_DATE_FORMAT" }} {% if kill.notes %} [{{ kill.notes}}]{% endif %}</td>
 				</tr>
 				{% endfor %}
 				{% for award in player.awards.all %}
@@ -331,7 +331,7 @@
 
 {% if kill_tree %}
 <hr>
-<h2>Kill Tree</h2>
+<h2>{% if personal_kill_tree %}My {% endif %}Kill Tree</h2>
 <ul>
     {% recursetree kill_tree %}
         <li>
