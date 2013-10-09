@@ -232,7 +232,7 @@
 				<label class="btn btn-danger">
 					<input type="radio" name="mapTime" value="all" checked="checked"> all
 				</label>
-				{% if not player.human %}
+				{% if player and not player.human %}
 				<label class="btn btn-danger">
 					<input type="radio" name="mapTime" value="my-kills"> my kills
 				</label>
