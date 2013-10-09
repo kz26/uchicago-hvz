@@ -241,7 +241,7 @@ class Award(models.Model):
 		super(Award, self).save(*args, **kwargs)
 
 class HighValueTarget(models.Model):
-	player = models.OneToOneField(Player)
+	player = models.OneToOneField(Player, unique=True)
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
 	points = models.IntegerField(default=settings.HVT_KILL_POINTS)
@@ -250,6 +250,8 @@ class HighValueTarget(models.Model):
 		return "%s" % (self.player)
 
 class HighValueDorm(models.Model):
+	class Meta:
+		unique_together = ('game', 'dorm')
 	game = models.ForeignKey(Game)
 	dorm = models.CharField(max_length=4, choices=DORMS)
 	start_date = models.DateTimeField()
