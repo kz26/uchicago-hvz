@@ -21,8 +21,8 @@
 	<div class="form-group">
 		<label for="killMap">Kill location</label>
 		<span class="help-block">Left-click on map to mark location</span>
-		{{ form.lat.errors }}
-		{{ form.lng.errors }}
+		<span class="text-danger">Latitude:</span> {{ form.lat.errors }}
+		<span class="text-danger">Longitude:</span> {{ form.lng.errors }}
 		<div class="row">
 			<div class="col-lg-6">
 				<div id="killMap" style="height: 350px;"></div>
@@ -65,7 +65,7 @@ $(document).ready ->
 		$('#latField').val(marker.position.lat())
 		$('#lngField').val(marker.position.lng())
 
-	marker.setPosition(mapOptions.center)
+	#marker.setPosition(mapOptions.center)
 
 	if 'geolocation' of navigator
 		navigator.geolocation.getCurrentPosition (pos) ->

@@ -39,7 +39,7 @@ class BiteCodeForm(forms.Form):
 			raise forms.ValidationError('Player entering bite code is not a zombie.')
 		bite_code = self.cleaned_data['bite_code']
 		try:
-			self.victim = Player.objects.get(game=self.killer.game, active=True, bite_code=bite_code)
+			self.victim = Player.objects.get(game=self.killer.game, active=True, bite_code__iexact=bite_code)
 		except Player.DoesNotExist:
 			raise forms.ValidationError('Invalid bite code entered.')
 		if self.killer.game.status != 'in_progress':
@@ -76,7 +76,7 @@ class AwardCodeForm(forms.Form):
 				redeem_types.append("Z")
 			redeem_types = set(redeem_types)
 			try:
-				self.award = Award.objects.get(game=self.player.game, code=code)
+				self.award = Award.objects.get(game=self.player.game, code__iexact=code)
 			except Award.DoesNotExist:
 				raise forms.ValidationError('Invalid code entered.')
 			if self.award.game.status != 'in_progress':

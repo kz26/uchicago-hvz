@@ -40,7 +40,7 @@
 		<h4 class="text-success">LIVE</h4> 
 		<p><b>{{ game.end_date|timeuntil }}</b> until it all ends.</p>
 		{% if user.is_authenticated and not player %}
-		<p>Interested in joining this game? Please contact a moderator.</p>
+		<p class="text-info">Interested in joining this game? Please contact a moderator.</p>
 		{% endif %}
 		{% elif game.status == "finished" %}
 		<h4 class="text-info">Finished</h4>
@@ -204,6 +204,7 @@
 <div class="center">
 	<h2>Average Kills per Hour</h2>
 	<p class="lead text-danger">{{ kills_per_hour|floatformat:2 }}</p>
+	<p>The leaderboards below are updated hourly.</p>
 </div>
 <div class="row">
 	<div class="col-md-6">
@@ -364,13 +365,16 @@ $.get("data/kills/")
 						icon: '{{ STATIC_URL }}img/skull.png',
 						position: new google.maps.LatLng(k.location[0], k.location[1])
 					}
-				google.maps.event.addListener marker, 'click', (e) ->
-					killDT = moment(k.date).format('M/D/YY h:mm:ss A')
-					content = $("<ul><li><b>Killer:</b> #{k.killer}</li><li><b>Victim:</b> #{k.victim}</li><li><b>Date:</b> #{killDT}</li></ul>")
-					content.css('width', '300px')
-					infoWin.setContent(content.get(0))
-					infoWin.open(map, marker)
+				killDT = moment(k.date).format('M/D/YY h:mm:ss A')
+				content = $("<ul><li><b>Killer:</b> #{k.killer}</li><li><b>Victim:</b> #{k.victim}</li><li><b>Date:</b> #{killDT}</li></ul>")
+				content.css('width', '300px')
 				markers.push([marker, k])
+				google.maps.event.addListener marker, 'click', ((marker, content) ->
+					return ->
+						infoWin.setContent(content)
+						infoWin.open(map, marker)
+				)(marker, content.get(0))
+				
 		
 		$('#mapTimeFilters label').click (e) ->
 			inp = $(this).children('input')

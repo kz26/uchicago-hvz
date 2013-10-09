@@ -92,7 +92,6 @@ TEMPLATE_DIRS = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
 	os.path.join(BASE_DIR, "static"),
@@ -109,6 +108,7 @@ COMPRESS_PRECOMPILERS = (
     ('text/coffeescript', 'coffee -bcs'),
     ('text/less', 'lessc {infile} {outfile}'),
 )
+COMPRESS_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Datetime settings
 DATETIME_FORMAT = 'N j, Y g:i A'
