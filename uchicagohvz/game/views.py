@@ -51,8 +51,12 @@ class ShowGame(DetailView):
 				if self.object.status in ('in_progress', 'finished') and player.active and not player.human:
 						context['killed_by'] = player.killed_by
 						if self.object.status == 'in_progress':
-							context['kill_tree'] = Kill.objects.filter(killer=player)
-							context['personal_kill_tree'] = True
+							try:
+								my_kill = Kill.objects.get(victim=player)
+								context['kill_tree'] = my_kill.get_descendants(include_self=True)
+								context['personal_kill_tree'] = True
+							except:
+								pass
 		return context
 
 class RegisterForGame(FormView):
