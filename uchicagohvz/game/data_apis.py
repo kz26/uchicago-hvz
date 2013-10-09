@@ -111,7 +111,7 @@ class HumansPerHour(APIView):
 		game = get_object_or_404(Game, id=kwargs['pk'])
 		data = []
 		end_date = min(timezone.now(), game.end_date)
-		end_hour = end_date * 24 + round(float(end_date.seconds) / 3600, 0)
+		end_hour = end_date.days * 24 + round(float(end_date.seconds) / 3600, 0)
 		for dorm, dormName in DORMS:
 			sh = game.get_active_players().filter(dorm=dorm).count() # starting humans in this dorm
 			d = OrderedDict([(0, sh)])
