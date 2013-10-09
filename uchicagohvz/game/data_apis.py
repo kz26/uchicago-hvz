@@ -33,31 +33,37 @@ def top_zombies(game):
 	return players
 
 def most_courageous_dorms(game): # defined as (1 / humans in dorm) * dorm's current human points
-	data = []
-	for dorm, dormName in DORMS:
-		players = Player.objects.filter(active=True, dorm=dorm, game=game, human=True)
-		pc = players.count()
-		if pc != 0:
-			points = (1 / pc) * players.aggregate(points=models.Count('points'))['points']
-		else:
-			points = 0
-		data.append({'dorm': dormName, 'points': points})
-	data.sort(key=lambda x: x['points'])
-	data.sort(key=lambda x: x['dorm'])
+	data = cache.get('most_courageous_dorms')
+	if settings.DEBUG or data is None:
+		data = []
+		for dorm, dormName in DORMS:
+			players = Player.objects.filter(active=True, dorm=dorm, game=game, human=True)
+			pc = players.count()
+			if pc != 0:
+				points = (1 / pc) * sum([p.human_points for p in players])
+			else:
+				points = 0
+			data.append({'dorm': dormName, 'points': points})
+		data.sort(key=lambda x: x['points'], reverse=True)
+		data.sort(key=lambda x: x['dorm'])
+		cache.set('most_courageous_dorms', data, settings.LEADERBOARD_CACHE_DURATION)
 	return data
 
 def most_infectious_dorms(game): # defined as (1 / zombies in dorm) * total zombie points
-	data = []
-	for dorm, dormName in DORMS:
-		players = Player.objects.filter(active=True, dorm=dorm, game=game, human=False)
-		pc = players.count()
-		if pc != 0:
-			points = (1 / pc) * players.aggregate(points=models.Count('points'))['points']
-		else:
-			points = 0
-		data.append({'dorm': dormName, 'points': points})
-	data.sort(key=lambda x: x['points'])
-	data.sort(key=lambda x: x['dorm'])
+	data = cache.get('most_infectious_dorms')
+	if settings.DEBUG or data is None:
+		data = []
+		for dorm, dormName in DORMS:
+			players = Player.objects.filter(active=True, dorm=dorm, game=game, human=False)
+			pc = players.count()
+			if pc != 0:
+				points = (1 / pc) * sum([p.zombie_points for p in players])
+			else:
+				points = 0
+			data.append({'dorm': dormName, 'points': points})
+		data.sort(key=lambda x: x['points'], reverse=True)
+		data.sort(key=lambda x: x['dorm'])
+		cache.set('most_infectious_dorms', data, settings.LEADERBOARD_CACHE_DURATION)
 	return data
 
 class KillSerializer(serializers.ModelSerializer):
