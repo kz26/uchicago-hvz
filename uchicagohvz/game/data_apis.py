@@ -44,8 +44,8 @@ def most_courageous_dorms(game): # defined as (1 / humans in dorm) * dorm's curr
 			else:
 				points = 0
 			data.append({'dorm': dormName, 'points': points})
-		data.sort(key=lambda x: x['points'], reverse=True)
 		data.sort(key=lambda x: x['dorm'])
+		data.sort(key=lambda x: x['points'], reverse=True)
 		cache.set('most_courageous_dorms', data, settings.LEADERBOARD_CACHE_DURATION)
 	return data
 
@@ -61,8 +61,8 @@ def most_infectious_dorms(game): # defined as (1 / zombies in dorm) * total zomb
 			else:
 				points = 0
 			data.append({'dorm': dormName, 'points': points})
-		data.sort(key=lambda x: x['points'], reverse=True)
 		data.sort(key=lambda x: x['dorm'])
+		data.sort(key=lambda x: x['points'], reverse=True)
 		cache.set('most_infectious_dorms', data, settings.LEADERBOARD_CACHE_DURATION)
 	return data
 
