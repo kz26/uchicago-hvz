@@ -118,6 +118,6 @@ class KillsByTimeOfDay(APIView):
 		data = [0] * 24
 		kill_dts = Kill.objects.filter(victim__game=game).values_list('date', flat=True)
 		for dt in kill_dts:
-			dt = timezone.localize(dt)
+			dt = timezone.localtime(dt)
 			data[dt.hour] += 1
 		return Response(data)
