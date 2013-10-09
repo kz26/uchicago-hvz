@@ -3,6 +3,7 @@ from django.shortcuts import *
 from django.utils import timezone
 from django.conf import settings
 from django.core.cache import cache
+from django.dispatch import receiver
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
@@ -10,6 +11,13 @@ from rest_framework import serializers
 from uchicagohvz.game.models import *
 from datetime import timedelta
 from collections import OrderedDict
+
+@receiver(models.signals.post_save, sender=Player)
+def invalidate_cached_data(sender, **kwargs):
+	update_fields = kwargs['update_fields']
+	if update_fields and 'points' in update_fields:
+		keys = ('top_humans', 'top_zombies', 'most_courageous_dorms', 'most_infectious_dorms')
+		cache.delete_many(keys)
 
 def kills_per_hour(game):
 	kills = Kill.objects.filter(victim__game=game)

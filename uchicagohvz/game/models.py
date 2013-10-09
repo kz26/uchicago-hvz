@@ -266,11 +266,11 @@ def update_score(sender, **kwargs):
 	if sender == Kill:
 		players = [kwargs['instance'].killer.id]
 	elif sender == Award.players.through:
-		if kwargs['action'] in ("post_add", "post_remove"):
-			players = kwargs.get("pk_set")
+		if kwargs['action'] in ('post_add', 'post_remove'):
+			players = kwargs.get('pk_set')
 			if players is None:
 				return
-		elif kwargs['action'] == "post_clear":
+		elif kwargs['action'] == 'post_clear':
 			players = Player.objects.filter(active=True, game=kwargs['instance'].game).values_list('id', flat=True)
 		else:
 			return
@@ -281,7 +281,7 @@ def update_score(sender, **kwargs):
 		kill_points = Kill.objects.filter(killer=p).exclude(victim=p).aggregate(points=models.Sum('points'))['points'] or 0
 		award_points = p.awards.aggregate(points=models.Sum('points'))['points'] or 0
 		p.points = kill_points + award_points
-		p.save()
+		p.save(update_fields=['points'])
 
 models.signals.post_save.connect(update_score, sender=Kill)
 models.signals.post_delete.connect(update_score, sender=Kill)
