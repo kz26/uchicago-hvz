@@ -179,7 +179,7 @@ class Player(models.Model):
 
 	@property
 	def zombie_points(self):
-		kill_points = Kill.objects.filter(killer=self).exclude(victim=self).aggregate(points=models.Sum('points'))['points'] or 0
+		kill_points = Kill.objects.exclude(parent=None, killer=self, victim=self).filter(killer=self).aggregate(points=models.Sum('points'))['points'] or 0
 		award_points =  self.awards.filter(redeem_type__in=('Z', 'A')).aggregate(points=models.Sum('points'))['points'] or 0
 		return kill_points + award_points
 
