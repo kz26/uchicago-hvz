@@ -1,7 +1,7 @@
 {% extends 'base.html' %}{% load compress %}
 {% block content %}
 <div class="page-header">
-	<h1 class="text-danger">Enter bite code <small>{{ view.game.name }}</small></h1>
+	<h1 class="text-danger">Log a kill <small>{{ view.game.name }}</small></h1>
 </div>
 
 <form role="form" method="post">
@@ -10,7 +10,7 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-4">
-				<label for="biteCode">Victim's bite code</label>
+				<label for="biteCode">Victim's bite code (required)</label>
 				{{ form.bite_code.errors }}
 				<input id="biteCode" type="text" class="form-control" name="bite_code" placeholder="two words" required>
 			</div>
@@ -19,7 +19,7 @@
 	<input id="latField" type="hidden" name="lat" value="">
 	<input id="lngField" type="hidden" name="lng" value="">
 	<div class="form-group">
-		<label for="killMap">Kill location</label>
+		<label for="killMap">Kill location (required)</label>
 		<span class="help-block">Left-click on map to mark location</span>
 		<span class="text-danger">Latitude:</span> {{ form.lat.errors }}
 		<span class="text-danger">Longitude:</span> {{ form.lng.errors }}
