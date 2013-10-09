@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from uchicagohvz.game.models import *
 from datetime import timedelta
+from collections import OrderedDict
 
 def kills_per_hour(game):
 	kills = Kill.objects.filter(victim__game=game)
@@ -100,22 +101,22 @@ class HumansPerHour(APIView):
 		data = []
 		for dorm, dormName in DORMS:
 			sh = game.get_active_players().filter(dorm=dorm).count() # starting humans in this dorm
-			d = [(0, sh)]
+			d = OrderedDict([(0, sh)])
 			kills = Kill.objects.filter(victim__game=game, victim__dorm=dorm).order_by('date')
 			for index, kill in enumerate(kills, 1):
 				kd = kill.date - game.start_date
 				hours = kd.days * 24 + round(float(kd.seconds) / 3600, 0)
-				d.append((hours, sh - index))
-			data.append({'name': dormName, 'data': d})
+				d[hours] = sh - index # overwrite
+			data.append({'name': dormName, 'data': d.items()})
 		# add dataset for all dorms
 		sh = game.get_active_players().count() - Kill.objects.filter(parent=None, killer__game=game).count() # subtract LZs
-		d = [(0, sh)]
+		d = OrderedDict([(0, sh)])
 		kills = Kill.objects.exclude(parent=None).filter(victim__game=game).order_by('date')
 		for index, kill in enumerate(kills, 1):
 			kd = kill.date - game.start_date
 			hours = kd.days * 24 + round(float(kd.seconds) / 3600, 0)
-			d.append((hours, sh - index))
-		data.append({'name': 'ALL', 'data': d})
+			d[hours] = sh - index # overwrite
+		data.append({'name': 'ALL', 'data': d.items()})
 		return Response(data)
 
 class KillsByTimeOfDay(APIView):
