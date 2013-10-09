@@ -286,7 +286,7 @@
 				{% for e in most_courageous_dorms %}
 				<tr>
 					<td>{{ e.dorm }}</td>
-					<td>{{ e.points }}</td>
+					<td>{{ e.points|floatformat }}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
@@ -303,7 +303,7 @@
 				{% for e in most_infectious_dorms %}
 				<tr>
 					<td>{{ e.dorm }}</td>
-					<td>{{ e.points }}</td>
+					<td>{{ e.points|floatformat }}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
