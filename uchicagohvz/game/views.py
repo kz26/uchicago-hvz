@@ -103,8 +103,6 @@ class EnterBiteCode(FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super(EnterBiteCode, self).get_context_data(**kwargs)
-		context['GAME_SW_BOUND'] = settings.GAME_SW_BOUND
-		context['GAME_NE_BOUND'] = settings.GAME_NE_BOUND
 		return context
 
 class SubmitCodeSMS(APIView):
