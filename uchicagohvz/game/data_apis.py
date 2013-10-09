@@ -110,6 +110,8 @@ class HumansPerHour(APIView):
 	def get(self, request, *args, **kwargs):
 		game = get_object_or_404(Game, id=kwargs['pk'])
 		data = []
+		end_date = min(timezone.now(), game.end_date)
+		end_hour = end_date * 24 + round(float(end_date.seconds) / 3600, 0)
 		for dorm, dormName in DORMS:
 			sh = game.get_active_players().filter(dorm=dorm).count() # starting humans in this dorm
 			d = OrderedDict([(0, sh)])
@@ -118,6 +120,7 @@ class HumansPerHour(APIView):
 				kd = kill.date - game.start_date
 				hours = kd.days * 24 + round(float(kd.seconds) / 3600, 0)
 				d[hours] = sh - index # overwrite
+			d[end_hour] = Player.objects.filter(game=game, active=True, dorm=dorm, human=True).count()
 			data.append({'name': dormName, 'data': d.items()})
 		# add dataset for all dorms
 		sh = game.get_active_players().count() - Kill.objects.filter(parent=None, killer__game=game).count() # subtract LZs
@@ -127,6 +130,7 @@ class HumansPerHour(APIView):
 			kd = kill.date - game.start_date
 			hours = kd.days * 24 + round(float(kd.seconds) / 3600, 0)
 			d[hours] = sh - index # overwrite
+		d[end_hour] = Player.objects.filter(game=game, active=True, human=True).count()
 		data.append({'name': 'ALL', 'data': d.items()})
 		return Response(data)
 
