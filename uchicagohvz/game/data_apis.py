@@ -204,9 +204,13 @@ class HumansByMajor(APIView):
 			for major in majors:
 				point = {}
 				kills = Kill.objects.exclude(parent=None).filter(victim__game=game, victim__major=major).order_by('date')
+				kill_victim_ids = kills.values_list('victim__id', flat=True)
+				live_players = Player.objects.exclude(id__in=kill_victim_ids).filter(active=True, game=game, major=major, human=True)
 				lifespans = []
 				for kill in kills:
 					lifespans.append(kill.date - game.start_date)
+				for _ in range(live_players.count()):
+					lifespans.append(max_lifespan)
 				if lifespans:
 					avg_ls = sum(lifespans, timedelta()) / len(lifespans)
 					avg_ls_hours = avg_ls.days * 24 + round(float(avg_ls.seconds) / 3600, 1)
