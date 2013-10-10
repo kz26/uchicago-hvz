@@ -97,11 +97,14 @@
 		{% endif %}
 		<h3>My Bite Code</h3>
 		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
+		{% endif %}
 		{% if game.status == 'in_progress' %}
+		{% if not player.human %}
 		<a class="btn btn-danger btn-block" href="{% url 'game|bite' pk=game.pk %}">Log a kill...</a>
 		<p class="bold text-info">
 			***Kills are timestamped at the time of submission, so enter bite codes as soon as possible!***
 		</p>
+		{% endif %}
 		
 		<h2>Enter Mission Code</h2>
 		<form class="form-inline" role="form" action="{% url 'game|code' pk=game.pk %}" method="post">
@@ -115,17 +118,16 @@
 		</form>
 		<p class="text-warning" style="margin-top: 1em;">
 		{% if player.user.profile.phone_number %}
-			You can also text bite codes and mission codes (one code per message) to <b>{{ sms_code_number }}</b>!*
+			You can also text {% if not player.human %}bite codes and {% endif %}mission codes (one code per message) to <b>{{ sms_code_number }}</b>!*
 		{% else %}
 			Add your phone number to your <a href="{% url 'users|profile' %}">profile</a> so you can submit
 			bite codes and mission codes via text message!
 		{% endif %}
 		</p>
 		<p class="text-default">
-			* Standard text messaging rates apply. We recommend that you submit bite codes online instead of texting
-			whenever possible, so that you can geotag your kills.
+			* Standard text messaging rates apply. {% if not player.human %}We recommend that you submit bite codes online instead of texting
+			whenever possible, so that you can geotag your kills.{% endif %}
 		</p>
-		{% endif %}
 		{% endif %}
 	</div>
 	<div class="col-lg-4">
