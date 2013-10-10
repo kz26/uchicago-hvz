@@ -211,21 +211,21 @@ class Kill(MPTTModel):
 		super(Kill, self).save(*args, **kwargs)
 
 REDEEM_TYPES = (
-	('H', "Humans only"),
-	('Z', "Zombies only"),
-	('A', "All players"),
+	('H', 'Humans only'),
+	('Z', 'Zombies only'),
+	('A', 'All players'),
 )
 
 class Award(models.Model):
 	class Meta:
-		unique_together = (("game", "name"), ("game", "code"))
+		unique_together = (('game', 'name'), ('game', 'code'))
 	
-	game = models.ForeignKey(Game, related_name="+")
+	game = models.ForeignKey(Game, related_name='+')
 	name = models.CharField(max_length=255)
-	points = models.IntegerField()
-	players = models.ManyToManyField(Player, related_name="awards", null=True, blank=True, help_text="Players that have earned this award")
-	code = models.CharField(max_length=255, blank=True, help_text="leave blank for automatic (re-)generation")
-	redeem_limit = models.IntegerField(help_text="Maximum number of players that can redeem award via code entry (set to 0 for moderator-added awards/points)")
+	points = models.IntegerField(help_text='Can be negative, e.g. to penalize players')
+	players = models.ManyToManyField(Player, related_name='awards', null=True, blank=True, help_text='Players that should receive this award.')
+	code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
+	redeem_limit = models.IntegerField(help_text='Maximum number of players that can redeem award via code entry (set to 0 for moderator-added awards/points)')
 	redeem_type = models.CharField(max_length=1, choices=REDEEM_TYPES)
 
 	def __unicode__(self):
