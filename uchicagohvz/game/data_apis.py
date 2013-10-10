@@ -238,7 +238,7 @@ class ZombiesByMajor(APIView):
 			majors = players.order_by('major').values_list('major', flat=True).distinct()
 			for major in majors:
 				point = {}
-				kills = Kill.objects.exclude(parent=None).filter(victim__game=game, victim__major=major).order_by('date')
+				kills = Kill.objects.filter(victim__game=game, victim__major=major).order_by('date')
 				tszs = [] # list of time spent as zombie
 				for kill in kills:
 					tszs.append(end_date - kill.date)
