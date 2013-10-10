@@ -190,6 +190,7 @@ class Player(models.Model):
 class Kill(MPTTModel):
 	class Meta:
 		ordering = ['-date']
+		unique_together = ('parent', 'killer', 'victim')
 	class MPTTMeta:
 		order_insertion_by = ['date']
 
