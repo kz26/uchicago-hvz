@@ -158,7 +158,7 @@ class HumansPerHour(APIView):
 				kills = Kill.objects.filter(victim__game=game, victim__dorm=dorm).order_by('date')
 				for index, kill in enumerate(kills, 1):
 					kd = kill.date - game.start_date
-					hours = kd.days * 24 + round(float(kd.seconds) / 3600, 0)
+					hours = kd.days * 24 + round(float(kd.seconds) / 3600, 1)
 					d[hours] = sh - index # overwrite
 				d[end_hour] = d[d.keys()[-1]]
 				data.append({'name': dormName, 'data': d.items()})
@@ -168,7 +168,7 @@ class HumansPerHour(APIView):
 			kills = Kill.objects.exclude(parent=None).filter(victim__game=game).order_by('date')
 			for index, kill in enumerate(kills, 1):
 				kd = kill.date - game.start_date
-				hours = kd.days * 24 + round(float(kd.seconds) / 3600, 0)
+				hours = kd.days * 24 + round(float(kd.seconds) / 3600, 1)
 				d[hours] = sh - index # overwrite
 			d[end_hour] = d[d.keys()[-1]]
 			data.append({'name': 'ALL', 'data': d.items()})
@@ -209,13 +209,13 @@ class HumansByMajor(APIView):
 					lifespans.append(kill.date - game.start_date)
 				if lifespans:
 					avg_ls = sum(lifespans, timedelta()) / len(lifespans)
-					avg_ls_hours = avg_ls.days * 24 + round(float(avg_ls.seconds) / 3600, 0)
+					avg_ls_hours = avg_ls.days * 24 + round(float(avg_ls.seconds) / 3600, 1)
 				else:
 					avg_ls_hours = max_lifespan_hours
 				point['x'] = avg_ls_hours
 				major_players = players.filter(major=major)
 				if major_players.count():
-					major_avg_pts = round(float(sum([p.human_points for p in major_players])) / major_players.count(), 1)
+					major_avg_pts = round(float(sum([p.human_points for p in major_players])) / major_players.count(), 2)
 				else:
 					major_avg_pts = 0
 				point['y'] = major_avg_pts
@@ -244,13 +244,13 @@ class ZombiesByMajor(APIView):
 					tszs.append(end_date - kill.date)
 				if tszs:
 					avg_tsz = sum(tszs, timedelta()) / len(tszs)
-					avg_tsz_hours = avg_tsz.days * 24 + round(float(avg_tsz.seconds) / 3600, 0)
+					avg_tsz_hours = avg_tsz.days * 24 + round(float(avg_tsz.seconds) / 3600, 1)
 				else:
 					avg_tsz_hours = 0
 				point['x'] = avg_tsz_hours
 				major_players = players.filter(major=major)
 				if major_players.count():
-					major_avg_pts = round(float(sum([p.zombie_points for p in major_players])) / major_players.count(), 1)
+					major_avg_pts = round(float(sum([p.zombie_points for p in major_players])) / major_players.count(), 2)
 				else:
 					major_avg_pts = 0
 				point['y'] = major_avg_pts
