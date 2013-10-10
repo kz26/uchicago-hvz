@@ -17,4 +17,5 @@ urlpatterns = patterns('',
     url(r'^game/(?P<pk>[0-9]+)/data/humans-per-hour/$', HumansPerHour.as_view(), name="game|data|hph"),
     url(r'^game/(?P<pk>[0-9]+)/data/kills-by-tod/$', KillsByTimeOfDay.as_view(), name="game|data|kbtod"),
     url(r'^game/(?P<pk>[0-9]+)/data/humans-by-major/$', HumansByMajor.as_view(), name="game|data|hbm"),
+    url(r'^game/(?P<pk>[0-9]+)/data/zombies-by-major/$', ZombiesByMajor.as_view(), name="game|data|zbm"),
 )

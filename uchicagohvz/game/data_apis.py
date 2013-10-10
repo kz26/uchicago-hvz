@@ -199,7 +199,7 @@ class HumansByMajor(APIView):
 			max_lifespan_hours = max_lifespan.days * 24 + round(float(max_lifespan.seconds) / 3600, 0)
 			
 			for major in majors:
-				point = {'name': major}
+				point = {}
 				kills = Kill.objects.exclude(parent=None).filter(victim__game=game, victim__major=major).order_by('date')
 				lifespans = []
 				for kill in kills:
@@ -212,7 +212,42 @@ class HumansByMajor(APIView):
 				point['x'] = avg_ls_hours
 				major_players = players.filter(major=major)
 				if major_players.count():
-					major_avg_pts = round(float(sum([p.human_points for p in major_players])) / major_players.count(), 2)
+					major_avg_pts = round(float(sum([p.human_points for p in major_players])) / major_players.count(), 1)
+				else:
+					major_avg_pts = 0
+				point['y'] = major_avg_pts
+				data.append({
+					'name': major,
+					'data': [point]
+				})
+			cache.set(key,data, settings.LEADERBOARD_CACHE_DURATION)
+		return Response(data)
+
+class ZombiesByMajor(APIView):
+	def get(self, request, *args, **kwargs):
+		game = get_object_or_404(Game, id=kwargs['pk'])
+		key = "%s_%s" % ('zombies_by_major', game.id)
+		data = cache.get(key)
+		if settings.DEBUG or data is None:
+			data = []
+			players = game.players.filter(human=False)
+			end_date = min(timezone.now(), game.end_date)
+			majors = players.order_by('major').values_list('major', flat=True).distinct()
+			for major in majors:
+				point = {}
+				kills = Kill.objects.exclude(parent=None).filter(victim__game=game, victim__major=major).order_by('date')
+				tszs = [] # list of time spent as zombie
+				for kill in kills:
+					tszs.append(end_date - kill.date)
+				if tszs:
+					avg_tsz = sum(tszs, timedelta()) / len(tszs)
+					avg_tsz_hours = avg_tsz.days * 24 + round(float(avg_tsz.seconds) / 3600, 0)
+				else:
+					avg_tsz_hours = 0
+				point['x'] = avg_tsz_hours
+				major_players = players.filter(major=major)
+				if major_players.count():
+					major_avg_pts = round(float(sum([p.zombie_points for p in major_players])) / major_players.count(), 1)
 				else:
 					major_avg_pts = 0
 				point['y'] = major_avg_pts

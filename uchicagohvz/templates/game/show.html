@@ -256,7 +256,7 @@
 		<h2>Kills by Time of Day</h2>
 		<div id="todChart"></div>
 		<h2>Humans by Major</h2>
-		<div id="hmajorsChart"></div>
+		<div id="hMajorsChart"></div>
 	</div>
 	<div class="col-md-6">
 		<h2>Top Humans</h2>
@@ -332,6 +332,8 @@
 				{% endfor %}
 			</tbody>
 		</table>
+		<h2>Zombies by Major</h2>
+		<div id="zMajorsChart"></div>
 	</div>
 </div>
 {% endif %}
@@ -521,7 +523,7 @@ $.get("data/kills-by-tod/")
 
 $.get("data/humans-by-major/")
 	.done (data) ->
-		$("#hmajorsChart").highcharts {
+		$("#hMajorsChart").highcharts {
 			chart: {
 				type: 'scatter',
 				backgroundColor: '#333',
@@ -556,7 +558,48 @@ $.get("data/humans-by-major/")
 			series: data,
 			tooltip: {
 				formatter: ->
-					return "#{this.point.name}<br><b>X:</b> #{this.point.x}<br><b>Y:</b> #{this.point.y}"
+					return "#{this.series.name}<br><b>X:</b> #{this.point.x}<br><b>Y:</b> #{this.point.y}"
+			}
+		}
+
+$.get("data/zombies-by-major/")
+	.done (data) ->
+		$("#zMajorsChart").highcharts {
+			chart: {
+				type: 'scatter',
+				backgroundColor: '#333',
+			},
+			credits: {
+				enabled: false
+			},
+			title: {
+				text: null,
+			},
+			legend: {
+				enabled: false
+			},
+			xAxis: {
+				title: {
+					text: 'Average time spent as zombie (hours)',
+					style: whiteStyle
+				},
+				labels: {
+					style: whiteStyle
+				}
+			},
+			yAxis: {
+				title: {
+					text: 'Average zombie points/player',
+					style: whiteStyle
+				},
+				labels: {
+					style: whiteStyle
+				}
+			},
+			series: data,
+			tooltip: {
+				formatter: ->
+					return "#{this.series.name}<br><b>X:</b> #{this.point.x}<br><b>Y:</b> #{this.point.y}"
 			}
 		}
 </script>
