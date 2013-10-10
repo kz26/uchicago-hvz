@@ -123,9 +123,10 @@ class Player(models.Model):
 
 	@property
 	def killed_by(self):
-		try:
-			return Kill.objects.filter(victim__game=self.game).order_by('-date').get(victim=self).killer
-		except Kill.DoesNotExist:
+		kills = Kill.objects.exclude(parent=None).filter(victim=self).order_by('-date')
+		if kills.exists():
+			return kills[0].killer
+		else:
 			return None
 
 	@property

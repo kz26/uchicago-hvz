@@ -92,8 +92,8 @@
 		<h3 class="text-success">HUMAN</h3>
 		{% else %}
 		<h3 class="text-danger">ZOMBIE</h3>
-		{% if killed_by and killed_by != player %}
-		<p class="text-danger">Killed by {{ killed_by.user.get_full_name }} ({{ killed_by.bite_code }})
+		{% if killed_by %}
+		<p class="text-danger">Killed by {{ killed_by.user.get_full_name }} - ({{ killed_by.get_dorm_display }}) - ({{ killed_by.bite_code }})
 		{% endif %}
 		<h3>My Bite Code</h3>
 		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
