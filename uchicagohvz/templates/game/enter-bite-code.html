@@ -39,8 +39,8 @@
 <script type="text/coffeescript">
 
 $(document).ready ->
-	swPoint = new google.maps.LatLng(41.780244, -87.615116)
-	nePoint = new google.maps.LatLng(41.809519, -87.592025)
+	swPoint = new google.maps.LatLng(GAME_SW_BOUND[0], GAME_SW_BOUND[1])
+	nePoint = new google.maps.LatLng(GAME_NE_BOUND[0], GAME_NE_BOUND[1])
 	bounds = new google.maps.LatLngBounds(swPoint, nePoint)
 
 	mapOptions = {

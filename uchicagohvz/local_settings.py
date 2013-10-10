@@ -164,8 +164,8 @@ HVT_KILL_POINTS = 3 # how many points a high-value target is worth (replaces reg
 HVD_KILL_POINTS = 3 # how many points a target from a high-value dorm is worth (can stack on top of regular and HVT points)
 LEADERBOARD_CACHE_DURATION = 3600 # how many seconds to cache certain DB-intensive leaderboard queries
 NEXMO_NUMBER = '339-204-1936'
-GAME_SW_BOUND = (41.780244, -87.615116)
-GAME_NE_BOUND = (41.809519,-87.592025)
+GAME_SW_BOUND = (41.785097, -87.615352)
+GAME_NE_BOUND = (41.802759, -87.581476)
 
 # Dealer settings
 TEMPLATE_CONTEXT_PROCESSORS += 'dealer.contrib.django.staff.context_processor',

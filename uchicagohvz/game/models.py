@@ -90,7 +90,7 @@ def gen_bite_code():
 class Player(models.Model):
 	class Meta:
 		unique_together = (('user', 'game'), ('game', 'bite_code'))
-		ordering = ['-game__start_date', 'user__last_name']
+		ordering = ['-game__start_date', 'user__username', 'user__last_name', 'user__first_name']
 
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='+')
 	game = models.ForeignKey(Game, related_name='players')
@@ -184,9 +184,11 @@ class Player(models.Model):
 		return kill_points + award_points
 
 	def __unicode__(self):
-		return "%s - %s (%s)" % (self.user.get_full_name(), self.bite_code, self.game.name)
+		return "%s - %s - %s (%s)" % (self.user.username, self.user.get_full_name(), self.bite_code, self.game.name)
 
 class Kill(MPTTModel):
+	class Meta:
+		ordering = ['-date']
 	class MPTTMeta:
 		order_insertion_by = ['date']
 
@@ -200,7 +202,7 @@ class Kill(MPTTModel):
 	lng = models.FloatField(null=True, blank=True, verbose_name='longitude')
 
 	def __unicode__(self):
-		return "%s --> %s (%s)" % (self.killer.user.get_full_name(), self.victim.user.get_full_name(), self.killer.game.name)
+		return "%s (%s) --> %s (%s) [%s]" % (self.killer.user.get_full_name(), self.killer.user.username, self.victim.user.get_full_name(), self.victim.user.username, self.killer.game.name)
 
 	def save(self, *args, **kwargs):
 		try:
