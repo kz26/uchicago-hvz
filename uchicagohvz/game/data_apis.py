@@ -17,7 +17,10 @@ def invalidate_cached_data(sender, **kwargs):
 	update_fields = kwargs['update_fields']
 	if update_fields and 'points' in update_fields:
 		game = kwargs['instance'].game
-		keys = ('top_humans', 'top_zombies', 'most_courageous_dorms', 'most_infectious_dorms')
+		keys = ('survival_by_dorm', 'top_humans', 'top_zombies', 
+			'most_courageous_dorms', 'most_infectious_dorms', 'humans_per_hour', 
+			'kills_by_tod', 'humans_by_major', 'zombies_by_major'
+		)
 		keys = ["%s_%s" % (k, game.id) for k in keys]
 		cache.delete_many(keys)
 
