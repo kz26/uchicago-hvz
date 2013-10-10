@@ -217,7 +217,7 @@ class HumansByMajor(APIView):
 					major_avg_pts = 0
 				point['y'] = major_avg_pts
 				data.append({
-					'name': major,
+					'name': major if major else 'N/A',
 					'data': [point]
 				})
 			cache.set(key,data, settings.LEADERBOARD_CACHE_DURATION)
@@ -252,7 +252,7 @@ class ZombiesByMajor(APIView):
 					major_avg_pts = 0
 				point['y'] = major_avg_pts
 				data.append({
-					'name': major,
+					'name': major if major else 'N/A',
 					'data': [point]
 				})
 			cache.set(key,data, settings.LEADERBOARD_CACHE_DURATION)
