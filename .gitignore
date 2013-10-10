@@ -45,3 +45,4 @@ static/CACHE/
 secrets.py
 db.sqlite3
 migrations/
+game/word-lists/
