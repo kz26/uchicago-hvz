@@ -78,7 +78,7 @@ class AwardCodeForm(forms.Form):
 			try:
 				self.award = Award.objects.get(game=self.player.game, code__iexact=code)
 			except Award.DoesNotExist:
-				raise forms.ValidationError('Invalid code entered.')
+				raise forms.ValidationError('Invalid code entered. Check your spelling and try again.')
 			if self.award.game.status != 'in_progress':
 				raise forms.ValidationError('Game is not in progress.')
 			if not (self.award.redeem_type in redeem_types):
