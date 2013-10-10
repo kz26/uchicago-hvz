@@ -6,7 +6,7 @@
 {% for game in object_list %}
 <div class="row">
 	<div class="col-md-6">
-		<h2><a href="{% url 'game|show' pk=game.pk %}">{{ game.name }}</a></h2>
+		<h2><a class="btn btn-default btn-lg btn-block" href="{% url 'game|show' pk=game.pk %}">{{ game.name }}</a></h2>
 		<h3>
 			{% if game.status == "registration" %}
 			<span class="text-info">Open for registration</span>
