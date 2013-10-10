@@ -196,7 +196,7 @@ class HumansByMajor(APIView):
 		data = cache.get(key)
 		if settings.DEBUG or data is None:
 			data = []
-			players = game.players.all(active=True)
+			players = game.players.filter(active=True)
 			majors = players.order_by('major').values_list('major', flat=True).distinct()
 			max_lifespan = min(game.end_date, timezone.now()) - game.start_date
 			max_lifespan_hours = max_lifespan.days * 24 + round(float(max_lifespan.seconds) / 3600, 0)
