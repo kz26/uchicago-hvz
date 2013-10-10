@@ -41,7 +41,7 @@ class BiteCodeForm(forms.Form):
 		try:
 			self.victim = Player.objects.get(game=self.killer.game, active=True, bite_code__iexact=bite_code)
 		except Player.DoesNotExist:
-			raise forms.ValidationError('Invalid bite code entered.')
+			raise forms.ValidationError('Invalid bite code entered. Check your spelling and try again.')
 		if self.killer.game.status != 'in_progress':
 			raise forms.ValidationError('Game is not in progress.')
 		if self.victim == self.killer:
