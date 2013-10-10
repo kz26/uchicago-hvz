@@ -160,7 +160,7 @@ class HumansPerHour(APIView):
 					kd = kill.date - game.start_date
 					hours = kd.days * 24 + round(float(kd.seconds) / 3600, 0)
 					d[hours] = sh - index # overwrite
-				d[end_hour] = Player.objects.filter(game=game, active=True, dorm=dorm, human=True).count()
+				d[end_hour] = d[d.keys()[-1]]
 				data.append({'name': dormName, 'data': d.items()})
 			# add dataset for all dorms
 			sh = game.get_active_players().count() - Kill.objects.filter(parent=None, killer__game=game).count() # subtract LZs
@@ -170,7 +170,7 @@ class HumansPerHour(APIView):
 				kd = kill.date - game.start_date
 				hours = kd.days * 24 + round(float(kd.seconds) / 3600, 0)
 				d[hours] = sh - index # overwrite
-			d[end_hour] = Player.objects.filter(game=game, active=True, human=True).count()
+			d[end_hour] = d[d.keys()[-1]]
 			data.append({'name': 'ALL', 'data': d.items()})
 			cache.set(key, data, settings.LEADERBOARD_CACHE_DURATION)
 		return Response(data)
