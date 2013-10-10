@@ -105,7 +105,7 @@ def most_infectious_dorms(game): # defined as (1 / zombies in dorm) * total zomb
 			players = Player.objects.filter(active=True, dorm=dorm, game=game, human=False)
 			pc = players.count()
 			if pc != 0:
-				points = 100 * (1.0 / pc) * sum([p.zombie_points for p in players])
+				points = 10 * (1.0 / pc) * sum([p.zombie_points for p in players])
 			else:
 				points = 0
 			data.append({'dorm': dormName, 'points': points})
