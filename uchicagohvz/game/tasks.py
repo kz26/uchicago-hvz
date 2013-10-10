@@ -17,7 +17,7 @@ def send_death_notification(kill):
 		pn = player.user.profile.phone_number.replace('-', '')
 		to_addrs.append(CARRIERS[player.user.profile.phone_carrier] % (pn))
 	random.shuffle(to_addrs)
-	body = "A human from %s was killed. %s/%s humans here are still alive."
+	body = "A human from %s was killed. %s/%s humans there are still alive."
 	body = body % (victim_dorm_name, players_in_dorm.filter(human=True).count(), players_in_dorm.count())
 	def gen_emails():
 		MAX_RECIPIENTS = 999
@@ -36,11 +36,27 @@ def send_sms_confirmation(player, obj): # obj is either a kill or an award objec
 			kill_text += " [%s]" % (obj.notes)
 		body = "Kill: %s confirmed. Points earned: %s" % (kill_text, obj.points)		
 	elif isinstance(obj, Award):
-		body = "Code redeemed. Name: %s. Points: %s" % (obj.name, obj.points)
+		body = "Code '%s' redeemed. Name: %s. Points: %s" % (obj.code, obj.name, obj.points)
 	else:
 		return
 	phone_number = player.user.profile.phone_number.replace('-', '')
 	to_addr = CARRIERS[player.user.profile.phone_carrier] % (phone_number)
 	email = mail.EmailMessage(body=body, to=[to_addr])
 	email.send()
+
+@task
+def send_sms_invalid_code(player, code):
+	body = "Invalid code: %s" % (code)
+	phone_number = player.user.profile.phone_number.replace('-', '')
+	to_addr = CARRIERS[player.user.profile.phone_carrier] % (phone_number)
+	email = mail.EmailMessage(body=body, to=[to_addr])
+	email.send()
+
+#@task
+#def send_sms_unregistered(player):
+#	body = 'Unrecognized phone #. Add your phone # and carrier to your profile.'
+#	phone_number = player.user.profile.phone_number.replace('-', '')
+#    to_addr = CARRIERS[player.user.profile.phone_carrier] % (phone_number)
+#    email = mail.EmailMessage(body=body, to=[to_addr])
+#    email.send()
 

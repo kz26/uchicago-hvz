@@ -16,6 +16,7 @@ from uchicagohvz.game.forms import *
 from uchicagohvz.game.data_apis import *
 from uchicagohvz.game.serializers import *
 from uchicagohvz.game.tasks import *
+from uchicagohvz.users.models import *
 
 # Create your views here.
 
@@ -120,17 +121,17 @@ class SubmitCodeSMS(APIView):
 		data['message_timestamp'] = data.pop('message-timestamp', '') # workaround for hyphen in field name
 		data['network_code'] = data.pop('network-code', '')
 		serializer = NexmoSMSSerializer(data=data)
+		code = data['text'].lower().strip()
 		if serializer.is_valid():
 			data = serializer.object
 			games = Game.objects.all().order_by('-start_date')
 			for game in games:
-				if game.status == "in_progress":
+				if game.status == 'in_progress':
 					try:
 						phone_number = "%s-%s-%s" % (data['msisdn'][1:4], data['msisdn'][4:7], data['msisdn'][7:11])
 						player = Player.objects.get(game=game, user__profile__phone_number=phone_number)
 					except Player.DoesNotExist:
-						break
-					code = data['text'].lower().strip()
+						return Response()
 					form = BiteCodeForm(data={'bite_code': code}, killer=player)
 					# player is the killer
 					if form.is_valid():
@@ -138,15 +139,17 @@ class SubmitCodeSMS(APIView):
 						if kill:
 							send_sms_confirmation.delay(player, kill)
 							send_death_notification.delay(kill)
-						break
+						return Response()
 					form = AwardCodeForm(data={'code': code}, player=player)
 					if form.is_valid():
 						with transaction.atomic():
 							award = form.award
 							award.players.add(player)
 							award.save()
-							send_sms_confirmation.delay(player, award)
-						break
+						send_sms_confirmation.delay(player, award)
+						return Response()
+		# player has a valid number but entered an invalid code
+		send_sms_invalid_code.delay(player, code)
 		return Response()
 
 class SubmitAwardCode(BaseFormView):
