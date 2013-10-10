@@ -11,7 +11,7 @@ class PlayerAdmin(admin.ModelAdmin):
 	readonly_fields = ('points',)
 	if not settings.DEBUG:
 		readonly_fields += ('major',)
-	search_fields = ('user__username', 'user__first_name', 'user__last_name', 'bite_code')
+	search_fields = ('user__username', 'user__first_name', 'user__last_name', 'bite_code', 'major')
 
 class KillAdmin(admin.ModelAdmin):
 	list_filter = ('killer__game__name',)
