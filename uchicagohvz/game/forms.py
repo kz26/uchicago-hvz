@@ -47,7 +47,7 @@ class BiteCodeForm(forms.Form):
 		if self.victim == self.killer:
 			raise forms.ValidationError('You can\'t kill yourself. You\'re already dead, anyway...')
 		if not self.victim.human:
-			raise forms.ValidationError("%s is already dead!" % (self.victim.user.get_full_name()))
+			raise forms.ValidationError("%s is already dead!" % (self.victim.bite_code))
 
 	def clean(self):
 		data = super(BiteCodeForm, self).clean()
