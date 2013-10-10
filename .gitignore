@@ -41,8 +41,8 @@ Thumbs.db
 node_modules/
 media/
 settings.py
-static/CACHE/
+uchicagohvz/static/CACHE/
 secrets.py
 db.sqlite3
 migrations/
-game/word-lists/
+uchicagohvz/game/word-lists/
