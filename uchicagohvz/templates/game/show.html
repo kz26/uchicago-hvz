@@ -255,6 +255,8 @@
 		<div id="hphChart"></div>
 		<h2>Kills by Time of Day</h2>
 		<div id="todChart"></div>
+		<h2>Humans by Major</h2>
+		<div id="hmajorsChart"></div>
 	</div>
 	<div class="col-md-6">
 		<h2>Top Humans</h2>
@@ -265,7 +267,7 @@
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Points</th>
+					<th>Human Points</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -283,14 +285,14 @@
 				<tr>
 					<th>Name</th>
 					<th>Kills</th>
-					<th>Points</th>
+					<th>Zombie Points</th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for p in top_zombies %}
 				<tr>
 					<td>{{ p.display_name }}</td>
-					<td>{{ p.kills.count }}</td>
+					<td>{{ p.kills }}</td>
 					<td>{{ p.zombie_points }}</td>
 				</tr>
 				{% endfor %}
@@ -340,7 +342,7 @@
 <ul>
     {% recursetree kill_tree %}
         <li>
-            {{ node.victim.user.get_full_name }} - {{ node.victim.bite_code }} - killed {{ node.date }}
+            {{ node.victim.user.get_full_name }} ({{ node.victim.get_dorm_display }}) - {{ node.victim.bite_code }} - killed {{ node.date }}
             {% if not node.is_leaf_node %}
                 <ul>
                     {{ children }}
@@ -481,9 +483,6 @@ $.get("data/kills-by-tod/")
 			credits: {
 				enabled: false
 			},
-			legend: {
-				enabled: false
-			},
 			title: {
 				text: null,
 			},
@@ -518,6 +517,47 @@ $.get("data/kills-by-tod/")
 					name: 'Kills'
 				}
 			]
+		}
+
+$.get("data/humans-by-major/")
+	.done (data) ->
+		$("#hmajorsChart").highcharts {
+			chart: {
+				type: 'scatter',
+				backgroundColor: '#333',
+			},
+			credits: {
+				enabled: false
+			},
+			title: {
+				text: null,
+			},
+			legend: {
+				enabled: false
+			},
+			xAxis: {
+				title: {
+					text: 'Average lifespan (hours)',
+					style: whiteStyle
+				},
+				labels: {
+					style: whiteStyle
+				}
+			},
+			yAxis: {
+				title: {
+					text: 'Average human points/player',
+					style: whiteStyle
+				},
+				labels: {
+					style: whiteStyle
+				}
+			},
+			series: data,
+			tooltip: {
+				formatter: ->
+					return "#{this.point.name}<br><b>X:</b> #{this.point.x}<br><b>Y:</b> #{this.point.y}"
+			}
 		}
 </script>
 {% endcompress %}

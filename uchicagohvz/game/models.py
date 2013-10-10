@@ -97,7 +97,7 @@ class Player(models.Model):
 	active = models.BooleanField(default=False)
 	bite_code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
 	dorm = models.CharField(max_length=4, choices=DORMS)
-	major = models.CharField(max_length=255, editable=False)
+	major = models.CharField(max_length=255, editable=settings.DEBUG)
 	human = models.BooleanField(default=True)
 	points = models.IntegerField(default=0)
 	renting_gun = models.BooleanField(default=False)

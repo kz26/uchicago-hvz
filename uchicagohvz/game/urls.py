@@ -16,4 +16,5 @@ urlpatterns = patterns('',
     url(r'^game/(?P<pk>[0-9]+)/data/kills/$', KillFeed.as_view(), name="game|data|kills"),
     url(r'^game/(?P<pk>[0-9]+)/data/humans-per-hour/$', HumansPerHour.as_view(), name="game|data|hph"),
     url(r'^game/(?P<pk>[0-9]+)/data/kills-by-tod/$', KillsByTimeOfDay.as_view(), name="game|data|kbtod"),
+    url(r'^game/(?P<pk>[0-9]+)/data/humans-by-major/$', HumansByMajor.as_view(), name="game|data|hbm"),
 )

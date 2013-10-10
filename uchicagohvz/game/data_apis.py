@@ -16,7 +16,9 @@ from collections import OrderedDict
 def invalidate_cached_data(sender, **kwargs):
 	update_fields = kwargs['update_fields']
 	if update_fields and 'points' in update_fields:
+		game = kwargs['instance'].game
 		keys = ('top_humans', 'top_zombies', 'most_courageous_dorms', 'most_infectious_dorms')
+		keys = ["%s_%s" % (k, game.id) for k in keys]
 		cache.delete_many(keys)
 
 def kills_per_hour(game):
@@ -26,34 +28,56 @@ def kills_per_hour(game):
 	return float(kills.count()) / hours
 
 def survival_by_dorm(game):
-	data = []
-	for dorm, dormName in DORMS:
-		players = game.get_players_in_dorm(dorm)
-		if players.count():
-			e = {'dorm': dormName, 'alive': players.filter(human=True).count(), 'original': players.count()}
-			e['percent']  = 100 * float(e['alive']) / e['original']
-			data.append(e)
-	data.sort(key=lambda x: x['percent'], reverse=True)
+	key = "%s_%s" % ('survival_by_dorm', game.id)
+	data = cache.get(key)
+	if settings.DEBUG or data is None:
+		data = []
+		for dorm, dormName in DORMS:
+			players = game.get_players_in_dorm(dorm)
+			if players.count():
+				e = {'dorm': dormName, 'alive': players.filter(human=True).count(), 'original': players.count()}
+				e['percent']  = 100 * float(e['alive']) / e['original']
+				data.append(e)
+		data.sort(key=lambda x: x['percent'], reverse=True)
+		cache.set(key, data, settings.LEADERBOARD_CACHE_DURATION)
 	return data
 
 def top_humans(game):
-	players = cache.get('top_humans')
-	if settings.DEBUG or players is None:
-		players = list(Player.objects.filter(active=True, game=game))
-		players.sort(key=lambda x: x.human_points, reverse=True)
-		cache.set('top_humans', players, settings.LEADERBOARD_CACHE_DURATION)
-	return players
+	key = "%s_%s" % ('top_humans', game.id)
+	data = cache.get(key)
+	if settings.DEBUG or data is None:
+		players = Player.objects.filter(active=True, game=game)
+		data = []
+		for player in players:
+			d = {
+				'display_name': player.display_name,
+				'human_points': player.human_points
+			}
+			data.append(d)
+		data.sort(key=lambda x: x['human_points'], reverse=True)
+		cache.set(key, data, settings.LEADERBOARD_CACHE_DURATION)
+	return data
 
 def top_zombies(game):
-	players = cache.get('top_zombies')
-	if settings.DEBUG or players is None:
-		players = list(Player.objects.filter(active=True, game=game, human=False))
-		players.sort(key=lambda x: x.zombie_points, reverse=True)
-		cache.set('top_zombies', players, settings.LEADERBOARD_CACHE_DURATION)
-	return players
+	key = "%s_%s" % ('top_zombies', game.id)
+	data = cache.get(key)
+	if settings.DEBUG or data is None:
+		players = Player.objects.filter(active=True, game=game)
+		data = []
+		for player in players:
+			d = {
+				'display_name': player.display_name,
+				'kills': player.kills.count(),
+				'zombie_points': player.zombie_points
+			}
+			data.append(d)
+		data.sort(key=lambda x: x['zombie_points'], reverse=True)
+		cache.set(key, data, settings.LEADERBOARD_CACHE_DURATION)
+	return data
 
 def most_courageous_dorms(game): # defined as (1 / humans in dorm) * dorm's current human points
-	data = cache.get('most_courageous_dorms')
+	key = "%s_%s" % ('most_courageous_dorms', game.id)
+	data = cache.get(key)
 	if settings.DEBUG or data is None:
 		data = []
 		for dorm, dormName in DORMS:
@@ -66,11 +90,12 @@ def most_courageous_dorms(game): # defined as (1 / humans in dorm) * dorm's curr
 			data.append({'dorm': dormName, 'points': points})
 		data.sort(key=lambda x: x['dorm'])
 		data.sort(key=lambda x: x['points'], reverse=True)
-		cache.set('most_courageous_dorms', data, settings.LEADERBOARD_CACHE_DURATION)
+		cache.set(key, data, settings.LEADERBOARD_CACHE_DURATION)
 	return data
 
 def most_infectious_dorms(game): # defined as (1 / zombies in dorm) * total zombie points
-	data = cache.get('most_infectious_dorms')
+	key = "%s_%s" % ('most_infectious_dorms', game.id)
+	data = cache.get(key)
 	if settings.DEBUG or data is None:
 		data = []
 		for dorm, dormName in DORMS:
@@ -83,7 +108,7 @@ def most_infectious_dorms(game): # defined as (1 / zombies in dorm) * total zomb
 			data.append({'dorm': dormName, 'points': points})
 		data.sort(key=lambda x: x['dorm'])
 		data.sort(key=lambda x: x['points'], reverse=True)
-		cache.set('most_infectious_dorms', data, settings.LEADERBOARD_CACHE_DURATION)
+		cache.set(key, data, settings.LEADERBOARD_CACHE_DURATION)
 	return data
 
 class KillSerializer(serializers.ModelSerializer):
@@ -117,38 +142,83 @@ class KillFeed(ListAPIView):
 class HumansPerHour(APIView):
 	def get(self, request, *args, **kwargs):
 		game = get_object_or_404(Game, id=kwargs['pk'])
-		data = []
-		end_date = min(timezone.now(), game.end_date)
-		end_td = end_date - game.start_date
-		end_hour = end_td.days * 24 + round(float(end_td.seconds) / 3600, 0)
-		for dorm, dormName in DORMS:
-			sh = game.get_active_players().filter(dorm=dorm).count() # starting humans in this dorm
+		key = "%s_%s" % ('humans_per_hour', game.id)
+		data = cache.get(key)
+		if settings.DEBUG or data is None:
+			data = []
+			end_date = min(timezone.now(), game.end_date)
+			end_td = end_date - game.start_date
+			end_hour = end_td.days * 24 + round(float(end_td.seconds) / 3600, 0)
+			for dorm, dormName in DORMS:
+				sh = game.get_active_players().filter(dorm=dorm).count() # starting humans in this dorm
+				d = OrderedDict([(0, sh)])
+				kills = Kill.objects.filter(victim__game=game, victim__dorm=dorm).order_by('date')
+				for index, kill in enumerate(kills, 1):
+					kd = kill.date - game.start_date
+					hours = kd.days * 24 + round(float(kd.seconds) / 3600, 0)
+					d[hours] = sh - index # overwrite
+				d[end_hour] = Player.objects.filter(game=game, active=True, dorm=dorm, human=True).count()
+				data.append({'name': dormName, 'data': d.items()})
+			# add dataset for all dorms
+			sh = game.get_active_players().count() - Kill.objects.filter(parent=None, killer__game=game).count() # subtract LZs
 			d = OrderedDict([(0, sh)])
-			kills = Kill.objects.filter(victim__game=game, victim__dorm=dorm).order_by('date')
+			kills = Kill.objects.exclude(parent=None).filter(victim__game=game).order_by('date')
 			for index, kill in enumerate(kills, 1):
 				kd = kill.date - game.start_date
 				hours = kd.days * 24 + round(float(kd.seconds) / 3600, 0)
 				d[hours] = sh - index # overwrite
-			d[end_hour] = Player.objects.filter(game=game, active=True, dorm=dorm, human=True).count()
-			data.append({'name': dormName, 'data': d.items()})
-		# add dataset for all dorms
-		sh = game.get_active_players().count() - Kill.objects.filter(parent=None, killer__game=game).count() # subtract LZs
-		d = OrderedDict([(0, sh)])
-		kills = Kill.objects.exclude(parent=None).filter(victim__game=game).order_by('date')
-		for index, kill in enumerate(kills, 1):
-			kd = kill.date - game.start_date
-			hours = kd.days * 24 + round(float(kd.seconds) / 3600, 0)
-			d[hours] = sh - index # overwrite
-		d[end_hour] = Player.objects.filter(game=game, active=True, human=True).count()
-		data.append({'name': 'ALL', 'data': d.items()})
+			d[end_hour] = Player.objects.filter(game=game, active=True, human=True).count()
+			data.append({'name': 'ALL', 'data': d.items()})
+			cache.set(key, data, settings.LEADERBOARD_CACHE_DURATION)
 		return Response(data)
 
 class KillsByTimeOfDay(APIView):
 	def get(self, request, *args, **kwargs):
 		game = get_object_or_404(Game, id=kwargs['pk'])
-		data = [0] * 24
-		kill_dts = Kill.objects.filter(victim__game=game).values_list('date', flat=True)
-		for dt in kill_dts:
-			dt = timezone.localtime(dt)
-			data[dt.hour] += 1
+		key = "%s_%s" % ('kills_by_tod', game.id)
+		data = cache.get(key)
+		if settings.DEBUG or data is None:
+			data = [0] * 24
+			kill_dts = Kill.objects.filter(victim__game=game).values_list('date', flat=True)
+			for dt in kill_dts:
+				dt = timezone.localtime(dt)
+				data[dt.hour] += 1
+			cache.set(key, data, settings.LEADERBOARD_CACHE_DURATION)
+		return Response(data)
+
+class HumansByMajor(APIView):
+	def get(self, request, *args, **kwargs):
+		game = get_object_or_404(Game, id=kwargs['pk'])
+		key = "%s_%s" % ('humans_by_major', game.id)
+		data = cache.get(key)
+		if settings.DEBUG or data is None:
+			data = []
+			players = game.players.all()
+			majors = players.order_by('major').values_list('major', flat=True).distinct()
+			max_lifespan = min(game.end_date, timezone.now()) - game.start_date
+			max_lifespan_hours = max_lifespan.days * 24 + round(float(max_lifespan.seconds) / 3600, 0)
+			
+			for major in majors:
+				point = {'name': major}
+				kills = Kill.objects.exclude(parent=None).filter(victim__game=game, victim__major=major).order_by('date')
+				lifespans = []
+				for kill in kills:
+					lifespans.append(kill.date - game.start_date)
+				if lifespans:
+					avg_ls = sum(lifespans, timedelta()) / len(lifespans)
+					avg_ls_hours = avg_ls.days * 24 + round(float(avg_ls.seconds) / 3600, 0)
+				else:
+					avg_ls_hours = max_lifespan_hours
+				point['x'] = avg_ls_hours
+				major_players = players.filter(major=major)
+				if major_players.count():
+					major_avg_pts = round(float(sum([p.human_points for p in major_players])) / major_players.count(), 2)
+				else:
+					major_avg_pts = 0
+				point['y'] = major_avg_pts
+				data.append({
+					'name': major,
+					'data': [point]
+				})
+			cache.set(key,data, settings.LEADERBOARD_CACHE_DURATION)
 		return Response(data)
