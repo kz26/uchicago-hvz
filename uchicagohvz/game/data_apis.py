@@ -53,6 +53,7 @@ def top_humans(game):
 		data = []
 		for player in players:
 			d = {
+				'player_id': player.id,
 				'display_name': player.display_name,
 				'human_points': player.human_points
 			}
@@ -65,10 +66,11 @@ def top_zombies(game):
 	key = "%s_%s" % ('top_zombies', game.id)
 	data = cache.get(key)
 	if settings.DEBUG or data is None:
-		players = Player.objects.filter(active=True, game=game)
+		players = Player.objects.filter(active=True, game=game, human=False)
 		data = []
 		for player in players:
 			d = {
+				'player_id': player.id,
 				'display_name': player.display_name,
 				'kills': player.kills.count(),
 				'zombie_points': player.zombie_points
@@ -77,6 +79,21 @@ def top_zombies(game):
 		data.sort(key=lambda x: x['zombie_points'], reverse=True)
 		cache.set(key, data, settings.LEADERBOARD_CACHE_DURATION)
 	return data
+
+def human_rank(player):
+	th = top_humans(player.game)
+	scores = sorted(set([x['human_points'] for x in th]), reverse=True)
+	player_score = [x['human_points'] for x in th if x['player_id'] == player.id][0]
+	return (scores.index(player_score) + 1, len(th))
+
+def zombie_rank(player):
+	tz = top_zombies(player.game)
+	try:
+		player_score = [x['zombie_points'] for x in tz if x['player_id'] == player.id][0]
+	except:
+		return None
+	scores = sorted(set([x['zombie_points'] for x in tz]), reverse=True)
+	return (scores.index(player_score) + 1, len(tz))
 
 def most_courageous_dorms(game): # defined as (1 / humans in dorm) * dorm's current human points
 	key = "%s_%s" % ('most_courageous_dorms', game.id)
@@ -141,6 +158,13 @@ class KillFeed(ListAPIView):
 	def get_queryset(self):
 		game = get_object_or_404(Game, id=self.kwargs['pk'])
 		return Kill.objects.exclude(parent=None).filter(victim__game=game).order_by('-date')
+
+class PlayerKillFeed(ListAPIView):
+	serializer_class = KillSerializer
+
+	def get_queryset(self):
+		player = get_object_or_404(Player, id=self.kwargs['pk'], active=True, human=False)
+		return Kill.objects.exclude(parent=None).exclude(victim=player).filter(killer=player)
 
 class HumansPerHour(APIView):
 	def get(self, request, *args, **kwargs):

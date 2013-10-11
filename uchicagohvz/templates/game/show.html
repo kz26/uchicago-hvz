@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% load mptt_tags %}{% load compress %}{% load cache %}
+{% extends 'base.html' %}{% load mptt_tags %}{% load compress %}
 {% block content %}
 <div class="page-header">
 	<h1>{{ game.name }}</h1>
@@ -164,6 +164,7 @@
 	<div class="col-lg-4">
 		<h2>My Score</h2>
 		<h3 style="font-weight: bold; font-size: 15pt;">{{ player.points }} points</h3>
+		<p>You are ranked <b>#{{ player_rank.0 }}</b> of {{ player_rank.1 }} {% if player.human %}humans{% else %}zombies{% endif %}.</p>
 		{% if player.score != 0 or player.awards.all.count %}
 		{% if not player.human %}
 		<p class="text-info">
@@ -181,7 +182,9 @@
 				{% for kill in player.kills %}
 				<tr>
 					<td>{{ kill.points }}</td>
-					<td>Kill: {{ kill.victim.user.get_full_name }} ({{ kill.victim.bite_code }}, {{ kill.victim.get_dorm_display }}) on {{ kill.date|date:"SHORT_DATE_FORMAT" }} {% if kill.notes %} [{{ kill.notes}}]{% endif %}</td>
+					<td>Kill: <a href="{% url 'player|show' pk=kill.victim.id %}">{{ kill.victim.user.get_full_name }} ({{ kill.victim.bite_code }}, 
+						{{ kill.victim.get_dorm_display }})</a> on {{ kill.date|date:"SHORT_DATE_FORMAT" }} {% if kill.notes %} [{{ kill.notes}}]{% endif %}
+					</td>
 				</tr>
 				{% endfor %}
 				{% for award in player.awards.all %}
@@ -192,6 +195,7 @@
 				{% endfor %}
 			</tbody>
 		</table>
+		<a class="btn btn-primary" href="{% url 'player|show' pk=player.id %}">My Player Page</a>
 		{% endif %}
 		
 	</div>
@@ -261,7 +265,7 @@
 		<div id="hMajorsChart"></div>
 	</div>
 	<div class="col-md-6">
-		<h2>Top Humans</h2>
+		<h2><a href="{% url 'game|leaderboard' pk=game.id %}">Top Humans</a></h2>
 		{% if game.status == "in_progress" %}
 		<p>The names of surviving humans have been obfuscated in the interest of national human security.</p>
 		{% endif %}
@@ -275,13 +279,13 @@
 			<tbody>
 				{% for p in top_humans %}
 				<tr>
-					<td>{{ p.display_name }}</td>
+					<td><a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a></td>
 					<td>{{ p.human_points }}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
 		</table>
-		<h2>Top Zombies</h2>
+		<h2><a href="{% url 'game|leaderboard' pk=game.id %}">Top Zombies</a></h2>
 		<table class="table table-bordered table-striped">
 			<thead>
 				<tr>
@@ -293,7 +297,7 @@
 			<tbody>
 				{% for p in top_zombies %}
 				<tr>
-					<td>{{ p.display_name }}</td>
+					<td><a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a></td>
 					<td>{{ p.kills }}</td>
 					<td>{{ p.zombie_points }}</td>
 				</tr>

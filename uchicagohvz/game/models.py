@@ -184,8 +184,22 @@ class Player(models.Model):
 		award_points =  self.awards.filter(redeem_type__in=('Z', 'A')).aggregate(points=models.Sum('points'))['points'] or 0
 		return kill_points + award_points
 
+	@property
+	def human_rank(self):
+		from data_apis import human_rank as hr
+		return hr(self)
+
+	@property
+	def zombie_rank(self):
+		from data_apis import zombie_rank as zr
+		return zr(self)
+
 	def __unicode__(self):
 		return "%s - %s - %s (%s)" % (self.user.username, self.user.get_full_name(), self.bite_code, self.game.name)
+
+	@models.permalink
+	def get_absolute_url(self):
+		return ('player|show', [self.id])
 
 class Kill(MPTTModel):
 	class Meta:

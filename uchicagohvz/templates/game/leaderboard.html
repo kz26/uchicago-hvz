@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+	<h1>Leaderboard <small>{{ game.name }}</small></h1>
+</div>
+<p>The names of surviving humans have been obfuscated in the interest of national human security.</p>
+<div class="row">
+	<div class="col-md-6">
+		<h2><span class="bold text-success">HUMANS</span></h2>
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Human Points</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for p in top_humans %}
+				<tr>
+					<td><a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a></td>
+					<td>{{ p.human_points }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<div class="col-md-6">
+		<h2><span class="bold text-danger">ZOMBIES</span></h2>
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Kills</th>
+					<th>Zombie Points</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for p in top_zombies %}
+				<tr>
+					<td><a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a></td>
+					<td>{{ p.kills }}</td>
+					<td>{{ p.zombie_points }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endblock %}

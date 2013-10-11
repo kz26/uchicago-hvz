@@ -1,0 +1,104 @@
+{% extends 'base.html' %}{% load compress %}
+{% block content %}
+<div class="page-header">
+	<h1>{{ player.display_name }} <small>{{ player.game.name }}</small></h1>
+</div>
+
+<dl style="font-size: 15pt;">
+	<dt>Status</dt>
+	<dd>{% if player.human %}<span class="text-success">HUMAN</span>{% else %}<span class="text-danger">ZOMBIE</span>{% endif %}
+	<dt>Dorm</dt>
+	<dd>{{ player.get_dorm_display }}</dd>
+	<dt>Major</dt>
+	<dd>{{ player.major }}</dd>
+	{% if player.human %}
+	<dt>Human Points</dt>
+	<dd>{{ player.human_points }} (#{{ player.human_rank.0 }} of {{ player.human_rank.1 }})</dd>
+	{% else %}
+	<dt>Zombie Points</dt>
+	<dd>{{ player.zombie_points }} (#{{ player.zombie_rank.0 }} of {{ player.zombie_rank.1 }})</dd>
+	{% endif %}
+
+</dl>
+
+<div class="row">
+	<div class="col-md-6">
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Points</th>
+					<th>For</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for kill in player.kills %}
+				<tr>
+					<td>{{ kill.points }}</td>
+					<td>Kill: <a href="{% url 'player|show' pk=kill.victim.id %}">{{ kill.victim.user.get_full_name }} ({{ kill.victim.bite_code }}, 
+						{{ kill.victim.get_dorm_display }})</a> on {{ kill.date|date:"SHORT_DATE_FORMAT" }} {% if kill.notes %} [{{ kill.notes}}]{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+				{% for award in player.awards.all %}
+				<tr>
+					<td>{{ award.points }}</td>
+					<td>{{ award.name }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% if not player.human %}
+		<h2>Kills <small>geotagged kills only</small></h2>
+		<div id="killMap" style="height: 350px;"></div>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}
+{% block script %}
+{% if not player.human %}
+{% include 'google-maps-script.html' %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.2.1/moment.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/3.0.2/highcharts.js"></script>
+{% compress js %}
+<script type="text/coffeescript">
+swPoint = new google.maps.LatLng(GAME_SW_BOUND[0], GAME_SW_BOUND[1])
+nePoint = new google.maps.LatLng(GAME_NE_BOUND[0], GAME_NE_BOUND[1])
+bounds = new google.maps.LatLngBounds(swPoint, nePoint)
+mapOptions = {
+	center: new google.maps.LatLng(41.789553, -87.598586),
+	zoom: 15
+}
+map = new google.maps.Map($('#killMap').get(0), mapOptions)
+lvc = map.getCenter()
+google.maps.event.addListener map, 'center_changed', (e) ->
+	nc = map.getCenter()
+	if bounds.contains(nc)
+		lvc = nc
+	else
+		map.panTo(lvc)
+
+$.get("data/kills/")
+	.done (data) ->
+		infoWin = new google.maps.InfoWindow()
+		markers = []
+		for k in data
+			k.date = new Date(k.date)
+			if k.location != null
+				marker = new google.maps.Marker {
+						map: map,
+						icon: '{{ STATIC_URL }}img/skull.png',
+						position: new google.maps.LatLng(k.location[0], k.location[1])
+					}
+				killDT = moment(k.date).format('M/D/YY h:mm:ss A')
+				content = $("<ul><li><b>Killer:</b> #{k.killer}</li><li><b>Victim:</b> #{k.victim}</li><li><b>Date:</b> #{killDT}</li></ul>")
+				content.css('width', '300px')
+				markers.push([marker, k])
+				google.maps.event.addListener marker, 'click', ((marker, content) ->
+					return ->
+						infoWin.setContent(content)
+						infoWin.open(map, marker)
+				)(marker, content.get(0))
+</script>
+{% endcompress %}
+{% endif %}
+{% endblock %}

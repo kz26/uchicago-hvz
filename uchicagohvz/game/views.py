@@ -22,11 +22,11 @@ from uchicagohvz.users.models import *
 
 class ListGames(ListView):
 	model = Game
-	template_name = "game/list.html"
+	template_name = 'game/list.html'
 
 class ShowGame(DetailView):
 	model = Game
-	template_name = "game/show.html"
+	template_name = 'game/show.html'
 
 	def get_context_data(self, **kwargs):
 		context = super(ShowGame, self).get_context_data(**kwargs)
@@ -49,10 +49,14 @@ class ShowGame(DetailView):
 			if in_game:
 				player = Player.objects.get(game=self.object, user=self.request.user)
 				context['player'] = player
-				if self.object.status in ('in_progress', 'finished') and player.active and not player.human:
+				if self.object.status in ('in_progress', 'finished') and player.active:
+					if player.human:
+						context['player_rank'] = player.human_rank
+					else:
+						context['player_rank'] = player.zombie_rank
 						context['killed_by'] = player.killed_by
 						if self.object.status == 'in_progress':
-							try:
+							try: # replace kill tree with personal kill tree
 								my_kill = Kill.objects.get(victim=player)
 								context['kill_tree'] = my_kill.get_descendants(include_self=True)
 								context['personal_kill_tree'] = True
@@ -180,3 +184,24 @@ class SubmitAwardCode(BaseFormView):
 		self.player = get_object_or_404(Player, game=self.game, active=True, user=self.request.user)
 		kwargs['player'] = self.player
 		return kwargs
+
+class ShowPlayer(DetailView):
+	model = Player
+	template_name = 'game/show_player.html'
+
+	def get_object(self, queryset=None):
+		return get_object_or_404(Player, id=self.kwargs['pk'], active=True)
+
+class Leaderboard(TemplateView):
+	template_name = 'game/leaderboard.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(Leaderboard, self).get_context_data(**kwargs)
+		game = get_object_or_404(Game, id=self.kwargs['pk'])
+		if game.status in ('in_progress', 'finished'):
+			context['game'] = game
+			context['top_humans'] = top_humans(game)
+			context['top_zombies'] = top_zombies(game)
+			return context
+		else:
+			raise Http404
