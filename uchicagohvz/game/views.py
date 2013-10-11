@@ -55,13 +55,6 @@ class ShowGame(DetailView):
 					else:
 						context['player_rank'] = player.zombie_rank
 						context['killed_by'] = player.killed_by
-						if self.object.status == 'in_progress':
-							try: # replace kill tree with personal kill tree
-								my_kill = Kill.objects.get(victim=player)
-								context['kill_tree'] = my_kill.get_descendants(include_self=True)
-								context['personal_kill_tree'] = True
-							except:
-								pass
 		return context
 
 class RegisterForGame(FormView):
@@ -214,6 +207,12 @@ class ShowPlayer(DetailView):
 
 	def get_object(self, queryset=None):
 		return get_object_or_404(Player, id=self.kwargs['pk'], active=True)
+
+	def get_context_data(self, **kwargs):
+		context = super(ShowPlayer, self).get_context_data(**kwargs)
+		my_kill = Kill.objects.filter(victim=self.object)[0]
+		context['kill_tree'] = my_kill.get_descendants(include_self=True)
+		return context
 
 class Leaderboard(TemplateView):
 	template_name = 'game/leaderboard.html'

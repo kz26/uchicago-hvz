@@ -356,11 +356,12 @@
 
 {% if kill_tree %}
 <hr>
-<h2>{% if personal_kill_tree %}My {% endif %}Kill Tree</h2>
+<h2>Global Kill Tree</h2>
 <ul>
     {% recursetree kill_tree %}
         <li>
-            <a href="{% url 'player|show' pk=node.victim.id %}">{{ node.victim.user.get_full_name }} ({{ node.victim.bite_code }}</a>, {{ node.victim.get_dorm_display }}) - killed on {{ node.date|date:"SHORT_DATE_FORMAT" }}
+            <a href="{% url 'player|show' pk=node.victim.id %}">{{ node.victim.display_name }} ({{ node.victim.get_dorm_display }})</a> - 
+            	killed on {{ node.date }}
             {% if not node.is_leaf_node %}
                 <ul>
                     {{ children }}

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% load compress %}
+{% extends 'base.html' %}{% load mptt_tags %}{% load compress %}
 {% block content %}
 <div class="page-header">
 	<h1>{{ player.display_name }} <small>{{ player.game.name }}</small></h1>
@@ -53,6 +53,22 @@
 		{% endif %}
 	</div>
 </div>
+
+<h2>Kill Tree</h2>
+<ul>
+    {% recursetree kill_tree %}
+        <li>
+            <a href="{% url 'player|show' pk=node.victim.id %}">{{ node.victim.display_name }} ({{ node.victim.get_dorm_display }})</a> - 
+            	killed on {{ node.date }}
+            {% if not node.is_leaf_node %}
+                <ul>
+                    {{ children }}
+                </ul>
+            {% endif %}
+        </li>
+    {% endrecursetree %}
+</ul>
+
 {% endblock %}
 {% block script %}
 {% if not player.human %}
