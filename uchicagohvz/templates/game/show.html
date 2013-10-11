@@ -95,10 +95,10 @@
 		{% if killed_by %}
 		<p class="text-danger">Killed by {{ killed_by.user.get_full_name }} - ({{ killed_by.get_dorm_display }}) - ({{ killed_by.bite_code }})
 		{% endif %}
-		<h3>My Bite Code</h3>
-		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
 		{% endif %}
 		{% if game.status == 'in_progress' %}
+		<h3>My Bite Code</h3>
+		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
 		{% if not player.human %}
 		<a class="btn btn-danger btn-block" href="{% url 'game|bite' pk=game.pk %}">Log a kill...</a>
 		<p class="bold text-info">
@@ -181,7 +181,7 @@
 				{% for kill in player.kills %}
 				<tr>
 					<td>{{ kill.points }}</td>
-					<td>Kill: {{ kill.victim.user.get_full_name }} ({{ kill.victim.display_name }}) on {{ kill.date|date:"SHORT_DATE_FORMAT" }} {% if kill.notes %} [{{ kill.notes}}]{% endif %}</td>
+					<td>Kill: {{ kill.victim.user.get_full_name }} ({{ kill.victim.bite_code }}, {{ kill.victim.get_dorm_display }}) on {{ kill.date|date:"SHORT_DATE_FORMAT" }} {% if kill.notes %} [{{ kill.notes}}]{% endif %}</td>
 				</tr>
 				{% endfor %}
 				{% for award in player.awards.all %}
@@ -346,7 +346,7 @@
 <ul>
     {% recursetree kill_tree %}
         <li>
-            {{ node.victim.user.get_full_name }} ({{ node.victim.get_dorm_display }}) - {{ node.victim.bite_code }} - killed {{ node.date }}
+            {{ node.victim.user.get_full_name }} ({{ node.victim.bite_code }}, {{ node.victim.get_dorm_display }}) - killed on {{ node.date|date:"SHORT_DATE_FORMAT" }}
             {% if not node.is_leaf_node %}
                 <ul>
                     {{ children }}
