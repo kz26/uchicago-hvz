@@ -53,9 +53,23 @@ class BiteCodeForm(forms.Form):
 		data = super(BiteCodeForm, self).clean()
 		lat = data.get('lat')
 		lng = data.get('lng')
-		if lat or lng:
-			if not (lat and lng):
-				raise forms.ValidationError('Both lat and lng must both be specified')			
+		if not (lat and lng):
+			raise forms.ValidationError('Both lat and lng must both be specified')			
+		return data
+
+class AddKillGeotagForm(forms.ModelForm):
+	class Meta:
+		model = Kill
+		fields = ('lat', 'lng')
+	lat = forms.FloatField(required=False, validators=[validate_lat])
+	lng = forms.FloatField(required=False, validators=[validate_lng])
+
+	def clean(self):
+		data = super(AddKillGeotagForm, self).clean()
+		lat = data.get('lat')
+		lng = data.get('lng')
+		if not (lat and lng):
+			raise forms.ValidationError('Both lat and lng must both be specified')			
 		return data
 
 class AwardCodeForm(forms.Form):

@@ -118,6 +118,29 @@ class EnterBiteCode(FormView):
 		context = super(EnterBiteCode, self).get_context_data(**kwargs)
 		return context
 
+class AddKillGeotag(UpdateView):
+	form_class = AddKillGeotagForm
+	model = Kill
+	template_name = 'game/add-kill-geotag.html'
+
+	@method_decorator(login_required)
+	def dispatch(self, request, *args, **kwargs):
+		return super(AddKillGeotag, self).dispatch(request, *args, **kwargs)
+
+	def get_object(self, queryset=None):
+		kill = super(AddKillGeotag, self).get_object()
+		if kill.killer.user == self.request.user and not (kill.lat and kill.lng):
+			return kill
+		raise Http404
+
+	def form_valid(self, form):
+		kill = self.object
+		kill.lat = form.cleaned_data.get('lat')
+		kill.lng = form.cleaned_data.get('lng')
+		kill.save()
+		messages.success(self.request, 'Kill geotagged successfully.')
+		return HttpResponseRedirect(kill.killer.game.get_absolute_url())
+
 class SubmitCodeSMS(APIView):
 	@method_decorator(csrf_exempt)
 	def post(self, request, *args, **kwargs):

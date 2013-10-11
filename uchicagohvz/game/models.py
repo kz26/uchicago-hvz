@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.db import transaction
 from django.conf import settings
 from django.utils import timezone
@@ -132,6 +133,10 @@ class Player(models.Model):
 	@property
 	def kills(self):
 		return Kill.objects.filter(killer__id=self.id).exclude(victim__id=self.id).order_by('-date')
+
+	@property
+	def non_geotagged_kills(self):
+		return Kill.objects.filter(killer__id=self.id).filter(Q(lat__isnull=True) | Q(lng__isnull=True))
 
 	@transaction.atomic
 	def kill_me(self, killer):

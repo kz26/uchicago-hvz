@@ -21,4 +21,5 @@ urlpatterns = patterns('',
     url(r'^game/(?P<pk>[0-9]+)/data/zombies-by-major/$', ZombiesByMajor.as_view(), name='game|data|zbm'),
     url(r'^player/(?P<pk>[0-9]+)/$', ShowPlayer.as_view(), name='player|show'),
     url(r'^player/(?P<pk>[0-9]+)/data/kills/$', PlayerKillFeed.as_view(), name='player|data|kills'),
+    url(r'^kill/(?P<pk>[0-9]+)/geotag/$', AddKillGeotag.as_view(), name='kill|geotag'),
 )
