@@ -210,8 +210,9 @@ class ShowPlayer(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(ShowPlayer, self).get_context_data(**kwargs)
-		my_kill = Kill.objects.filter(victim=self.object)[0]
-		context['kill_tree'] = my_kill.get_descendants(include_self=True)
+		if not self.object.human:
+			my_kill = Kill.objects.filter(victim=self.object)[0]
+			context['kill_tree'] = my_kill.get_descendants(include_self=True)
 		return context
 
 class Leaderboard(TemplateView):

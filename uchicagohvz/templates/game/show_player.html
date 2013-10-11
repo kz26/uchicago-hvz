@@ -54,6 +54,7 @@
 	</div>
 </div>
 
+{% if kill_tree %}
 <h2>Kill Tree</h2>
 <ul>
     {% recursetree kill_tree %}
@@ -68,7 +69,7 @@
         </li>
     {% endrecursetree %}
 </ul>
-
+{% endif %}
 {% endblock %}
 {% block script %}
 {% if not player.human %}
