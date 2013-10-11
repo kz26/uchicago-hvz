@@ -211,7 +211,7 @@ class ShowPlayer(DetailView):
 	def get_context_data(self, **kwargs):
 		context = super(ShowPlayer, self).get_context_data(**kwargs)
 		player = self.object
-		if not player.human and (player.user == self.request.user or game.status == 'finished'):
+		if (not player.human) and (player.user == self.request.user or player.game.status == 'finished'):
 			my_kill = Kill.objects.filter(victim=player)[0]
 			context['kill_tree'] = my_kill.get_descendants(include_self=True)
 		return context
