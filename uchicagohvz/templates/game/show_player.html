@@ -15,6 +15,8 @@
 	<dt>Human Points</dt>
 	<dd>{{ player.human_points }} (#{{ player.human_rank.0 }} of {{ player.human_rank.1 }})</dd>
 	{% else %}
+	<dt>Kills</dt>
+	<dd>{{ player.kills.count }}</dd>
 	<dt>Zombie Points</dt>
 	<dd>{{ player.zombie_points }} (#{{ player.zombie_rank.0 }} of {{ player.zombie_rank.1 }})</dd>
 	{% endif %}

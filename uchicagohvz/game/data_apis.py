@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import serializers
+from ranking import Ranking
 from uchicagohvz.game.models import *
 from datetime import timedelta
 from collections import OrderedDict
@@ -82,9 +83,9 @@ def top_zombies(game):
 
 def human_rank(player):
 	th = top_humans(player.game)
-	scores = sorted(set([x['human_points'] for x in th]), reverse=True)
 	player_score = [x['human_points'] for x in th if x['player_id'] == player.id][0]
-	return (scores.index(player_score) + 1, len(th))
+	scores = [x['human_points'] for x in th]
+	return (Ranking(scores, start=1).rank(player_score), len(th))
 
 def zombie_rank(player):
 	tz = top_zombies(player.game)
@@ -92,8 +93,8 @@ def zombie_rank(player):
 		player_score = [x['zombie_points'] for x in tz if x['player_id'] == player.id][0]
 	except:
 		return None
-	scores = sorted(set([x['zombie_points'] for x in tz]), reverse=True)
-	return (scores.index(player_score) + 1, len(tz))
+	scores = [x['zombie_points'] for x in tz]
+	return (Ranking(scores, start=1).rank(player_score), len(tz))
 
 def most_courageous_dorms(game): # defined as (1 / humans in dorm) * dorm's current human points
 	key = "%s_%s" % ('most_courageous_dorms', game.id)
