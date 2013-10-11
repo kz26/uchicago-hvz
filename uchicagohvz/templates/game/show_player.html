@@ -15,6 +15,10 @@
 	<dt>Human Points</dt>
 	<dd>{{ player.human_points }} (#{{ player.human_rank.0 }} of {{ player.human_rank.1 }})</dd>
 	{% else %}
+	{% if player.killed_by %}
+	<dt>Killed by</dt>
+	<dd><a href="{% url 'player|show' pk=player.killed_by.id %}">{{ player.killed_by.display_name }}</a></dd>
+	{% endif %}
 	<dt>Kills</dt>
 	<dd>{{ player.kills.count }}</dd>
 	<dt>Zombie Points</dt>
