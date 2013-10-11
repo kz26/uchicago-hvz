@@ -34,8 +34,8 @@
 				{% for kill in player.kills %}
 				<tr>
 					<td>{{ kill.points }}</td>
-					<td>Kill: <a href="{% url 'player|show' pk=kill.victim.id %}">{{ kill.victim.user.get_full_name }} ({{ kill.victim.bite_code }}, 
-						{{ kill.victim.get_dorm_display }})</a> on {{ kill.date|date:"SHORT_DATE_FORMAT" }} {% if kill.notes %} [{{ kill.notes}}]{% endif %}
+					<td>Kill: <a href="{% url 'player|show' pk=kill.victim.id %}">{{ kill.victim.bite_code }} ({{ kill.victim.get_dorm_display }})</a>
+						on {{ kill.date|date:"SHORT_DATE_FORMAT" }} {% if kill.notes %} [{{ kill.notes}}]{% endif %}
 					</td>
 				</tr>
 				{% endfor %}
