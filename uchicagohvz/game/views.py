@@ -121,7 +121,7 @@ class SubmitCodeSMS(APIView):
 		data['message_timestamp'] = data.pop('message-timestamp', '') # workaround for hyphen in field name
 		data['network_code'] = data.pop('network-code', '')
 		serializer = NexmoSMSSerializer(data=data)
-		code = data['text'].lower().strip()
+		code = data.get('text', '').lower().strip()
 		if serializer.is_valid():
 			data = serializer.object
 			games = Game.objects.all().order_by('-start_date')
@@ -149,7 +149,8 @@ class SubmitCodeSMS(APIView):
 						send_sms_confirmation.delay(player, award)
 						return Response()
 		# player has a valid number but entered an invalid code
-		send_sms_invalid_code.delay(player, code)
+		if code:
+			send_sms_invalid_code.delay(player, code)
 		return Response()
 
 class SubmitAwardCode(BaseFormView):
