@@ -54,7 +54,6 @@ class ShowGame(DetailView):
 						context['player_rank'] = player.human_rank
 					else:
 						context['player_rank'] = player.zombie_rank
-						context['killed_by'] = player.killed_by
 		return context
 
 class RegisterForGame(FormView):
@@ -212,8 +211,11 @@ class ShowPlayer(DetailView):
 		context = super(ShowPlayer, self).get_context_data(**kwargs)
 		player = self.object
 		if (not player.human) and (player.user == self.request.user or player.game.status == 'finished'):
-			my_kill = Kill.objects.filter(victim=player)[0]
-			context['kill_tree'] = my_kill.get_descendants(include_self=True)
+			try:
+				my_kill = Kill.objects.filter(victim=player)[0]
+				context['kill_tree'] = my_kill.get_descendants(include_self=True)
+			except:
+				pass
 		return context
 
 class Leaderboard(TemplateView):

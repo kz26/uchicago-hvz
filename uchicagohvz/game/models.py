@@ -131,6 +131,14 @@ class Player(models.Model):
 			return None
 
 	@property
+	def time_of_death(self):
+		if not self.human:
+			kills = Kill.objects.exclude(parent=None).filter(victim=self).order_by('-date')
+			if kills.exists():
+				return kills[0].date
+		return None
+
+	@property
 	def kills(self):
 		return Kill.objects.filter(killer__id=self.id).exclude(victim__id=self.id).order_by('-date')
 

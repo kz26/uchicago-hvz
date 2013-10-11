@@ -17,7 +17,7 @@
 	{% else %}
 	{% if player.killed_by %}
 	<dt>Killed by</dt>
-	<dd><a href="{% url 'player|show' pk=player.killed_by.id %}">{{ player.killed_by.display_name }}</a></dd>
+	<dd><a href="{% url 'player|show' pk=player.killed_by.id %}">{{ player.killed_by.display_name }}</a> on {{ player.time_of_death }}</dd>
 	{% endif %}
 	<dt>Kills</dt>
 	<dd>{{ player.kills.count }}</dd>
