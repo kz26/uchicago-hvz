@@ -150,8 +150,6 @@ class Player(models.Model):
 	def kill_me(self, killer):
 		if not self.human:
 			return None
-		self.human = False
-		self.save()
 		parent_kills = Kill.objects.filter(victim=killer).order_by('-date')
 		if parent_kills.exists():
 			parent_kill = parent_kills[0]
@@ -239,6 +237,9 @@ class Kill(MPTTModel):
 		except Kill.DoesNotExist:
 			parent = None
 		self.parent = parent
+		victim = self.victim
+		victim.human = False
+		victim.save()
 		super(Kill, self).save(*args, **kwargs)
 
 REDEEM_TYPES = (
