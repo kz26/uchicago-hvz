@@ -120,7 +120,7 @@
 		<form class="form-inline" role="form" action="{% url 'game|code' pk=game.pk %}" method="post">
 			{% csrf_token %}
 			<div class="form-group">
-				<input type="text" class="form-control" name="code" placeholder="Enter mission code" required>
+				<input type="text" class="form-control" name="code" placeholder="two words" required>
 			</div>
 			<div class="form-group">
 				<button class="btn btn-success" type="submit">Submit</button>

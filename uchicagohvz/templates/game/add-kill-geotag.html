@@ -1,7 +1,8 @@
 {% extends 'base.html' %}{% load compress %}
 {% block content %}
 <div class="page-header">
-	<h1 class="text-danger">Add kill geotag for {{ kill.victim.user.get_full_name }} ({{ kill.victim.bite_code }}) <small>{{ kill.killer.game.name }}</small></h1>
+	<h1 class="text-danger">Add kill geotag <small>{{ kill.killer.game.name }}</small></h1>
+	<h3>{{ kill.victim.user.get_full_name }} ({{ kill.victim.bite_code }}) on {{ kill.date }}</h3>
 </div>
 
 <form role="form" method="post">
