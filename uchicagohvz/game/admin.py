@@ -16,6 +16,8 @@ class PlayerAdmin(admin.ModelAdmin):
 class KillAdmin(admin.ModelAdmin):
 	list_filter = ('killer__game__name',)
 	readonly_fields = ('parent',)
+	search_fields = ('killer__user__cnetid', 'killer__user__first_name', 'killer__user__last_name', 
+		'victim__user__cnetid', 'victim__user__first_name', 'victim__user__last_name')
 
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(Kill, KillAdmin)

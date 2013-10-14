@@ -233,8 +233,8 @@ class Kill(MPTTModel):
 
 	def save(self, *args, **kwargs):
 		try:
-			parent = Kill.objects.exclude(id=self.id).get(victim=self.killer)
-		except Kill.DoesNotExist:
+			parent = Kill.objects.exclude(id=self.id).filter(victim=self.killer)[0]
+		except:
 			parent = None
 		self.parent = parent
 		victim = self.victim
