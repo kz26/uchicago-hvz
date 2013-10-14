@@ -21,7 +21,9 @@
 		<label for="killMap">Kill location (required)</label>
 		<span class="help-block">Left-click on map to mark location</span>
 		{% if form.lat.errors or form.lng.errors %}
-		<span class="text-danger">A valid location within the game boundaries must be specified.</span>
+		<ul class="errorlist">
+			<li><span class="text-danger">A valid location within the game boundaries must be specified.</span></li>
+		</ul>
 		{% endif %}
 		<div class="row">
 			<div class="col-lg-6">
