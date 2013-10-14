@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import transaction
 from django.contrib import messages
 from django.http import *
+from django.core.exceptions import *
 from django.views.generic import *
 from django.views.generic.edit import BaseFormView
 from django.utils import timezone
@@ -101,10 +102,13 @@ class EnterBiteCode(FormView):
 	def get_form_kwargs(self):
 		kwargs = super(EnterBiteCode, self).get_form_kwargs()
 		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
-		self.killer = get_object_or_404(Player, game=self.game, active=True, human=False, user=self.request.user)
-		kwargs['killer'] = self.killer
-		kwargs['require_location'] = True
-		return kwargs
+		if self.game.status == 'in_progress':
+			self.killer = get_object_or_404(Player, game=self.game, active=True, human=False, user=self.request.user)
+			kwargs['killer'] = self.killer
+			kwargs['require_location'] = True
+			return kwargs
+		else:
+			raise PermissionDenied
 
 	def get_context_data(self, **kwargs):
 		context = super(EnterBiteCode, self).get_context_data(**kwargs)
@@ -123,7 +127,7 @@ class AddKillGeotag(UpdateView):
 		kill = super(AddKillGeotag, self).get_object()
 		if kill.killer.user == self.request.user and not (kill.lat and kill.lng):
 			return kill
-		raise Http404
+		raise PermissionDenied
 
 	def form_valid(self, form):
 		kill = self.object
@@ -196,9 +200,12 @@ class SubmitAwardCode(BaseFormView):
 	def get_form_kwargs(self):
 		kwargs = super(SubmitAwardCode, self).get_form_kwargs()
 		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
-		self.player = get_object_or_404(Player, game=self.game, active=True, user=self.request.user)
-		kwargs['player'] = self.player
-		return kwargs
+		if self.game.status == 'in_progress':
+			self.player = get_object_or_404(Player, game=self.game, active=True, user=self.request.user)
+			kwargs['player'] = self.player
+			return kwargs
+		else:
+			raise PermissionDenied
 
 class ShowPlayer(DetailView):
 	model = Player
