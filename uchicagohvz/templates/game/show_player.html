@@ -51,7 +51,7 @@
 				{% endfor %}
 			</tbody>
 		</table>
-		{% if not player.human %}
+		{% if player.human == False and player.kills.count > 0 %}
 		<h2>Kills <small>geotagged kills only</small></h2>
 		<div id="killMap" style="height: 350px;"></div>
 		{% endif %}
@@ -76,7 +76,7 @@
 {% endif %}
 {% endblock %}
 {% block script %}
-{% if not player.human %}
+{% if player.human == False and player.kills > 0 %}
 {% include 'google-maps-script.html' %}
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.2.1/moment.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/3.0.2/highcharts.js"></script>
