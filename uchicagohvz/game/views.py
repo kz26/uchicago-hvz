@@ -147,12 +147,16 @@ class SubmitCodeSMS(APIView):
 		code = data.get('text', '').lower().strip()
 		if serializer.is_valid():
 			data = serializer.object
+			phone_number = "%s-%s-%s" % (data['msisdn'][1:4], data['msisdn'][4:7], data['msisdn'][7:11])
+			try:
+				profile = Profile.objects.get(phone_number=phone_number)
+			except:
+				return Response()
 			games = Game.objects.all().order_by('-start_date')
 			for game in games:
 				if game.status == 'in_progress':
 					try:
-						phone_number = "%s-%s-%s" % (data['msisdn'][1:4], data['msisdn'][4:7], data['msisdn'][7:11])
-						player = Player.objects.get(game=game, user__profile__phone_number=phone_number)
+						player = Player.objects.get(game=game, user=profile.user)
 					except Player.DoesNotExist:
 						return Response()
 					form = BiteCodeForm(data={'bite_code': code}, killer=player)
@@ -173,7 +177,7 @@ class SubmitCodeSMS(APIView):
 						return Response()
 		# player has a valid number but entered an invalid code
 		if code:
-			send_sms_invalid_code.delay(player, code)
+			send_sms_invalid_code.delay(profile, code)
 		return Response()
 
 class SubmitAwardCode(BaseFormView):

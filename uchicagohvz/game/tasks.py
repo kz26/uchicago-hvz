@@ -45,10 +45,10 @@ def send_sms_confirmation(player, obj): # obj is either a kill or an award objec
 	email.send()
 
 @task
-def send_sms_invalid_code(player, code):
+def send_sms_invalid_code(profile, code):
 	body = "Invalid code: %s" % (code)
-	phone_number = player.user.profile.phone_number.replace('-', '')
-	to_addr = CARRIERS[player.user.profile.phone_carrier] % (phone_number)
+	phone_number = profile.phone_number.replace('-', '')
+	to_addr = CARRIERS[profile.phone_carrier] % (phone_number)
 	email = mail.EmailMessage(body=body, to=[to_addr])
 	email.send()
 
