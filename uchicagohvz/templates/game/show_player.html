@@ -11,10 +11,9 @@
 	<dd>{{ player.get_dorm_display }}</dd>
 	<dt>Major</dt>
 	<dd>{{ player.major }}</dd>
-	{% if player.human %}
 	<dt>Human Points</dt>
 	<dd>{{ player.human_points }} (#{{ player.human_rank.0 }} of {{ player.human_rank.1 }})</dd>
-	{% else %}
+	{% if not player.human %}
 	{% if player.killed_by %}
 	<dt>Killed by</dt>
 	<dd><a href="{% url 'player|show' pk=player.killed_by.id %}">{{ player.killed_by.display_name }}</a> on {{ player.time_of_death }}</dd>
@@ -24,7 +23,6 @@
 	<dt>Zombie Points</dt>
 	<dd>{{ player.zombie_points }} (#{{ player.zombie_rank.0 }} of {{ player.zombie_rank.1 }})</dd>
 	{% endif %}
-
 </dl>
 
 <div class="row">
