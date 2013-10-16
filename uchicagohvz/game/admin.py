@@ -17,13 +17,14 @@ class PlayerAdmin(admin.ModelAdmin):
 
 	def players_to_csv(ma, request, players):
 		response = HttpResponse(content_type='text/plain')
-		header = ['NAME', 'USERNAME', 'EMAIL', 'GAME', 'ACTIVE', 'DORM', 'RENTING_GUN', 'GUN_RETURNED']
+		header = ['NAME', 'USERNAME', 'EMAIL', 'PHONE_NUMBER', 'GAME', 'ACTIVE', 'DORM', 'RENTING_GUN', 'GUN_RETURNED']
 		response.write(','.join(header) + '\n')
 		for p in players.order_by('user__last_name', 'user__first_name'):
 			data = (
 				p.user.get_full_name(),
 				p.user.username,
 				p.user.email,
+				p.user.profile.phone_number,
 				p.game.name,
 				str(p.active),
 				p.get_dorm_display(),
