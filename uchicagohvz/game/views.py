@@ -224,7 +224,7 @@ class ShowPlayer(DetailView):
 		if (not player.human) and (player.user == self.request.user or player.game.status == 'finished'):
 			try:
 				my_kill = Kill.objects.filter(victim=player)[0]
-				context['kill_tree'] = my_kill.get_descendants(include_self=True)
+				context['kill_tree'] = my_kill.get_descendants()
 			except:
 				pass
 		return context
