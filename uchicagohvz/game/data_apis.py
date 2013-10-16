@@ -56,7 +56,8 @@ def top_humans(game):
 			d = {
 				'player_id': player.id,
 				'display_name': player.display_name,
-				'human_points': player.human_points
+				'human_points': player.human_points,
+				'human': player.human
 			}
 			data.append(d)
 		data.sort(key=lambda x: x['human_points'], reverse=True)
