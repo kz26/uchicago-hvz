@@ -19,7 +19,10 @@
 			<tbody>
 				{% for p in top_humans %}
 				<tr>
-					<td><a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a></td>
+					<td>
+						<a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a>
+						{% if not p.human %}<span class="text-danger">(dead)</span>{% endif %}
+					</td>
 					<td>{{ p.human_points }}</td>
 				</tr>
 				{% endfor %}
