@@ -3,10 +3,10 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from uchicagohvz.game.models import *
 
-class GameRegistrationForm(forms.Form):
-	dorm = forms.TypedChoiceField(choices=DORMS)
-	agree = forms.BooleanField()
-	renting_gun = forms.BooleanField(required=False)
+class GameRegistrationForm(forms.ModelForm):
+	class Meta:
+		model = Player
+		fields = ('dorm', 'gun_requested', 'agree')
 
 	def __init__(self, *args, **kwargs):
 		super(GameRegistrationForm, self).__init__(*args, **kwargs)

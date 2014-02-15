@@ -3,10 +3,10 @@ from django.db.models import Q
 from django.db import transaction
 from django.conf import settings
 from django.utils import timezone
+import django.dispatch
 from uchicagohvz.overwrite_fs import OverwriteFileSystemStorage
 from uchicagohvz.users.backend import UChicagoLDAPBackend
 from mptt.models import MPTTModel, TreeForeignKey
-
 import hashlib
 import os
 import random
@@ -88,6 +88,21 @@ ADJECTIVES = open(os.path.join(settings.BASE_DIR, "game/word-lists/adjs.txt")).r
 def gen_bite_code():
 	return random.choice(ADJECTIVES) + ' ' + random.choice(NOUNS)
 
+class Squad(models.Model):
+	class Meta:
+		unique_together = (('game', 'name'))
+
+	game = models.ForeignKey(Game, related_name='squads')
+	name = models.CharField(max_length=128)
+
+	@property
+	def human_points(self):
+		pass
+
+	@property
+	def zombie_points(self):
+		pass
+
 class Player(models.Model):
 	class Meta:
 		unique_together = (('user', 'game'), ('game', 'bite_code'))
@@ -96,11 +111,13 @@ class Player(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='+')
 	game = models.ForeignKey(Game, related_name='players')
 	active = models.BooleanField(default=False)
+	squad = models.ForeignKey(Squad, null=True, blank=True)
 	bite_code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
 	dorm = models.CharField(max_length=4, choices=DORMS)
 	major = models.CharField(max_length=255, editable=settings.DEBUG)
 	human = models.BooleanField(default=True)
-	points = models.IntegerField(default=0)
+	opt_out_hvt = models.BooleanField(default=False)
+	gun_requested = models.BooleanField(default=False)
 	renting_gun = models.BooleanField(default=False)
 	gun_returned = models.BooleanField(default=False)
 
@@ -137,6 +154,16 @@ class Player(models.Model):
 			if kills.exists():
 				return kills[0].date
 		return None
+
+	@property
+	def lifespan(self):
+		if self.game.status == 'in_progress':
+			end_time = timezone.now()
+		elif self.game.status == 'finished':
+			end_time = self.game.end_date
+		else:
+			return None
+		return end_time - self.game.start_date
 
 	@property
 	def kills(self):
@@ -232,6 +259,8 @@ class Kill(MPTTModel):
 		return "%s (%s) --> %s (%s) [%s]" % (self.killer.user.get_full_name(), self.killer.user.username, self.victim.user.get_full_name(), self.victim.user.username, self.killer.game.name)
 
 	def save(self, *args, **kwargs):
+		if killer.game != victim.game:
+			raise Exception('Killer.game and victim.game do not match')
 		try:
 			parent = Kill.objects.exclude(id=self.id).filter(victim=self.killer)[0]
 		except:
@@ -276,7 +305,8 @@ class HighValueTarget(models.Model):
 	player = models.OneToOneField(Player, unique=True)
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
-	points = models.IntegerField(default=settings.HVT_KILL_POINTS)
+	kill_points = models.IntegerField(default=settings.HVT_KILL_POINTS)
+	award_points = models.IntegerField(default=settings.HVT_AWARD_POINTS)
 
 	def __unicode__(self):
 		return "%s" % (self.player)
@@ -293,38 +323,53 @@ class HighValueDorm(models.Model):
 	def __unicode__(self):
 		return "%s (%s)" % (self.get_dorm_display(), self.game.name)
 
-def update_score(sender, **kwargs):
-	players = []
-	if sender == Kill:
-		players = [kwargs['instance'].killer.id]
-	elif sender == Award.players.through:
-		if kwargs['action'] in ('post_add', 'post_remove'):
-			players = kwargs.get('pk_set')
-			if players is None:
-				return
-		elif kwargs['action'] == 'post_clear':
-			players = Player.objects.filter(active=True, game=kwargs['instance'].game).values_list('id', flat=True)
-		else:
-			return
-	elif sender == Award:
-		players = Player.objects.filter(active=True, game=kwargs['instance'].game).values_list('id', flat=True)
-	for pid in players:
-		p = Player.objects.get(pk=pid)
-		kill_points = Kill.objects.filter(killer=p).exclude(victim=p).aggregate(points=models.Sum('points'))['points'] or 0
-		award_points = p.awards.aggregate(points=models.Sum('points'))['points'] or 0
-		p.points = kill_points + award_points
-		p.save(update_fields=['points'])
-
-models.signals.post_save.connect(update_score, sender=Kill)
-models.signals.post_delete.connect(update_score, sender=Kill)
-models.signals.m2m_changed.connect(update_score, sender=Award.players.through)
-models.signals.post_delete.connect(update_score, sender=Award)
+# Signals
 
 def unzombify(sender, **kwargs):
 	victim = kwargs['instance'].victim
 	if not Kill.objects.filter(victim=victim).exists():
+		# don't unzombify if Kills with this victim still exist
 		victim.human = True
 		victim.save()
 
 models.signals.post_delete.connect(unzombify, sender=Kill)
 
+score_update_required = django.dispatch.signal(providing_args=['game'])
+
+def kill_changed(sender, **kwargs):
+	score_update_required.send(sender=sender, game=kwargs['instance'].game
+
+models.signals.post_save.connect(kill_changed, sender=Kill)
+models.signals.post_delete.connect(kill_changed, sender=Kill)
+
+def player_changed(sender, **kwargs):
+	instance = kwargs['instance']
+	try:
+		player = Player.objects.get(pk=instance.pk)
+	except sender.DoesNotExist:
+		score_update_required.send(sender=sender, game=instance.game)
+	else:
+		if player.squad != instance.squad:
+			score_update_required.send(sender=sender, game=instance.game)
+
+models.signals.pre_save.connect(player_changed, sender=Player) 
+models.signals.post_delete.connect(player_changed, sender=Player)
+
+def award_changed(sender, **kwargs):
+	score_update_required.send(sender=sender, game=kwargs['instance'].game)
+
+models.signals.post_save.connect(award_changed, sender=Award)
+models.signals.m2m_changed.connect(award_changed, sender=Award.players.through)
+models.signals.post_delete.connect(award_changed, sender=Award)
+
+def hvd_changed(sender, **kwargs):
+	score_update_required.send(sender=sender, game=kwargs['instance'].game)	
+
+models.signals.post_save.connect(hvd_changed, sender=HighValueDorm)
+models.signals.post_delete.connect(hvd_changed, sender=HighValueDorm)
+
+def hvt_changed(sender, **kwargs):
+	score_update_required.send(sender=sender, game=kwargs['instance'].player.game)
+
+models.signals.post_save.connect(hvt_changed, sender=HighValueTarget)
+models.signals.post_delete.connect(hvt_changed, sender=HighValueTarget)

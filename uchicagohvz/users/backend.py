@@ -49,8 +49,14 @@ class UChicagoLDAPBackend(object):
 					if user_data: # update info
 						user.username = user_data['uid'][0]
 						user.email = user_data['mail'][0]
-						user.first_name = user_data['givenName'][0]
-						user.last_name = user_data['sn'][0]
+						if user_data.get('givenName'):
+							user.first_name = user_data['givenName'][0]
+						else:
+							user.first_name = 'Unknown'
+						if user_data.get('sn'):
+							user.last_name = user_data['sn'][0]
+						else:
+							user.last_name = 'Unknown'
 						user.save()
 					return user
 				except User.DoesNotExist:
