@@ -188,23 +188,23 @@ class Player(models.Model):
 		try:
 			hvt = HighValueTarget.objects.get(player=self)
 			if hvt.start_date < now < hvt.end_date:
-				points = hvt.points
-				tags.append("HVT")
+				points = hvt.kill_points
+				tags.append('HVT')
 		except HighValueTarget.DoesNotExist:
 			pass
 		try:
 			hvd = HighValueDorm.objects.get(game=self.game, dorm=self.dorm)
 			if hvd.start_date < now < hvd.end_date:
 				points += hvd.points
-				tags.append("HVD")
+				tags.append('HVD')
 		except HighValueDorm.DoesNotExist:
 			pass
-		tagtxt = ", ".join(tags)
+		tagtxt = ', '.join(tags)
 		return Kill.objects.create(parent=parent_kill, killer=killer, victim=self, points=points, notes=tagtxt, date=now)
 
 	@property
 	def display_name(self): # real name when game is over; otherwise, dorm + obfuscated code for humans and bite code for zombies
-		if self.game.status == "in_progress":
+		if self.game.status == 'in_progress':
 			if self.human:
 				return "%s %s" % (self.get_dorm_display(), hashlib.sha256(self.bite_code).hexdigest()[:2].upper())
 			else:
@@ -214,7 +214,11 @@ class Player(models.Model):
 
 	@property
 	def human_points(self):
-		return self.awards.filter(redeem_type__in=('H', 'A')).aggregate(points=models.Sum('points'))['points'] or 0
+	try:
+		hvt_points = self.hvt.award_points
+	except HighValueTarget.DoesNotExist:
+		hvt_points = 0
+	return (self.awards.filter(redeem_type__in=('H', 'A')).aggregate(points=models.Sum('points'))['points'] or 0) + hvt_points
 
 	@property
 	def zombie_points(self):
@@ -302,7 +306,7 @@ class Award(models.Model):
 		super(Award, self).save(*args, **kwargs)
 
 class HighValueTarget(models.Model):
-	player = models.OneToOneField(Player, unique=True)
+	player = models.OneToOneField(Player, unique=True, related_name='hvt')
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
 	kill_points = models.IntegerField(default=settings.HVT_KILL_POINTS)
@@ -310,6 +314,11 @@ class HighValueTarget(models.Model):
 
 	def __unicode__(self):
 		return "%s" % (self.player)
+
+	def save(self, *args, **kwargs):
+		if self.player.opt_out_hvt:
+			return
+		super(HighValueTarget, self).save(*args, **kwargs)
 
 class HighValueDorm(models.Model):
 	class Meta:
