@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from uchicagohvz.game.views import *
-from uchicagohvz.game.data_apis import *
+from uchicagohvz.game.api_views import *
 
 urlpatterns = patterns('',
     # Examples:
