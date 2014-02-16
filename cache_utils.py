@@ -7,7 +7,7 @@ def cache_func(seconds):
 		def inner(*args, **kwargs):
 			key = sha256("%s%s%s%s" % (f.__module__, f.__name__, args, kwargs)).hexdigest()
 			result = cache.get(key)
-			if result is None or settings.DEBUG:
+			if result is None or settings.DEBUG or kwargs.pop('use_cache', True) == False:
 				result = f(*args, **kwargs)
 				cache.set(key, result, seconds)
 			return result

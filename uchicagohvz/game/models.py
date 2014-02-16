@@ -3,7 +3,6 @@ from django.db.models import Q
 from django.db import transaction
 from django.conf import settings
 from django.utils import timezone
-import django.dispatch
 from uchicagohvz.overwrite_fs import OverwriteFileSystemStorage
 from uchicagohvz.users.backend import UChicagoLDAPBackend
 from mptt.models import MPTTModel, TreeForeignKey
@@ -215,11 +214,11 @@ class Player(models.Model):
 
 	@property
 	def human_points(self):
-	try:
-		hvt_points = self.hvt.award_points
-	except HighValueTarget.DoesNotExist:
-		hvt_points = 0
-	return (self.awards.filter(redeem_type__in=('H', 'A')).aggregate(points=models.Sum('points'))['points'] or 0) + hvt_points
+		try:
+			hvt_points = self.hvt.award_points
+		except HighValueTarget.DoesNotExist:
+			hvt_points = 0
+		return (self.awards.filter(redeem_type__in=('H', 'A')).aggregate(points=models.Sum('points'))['points'] or 0) + hvt_points
 
 	@property
 	def zombie_points(self):
@@ -342,53 +341,3 @@ class HighValueDorm(models.Model):
 	def __unicode__(self):
 		return "%s (%s)" % (self.get_dorm_display(), self.game.name)
 
-# Signals
-
-def unzombify(sender, **kwargs):
-	victim = kwargs['instance'].victim
-	if not Kill.objects.filter(victim=victim).exists():
-		# don't unzombify if Kills with this victim still exist
-		victim.human = True
-		victim.save()
-
-models.signals.post_delete.connect(unzombify, sender=Kill)
-
-score_update_required = django.dispatch.signal(providing_args=['game'])
-
-def kill_changed(sender, **kwargs):
-	score_update_required.send(sender=sender, game=kwargs['instance'].game
-
-models.signals.post_save.connect(kill_changed, sender=Kill)
-models.signals.post_delete.connect(kill_changed, sender=Kill)
-
-def player_changed(sender, **kwargs):
-	instance = kwargs['instance']
-	try:
-		player = Player.objects.get(pk=instance.pk)
-	except sender.DoesNotExist:
-		score_update_required.send(sender=sender, game=instance.game)
-	else:
-		if player.squad != instance.squad:
-			score_update_required.send(sender=sender, game=instance.game)
-
-models.signals.pre_save.connect(player_changed, sender=Player) 
-models.signals.post_delete.connect(player_changed, sender=Player)
-
-def award_changed(sender, **kwargs):
-	score_update_required.send(sender=sender, game=kwargs['instance'].game)
-
-models.signals.post_save.connect(award_changed, sender=Award)
-models.signals.m2m_changed.connect(award_changed, sender=Award.players.through)
-models.signals.post_delete.connect(award_changed, sender=Award)
-
-def hvd_changed(sender, **kwargs):
-	score_update_required.send(sender=sender, game=kwargs['instance'].game)	
-
-models.signals.post_save.connect(hvd_changed, sender=HighValueDorm)
-models.signals.post_delete.connect(hvd_changed, sender=HighValueDorm)
-
-def hvt_changed(sender, **kwargs):
-	score_update_required.send(sender=sender, game=kwargs['instance'].player.game)
-
-models.signals.post_save.connect(hvt_changed, sender=HighValueTarget)
-models.signals.post_delete.connect(hvt_changed, sender=HighValueTarget)
