@@ -8,26 +8,30 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import serializers
-from ranking import Ranking
 from uchicagohvz.game.models import *
+from cache_utils import cache_func
 from datetime import timedelta
 from collections import OrderedDict
 
 @receiver(score_update_required)
-# needs to be called whenever leaderboards (can) change
-# Add/edit/delete Kill
-# Add/edit/delete Squad / edit Player's Squad
-# Add/edit/delete Award
-# Add/edit/delete HVT, HVD
 def invalidate_cached_data(sender, **kwargs):
+	"""
+	needs to be called whenever leaderboards (can) change:
+		Add/edit/delete Kill
+		Add/edit/delete Squad / edit Player's Squad
+		Add/edit/delete Award
+		Add/edit/delete HVT, HVD
+	"""
 	game = kwargs['instance'].game
 	keys = ('survival_by_dorm', 'top_humans', 'top_zombies', 
 		'most_courageous_dorms', 'most_infectious_dorms', 'humans_per_hour', 
 		'kills_by_tod', 'humans_by_major', 'zombies_by_major'
 	)
-	keys = ["%s_%s" % (k, game.id) for k in keys]
+	g = globals()
+	keys = ["%s%s%s%s" % (g[k].__module__, g[k].__name__, (game,), {}) for k in keys]
 	cache.delete_many(keys)
 
+@cache_func(settings.LEADERBOARD_CACHE_DURATION)
 def kills_per_hour(game):
 	kills = Kill.objects.filter(victim__game=game)
 	delta = min(timezone.now(), game.end_date) - game.start_date
@@ -35,18 +39,14 @@ def kills_per_hour(game):
 	return float(kills.count()) / hours
 
 def survival_by_dorm(game):
-	key = "%s_%s" % ('survival_by_dorm', game.id)
-	data = cache.get(key)
-	if settings.DEBUG or data is None:
-		data = []
-		for dorm, dormName in DORMS:
-			players = game.get_players_in_dorm(dorm)
-			if players.count():
-				e = {'dorm': dormName, 'alive': players.filter(human=True).count(), 'original': players.count()}
-				e['percent']  = 100 * float(e['alive']) / e['original']
-				data.append(e)
-		data.sort(key=lambda x: x['percent'], reverse=True)
-		cache.set(key, data, settings.LEADERBOARD_CACHE_DURATION)
+	data = []
+	for dorm, dormName in DORMS:
+		players = game.get_players_in_dorm(dorm)
+		if players.count():
+			e = {'dorm': dormName, 'alive': players.filter(human=True).count(), 'original': players.count()}
+			e['percent']  = 100 * float(e['alive']) / e['original']
+			data.append(e)
+	data.sort(key=lambda x: x['percent'], reverse=True)
 	return data
 
 def top_humans(game):
@@ -85,20 +85,7 @@ def top_zombies(game):
 		cache.set(key, data, settings.LEADERBOARD_CACHE_DURATION)
 	return data
 
-def human_rank(player):
-	th = top_humans(player.game)
-	player_score = [x['human_points'] for x in th if x['player_id'] == player.id][0]
-	scores = [x['human_points'] for x in th]
-	return (Ranking(scores, start=1).rank(player_score), len(th))
 
-def zombie_rank(player):
-	tz = top_zombies(player.game)
-	try:
-		player_score = [x['zombie_points'] for x in tz if x['player_id'] == player.id][0]
-	except:
-		return None
-	scores = [x['zombie_points'] for x in tz]
-	return (Ranking(scores, start=1).rank(player_score), len(tz))
 
 def most_courageous_dorms(game): # defined as (1 / humans in dorm) * dorm's current human points
 	key = "%s_%s" % ('most_courageous_dorms', game.id)

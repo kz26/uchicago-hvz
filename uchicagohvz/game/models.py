@@ -7,6 +7,7 @@ import django.dispatch
 from uchicagohvz.overwrite_fs import OverwriteFileSystemStorage
 from uchicagohvz.users.backend import UChicagoLDAPBackend
 from mptt.models import MPTTModel, TreeForeignKey
+from ranking import Ranking
 import hashlib
 import os
 import random
@@ -228,13 +229,22 @@ class Player(models.Model):
 
 	@property
 	def human_rank(self):
-		from data_apis import human_rank as hr
-		return hr(self)
+		from data_apis import top_humans
+		th = top_humans(self.game)
+		player_score = [x['human_points'] for x in th if x['player_id'] == self.id][0]
+		scores = [x['human_points'] for x in th]
+		return (Ranking(scores, start=1).rank(player_score), len(th))
 
 	@property
 	def zombie_rank(self):
-		from data_apis import zombie_rank as zr
-		return zr(self)
+		from data_apis import top_zombies
+		tz = top_zombies(self.game)
+		try:
+			player_score = [x['zombie_points'] for x in tz if x['player_id'] == self.id][0]
+		except:
+			return None
+		scores = [x['zombie_points'] for x in tz]
+		return (Ranking(scores, start=1).rank(player_score), len(tz))
 
 	def __unicode__(self):
 		return "%s - %s - %s (%s)" % (self.user.username, self.user.get_full_name(), self.bite_code, self.game.name)
