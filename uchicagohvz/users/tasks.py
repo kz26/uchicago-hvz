@@ -10,3 +10,4 @@ def do_sympa_update(user, listname, subscribe):
 		body = "QUIET DELETE %s %s" % (listname, user.email)
 	email = mail.EmailMessage(subject='', body=body, from_email=settings.SYMPA_FROM_EMAIL, to=[settings.SYMPA_TO_EMAIL])
 	email.send()
+

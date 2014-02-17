@@ -42,6 +42,9 @@ models.signals.post_delete.connect(kill_changed, sender=Kill, dispatch_uid='kill
 
 def player_changed(sender, **kwargs):
 	new_player = kwargs['instance']
+	if new_player.active: # force subscription to zombies listhost for all active players
+		new_player.profile.subscribe_zombies_listhost = True
+		new_player.profile.save()
 	try:
 		old_player = Player.objects.get(pk=instance.pk)
 	except sender.DoesNotExist:

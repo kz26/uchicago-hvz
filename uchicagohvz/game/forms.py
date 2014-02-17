@@ -6,7 +6,9 @@ from uchicagohvz.game.models import *
 class GameRegistrationForm(forms.ModelForm):
 	class Meta:
 		model = Player
-		fields = ('dorm', 'gun_requested', 'agree')
+		fields = ('dorm', 'gun_requested', 'opt_out_hvt', 'agree')
+
+	agree = forms.BooleanField()
 
 	def __init__(self, *args, **kwargs):
 		super(GameRegistrationForm, self).__init__(*args, **kwargs)
