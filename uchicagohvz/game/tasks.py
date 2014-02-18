@@ -1,8 +1,21 @@
 from celery import task
 from django.core import mail
-from uchicagohvz.game.models import Kill, Award
+from uchicagohvz.game.models import Game, Kill, Award
 from uchicagohvz.users.phone import CARRIERS
+from uchicagohvz.game.data_apis import *
 import random
+
+@task
+def regenerate_stats(game_id):
+	game = Game.objects.get(pk=game_id)
+	keys = ('survival_by_dorm', 'top_humans', 'top_zombies', 
+		'most_courageous_dorms', 'most_infectious_dorms', 'humans_per_hour', 
+		'kills_by_tod', 'humans_by_major', 'zombies_by_major'
+	)
+	g = globals()
+	# regenerate 
+	for fn in keys:
+		g[fn](game, use_cache=False)
 
 @task
 def send_death_notification(kill):

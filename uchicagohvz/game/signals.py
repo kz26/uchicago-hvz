@@ -3,7 +3,7 @@ import django.dispatch
 from django.dispatch import receiver
 from django.core.cache import cache
 from uchicagohvz.game.models import *
-from uchicagohvz.game.data_apis import *
+from uchicagohvz.game.tasks import regenerate_stats
 
 @receiver(models.signals.post_delete, sender=Kill, dispatch_uid='unzombify')
 def unzombify(sender, **kwargs):
@@ -16,7 +16,7 @@ def unzombify(sender, **kwargs):
 score_update_required = django.dispatch.Signal(providing_args=['game'])
 
 @receiver(score_update_required)
-def refresh_cached_data(sender, **kwargs):
+def refresh_stats(sender, **kwargs):
 	"""
 	needs to be called whenever leaderboards (can) change:
 		Add/edit/delete Kill
@@ -24,15 +24,7 @@ def refresh_cached_data(sender, **kwargs):
 		Add/edit/delete Award
 		Add/edit/delete HVT, HVD
 	"""
-	game = kwargs['game']
-	keys = ('survival_by_dorm', 'top_humans', 'top_zombies', 
-		'most_courageous_dorms', 'most_infectious_dorms', 'humans_per_hour', 
-		'kills_by_tod', 'humans_by_major', 'zombies_by_major'
-	)
-	g = globals()
-	# regenerate 
-	for fn in keys:
-		g[fn](game, use_cache=False)
+	regenerate_stats.delay(kwargs['game'].pk)
 
 def kill_changed(sender, **kwargs):
 	score_update_required.send(sender=sender, game=kwargs['instance'].killer.game)
