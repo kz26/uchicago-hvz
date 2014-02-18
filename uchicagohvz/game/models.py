@@ -10,6 +10,7 @@ from ranking import Ranking
 import hashlib
 import os
 import random
+from __future__ import division
 
 # Create your models here.
 
@@ -103,19 +104,27 @@ class Squad(models.Model):
 
 	@property
 	def human_points(self):
-		return sum([p.human_points for p in self.players.filter(active=True, human=True)])
+		return sum([p.human_points for p in self.players.filter(active=True, human=True)]) / self.players.filter(active=True).count()
 
 	@property
 	def zombie_points(self):
-		return sum([p.zombie_points for p in self.players.filter(active=True, human=False)])
+		return sum([p.zombie_points for p in self.players.filter(active=True, human=False)]) / self.players.filter(active=True).count()
 
 	@property
 	def human_rank(self):
-		pass
+		from data_apis import top_human_squads
+		ths = top_human_squads(self.game)
+		squad_score = [x['human_points'] for x in ths if x['squad_id'] == self.id][0]
+		scores = [x['human_points'] for x in ths]
+		return (Ranking(scores, start=1).rank(squad_score), len(ths))
 
 	@property
 	def zombie_rank(self):
-		pass
+		from data_apis import top_zombie_squads
+		tzs = top_zombie_squads(self.game)
+		squad_score = [x['zombie_points'] for x in tzs if x['squad_id'] == self.id][0]
+		scores = [x['zombie_points'] for x in tzs]
+		return (Ranking(scores, start=1).rank(squad_score), len(tzs))
 
 class Player(models.Model):
 	class Meta:

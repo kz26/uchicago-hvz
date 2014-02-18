@@ -18,6 +18,7 @@ from uchicagohvz.game.data_apis import *
 from uchicagohvz.game.serializers import *
 from uchicagohvz.game.tasks import *
 from uchicagohvz.users.models import *
+from __future__ import division
 
 # Create your views here.
 
@@ -33,8 +34,8 @@ class ShowGame(DetailView):
 		context = super(ShowGame, self).get_context_data(**kwargs)
 		if self.object.status in ('in_progress', 'finished'):
 			if self.object.get_active_players().count() > 0:
-				context['humans_percent'] = int(round(100 * float(self.object.get_humans().count()) / self.object.get_active_players().count(), 0))
-				context['zombies_percent'] = int(round(100 * float(self.object.get_zombies().count()) / self.object.get_active_players().count(), 0))
+				context['humans_percent'] = int(round(100 * self.object.get_humans().count() / self.object.get_active_players().count(), 0))
+				context['zombies_percent'] = int(round(100 * self.object.get_zombies().count() / self.object.get_active_players().count(), 0))
 				if self.object.status == "in_progress":
 					context['sms_code_number'] = settings.NEXMO_NUMBER
 				context['kills_per_hour'] = kills_per_hour(self.object)

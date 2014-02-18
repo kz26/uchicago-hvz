@@ -5,13 +5,14 @@ from cache_utils import cache_func
 from datetime import timedelta
 from collections import OrderedDict
 from uchicagohvz.game.models import *
+from __future__ import division
 
 @cache_func(settings.LEADERBOARD_CACHE_DURATION)
 def kills_per_hour(game, **kwargs):
 	kills = Kill.objects.filter(victim__game=game)
 	delta = min(timezone.now(), game.end_date) - game.start_date
-	hours = delta.days * 24 + float(delta.seconds) / 3600
-	return float(kills.count()) / hours
+	hours = delta.days * 24 + delta.seconds / 3600
+	return kills.count() / hours
 
 @cache_func(settings.LEADERBOARD_CACHE_DURATION)
 def kills_by_tod(game, **kwargs):
@@ -33,10 +34,41 @@ def survival_by_dorm(game, **kwargs):
 		players = game.get_players_in_dorm(dorm)
 		if players.count():
 			e = {'dorm': dormName, 'alive': players.filter(human=True).count(), 'original': players.count()}
-			e['percent']  = 100 * float(e['alive']) / e['original']
+			e['percent']  = 100 * e['alive'] / e['original']
 			data.append(e)
 	data.sort(key=lambda x: x['percent'], reverse=True)
 	return data
+
+@cache_func(settings.LEADERBOARD_CACHE_DURATION)
+def top_human_squads(game, **kwargs):
+	squads = Squad.objects.filter(game=game)
+	data = []
+	for squad in squads:
+		d = {
+			'squad_id': squad.id,
+			'name': squad.name,
+			'size': squad.players(active=True).count(),
+			'humans': squad.players(active=True, human=True).count(),
+			'human_points': squad.human_points
+		}
+		data.append(d)
+	data.sort(key=lambda x: x['human_points'], reverse=True)
+
+@cache_func(settings.LEADERBOARD_CACHE_DURATION)
+def top_zombie_squads(game, **kwargs):
+	squads = Squad.objects.filter(game=game)
+	data = []
+	for squad in squads:
+		if squad.players.filter(active=True, human=False).count() >= 2:
+			d = {
+				'squad_id': squad.id,
+				'name': squad.name,
+				'size': squad.players(active=True).count(),
+				'zombies': squad.players(active=True, human=False).count(),
+				'zombie_points': squad.zombie_points
+			}
+			data.append(d)
+	data.sort(key=lambda x: x['zombie_points'], reverse=True)
 
 @cache_func(settings.LEADERBOARD_CACHE_DURATION)
 def top_humans(game, **kwargs):
@@ -102,14 +134,14 @@ def humans_per_hour(game, **kwargs):
 	data = []
 	end_date = min(timezone.now(), game.end_date)
 	end_td = end_date - game.start_date
-	end_hour = end_td.days * 24 + round(float(end_td.seconds) / 3600, 0)
+	end_hour = end_td.days * 24 + round(end_td.seconds / 3600, 0)
 	for dorm, dormName in DORMS:
 		sh = game.get_active_players().filter(dorm=dorm).count() # starting humans in this dorm
 		d = OrderedDict([(0, sh)])
 		kills = Kill.objects.filter(victim__game=game, victim__dorm=dorm).order_by('date')
 		for index, kill in enumerate(kills, 1):
 			kd = kill.date - game.start_date
-			hours = kd.days * 24 + round(float(kd.seconds) / 3600, 1)
+			hours = kd.days * 24 + round(kd.seconds / 3600, 1)
 			d[hours] = sh - index # overwrite
 		d[end_hour] = d[d.keys()[-1]]
 		data.append({'name': dormName, 'data': d.items()})
@@ -119,7 +151,7 @@ def humans_per_hour(game, **kwargs):
 	kills = Kill.objects.exclude(parent=None).filter(victim__game=game).order_by('date')
 	for index, kill in enumerate(kills, 1):
 		kd = kill.date - game.start_date
-		hours = kd.days * 24 + round(float(kd.seconds) / 3600, 1)
+		hours = kd.days * 24 + round(kd.seconds / 3600, 1)
 		d[hours] = sh - index # overwrite
 	d[end_hour] = d[d.keys()[-1]]
 	data.append({'name': 'ALL', 'data': d.items()})
@@ -131,7 +163,7 @@ def humans_by_major(game, **kwargs):
 	players = game.players.filter(active=True)
 	majors = players.order_by('major').values_list('major', flat=True).distinct()
 	max_lifespan = min(game.end_date, timezone.now()) - game.start_date
-	max_lifespan_hours = max_lifespan.days * 24 + round(float(max_lifespan.seconds) / 3600, 0)
+	max_lifespan_hours = max_lifespan.days * 24 + round(max_lifespan.seconds / 3600, 0)
 	
 	for major in majors:
 		point = {}
@@ -145,13 +177,13 @@ def humans_by_major(game, **kwargs):
 			lifespans.append(max_lifespan)
 		if lifespans:
 			avg_ls = sum(lifespans, timedelta()) / len(lifespans)
-			avg_ls_hours = avg_ls.days * 24 + round(float(avg_ls.seconds) / 3600, 1)
+			avg_ls_hours = avg_ls.days * 24 + round(avg_ls.seconds / 3600, 1)
 		else:
 			avg_ls_hours = max_lifespan_hours
 		point['x'] = avg_ls_hours
 		major_players = players.filter(major=major)
 		if major_players.count():
-			major_avg_pts = round(float(sum([p.human_points for p in major_players])) / major_players.count(), 2)
+			major_avg_pts = round(sum([p.human_points for p in major_players]) / major_players.count(), 2)
 		else:
 			major_avg_pts = 0
 		point['y'] = major_avg_pts
@@ -175,13 +207,13 @@ def zombies_by_major(game, **kwargs):
 			tszs.append(end_date - kill.date)
 		if tszs:
 			avg_tsz = sum(tszs, timedelta()) / len(tszs)
-			avg_tsz_hours = avg_tsz.days * 24 + round(float(avg_tsz.seconds) / 3600, 1)
+			avg_tsz_hours = avg_tsz.days * 24 + round(avg_tsz.seconds / 3600, 1)
 		else:
 			avg_tsz_hours = 0
 		point['x'] = avg_tsz_hours
 		major_players = players.filter(major=major)
 		if major_players.count():
-			major_avg_pts = round(float(sum([p.zombie_points for p in major_players])) / major_players.count(), 2)
+			major_avg_pts = round(sum([p.zombie_points for p in major_players]) / major_players.count(), 2)
 		else:
 			major_avg_pts = 0
 		point['y'] = major_avg_pts
