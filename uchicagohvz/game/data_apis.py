@@ -69,7 +69,7 @@ def top_zombies(game, **kwargs):
 	return data
 
 @cache_func(settings.LEADERBOARD_CACHE_DURATION)
-def most_courageous_dorms(game, **kwargs): # defined as (1 / humans in dorm) * dorm's current human points
+def most_courageous_dorms(game, **kwargs): # points = 100 * average human points per player in dorm
 	data = []
 	for dorm, dormName in DORMS:
 		players = Player.objects.filter(active=True, dorm=dorm, game=game)
@@ -83,11 +83,10 @@ def most_courageous_dorms(game, **kwargs): # defined as (1 / humans in dorm) * d
 	data.sort(key=lambda x: x['points'], reverse=True)
 	return data
 
-
-def most_infectious_dorms(game, **kwargs): # defined as (1 / zombies in dorm) * total zombie points
+def most_infectious_dorms(game, **kwargs): # points = 100 * average zombie points per player in dorm
 	data = []
 	for dorm, dormName in DORMS:
-		players = Player.objects.filter(active=True, dorm=dorm, game=game, human=False)
+		players = Player.objects.filter(active=True, dorm=dorm, game=game)
 		pc = players.count()
 		if pc != 0:
 			points = 10 * (1.0 / pc) * sum([p.zombie_points for p in players])

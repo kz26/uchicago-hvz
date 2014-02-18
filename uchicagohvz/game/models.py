@@ -103,10 +103,18 @@ class Squad(models.Model):
 
 	@property
 	def human_points(self):
-		pass
+		return sum([p.human_points for p in self.players.filter(active=True, human=True)])
 
 	@property
 	def zombie_points(self):
+		return sum([p.zombie_points for p in self.players.filter(active=True, human=False)])
+
+	@property
+	def human_rank(self):
+		pass
+
+	@property
+	def zombie_rank(self):
 		pass
 
 class Player(models.Model):
@@ -117,7 +125,7 @@ class Player(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='+')
 	game = models.ForeignKey(Game, related_name='players')
 	active = models.BooleanField(default=False)
-	squad = models.ForeignKey(Squad, null=True, blank=True)
+	squad = models.ForeignKey(Squad, null=True, blank=True, related_name='players')
 	bite_code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
 	dorm = models.CharField(max_length=4, choices=DORMS)
 	major = models.CharField(max_length=255, editable=settings.DEBUG)
