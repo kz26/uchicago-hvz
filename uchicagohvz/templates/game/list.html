@@ -9,7 +9,7 @@
 		<h2><a class="btn btn-default btn-lg btn-block" href="{% url 'game|show' pk=game.pk %}">{{ game.name }}</a></h2>
 		<h3>
 			{% if game.status == "registration" %}
-			<span class="text-info">Open for registration</span>
+			<span class="text-success">Open for registration</span>
 			{% elif game.status == "in_progress" %}
 			<span class="text-success">LIVE</span>
 			{% elif game.status == "finished" %}
