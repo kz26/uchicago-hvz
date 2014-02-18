@@ -35,7 +35,7 @@ def refresh_cached_data(sender, **kwargs):
 		g[fn](game, use_cache=False)
 
 def kill_changed(sender, **kwargs):
-	score_update_required.send(sender=sender, game=kwargs['instance'].game)
+	score_update_required.send(sender=sender, game=kwargs['instance'].killer.game)
 
 models.signals.post_save.connect(kill_changed, sender=Kill, dispatch_uid='kill_save')
 models.signals.post_delete.connect(kill_changed, sender=Kill, dispatch_uid='kill_deleted')
