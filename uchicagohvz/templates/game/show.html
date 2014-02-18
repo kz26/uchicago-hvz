@@ -54,8 +54,13 @@
 			<dd>{{ player.get_dorm_display }}</dd>
 			<dt>Your major</dt>
 			<dd>{{ player.major }}</dd>
+			{% if game.status == 'registration' %}
+			<dt>Gun rental requested</dt>
+			<dd>{{ player.gun_requested|yesno:"Yes,No,N/A" }}</dd>
+			{% else %}
 			<dt>Renting Gun</dt>
 			<dd>{{ player.renting_gun|yesno:"Yes,No,N/A" }}</dd>
+			{% endif %}
 		</dl>
 		{% endif %}
 		{% if game.status == "finished" and player.renting_gun and not player.gun_returned %}
