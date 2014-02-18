@@ -361,7 +361,7 @@
 <hr>
 <h2>Global Kill Tree</h2>
 <ul>
-{% cache 3600 %}
+{% cache 3600 kt %}
     {% recursetree kill_tree %}
         <li>
             <a href="{% url 'player|show' pk=node.victim.id %}">{{ node.victim.display_name }} ({{ node.victim.get_dorm_display }})</a> - 
