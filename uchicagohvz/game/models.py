@@ -1,3 +1,4 @@
+from __future__ import division
 from django.db import models
 from django.db.models import Q
 from django.db import transaction
@@ -10,7 +11,6 @@ from ranking import Ranking
 import hashlib
 import os
 import random
-from __future__ import division
 
 # Create your models here.
 
@@ -205,25 +205,23 @@ class Player(models.Model):
 			parent_kill = parent_kills[0]
 		else:
 			parent_kill = None
-		points = settings.HUMAN_KILL_POINTS
-		tags = []
+		points = 0
 		now = timezone.now()
 		try:
 			hvt = HighValueTarget.objects.get(player=self)
-			if hvt.start_date < now < hvt.end_date:
-				points = hvt.kill_points
-				tags.append('HVT')
+			if hvt.start_date <= now <= hvt.end_date:
+				points += hvt.kill_points
 		except HighValueTarget.DoesNotExist:
-			pass
+			hvt = None
 		try:
 			hvd = HighValueDorm.objects.get(game=self.game, dorm=self.dorm)
-			if hvd.start_date < now < hvd.end_date:
+			if hvd.start_date <= now <= hvd.end_date:
 				points += hvd.points
-				tags.append('HVD')
 		except HighValueDorm.DoesNotExist:
-			pass
-		tagtxt = ', '.join(tags)
-		return Kill.objects.create(parent=parent_kill, killer=killer, victim=self, points=points, notes=tagtxt, date=now)
+			hvd = None
+		if not (hvt or hvd):
+			points = settings.HUMAN_KILL_POINTS
+		return Kill.objects.create(parent=parent_kill, killer=killer, victim=self, points=points, date=now, hvt=hvt, hvd=hvd)
 
 	@property
 	def display_name(self): # real name when game is over; otherwise, dorm + obfuscated code for humans and bite code for zombies
@@ -287,12 +285,27 @@ class Kill(MPTTModel):
 	victim = models.ForeignKey(Player, related_name="+")
 	date = models.DateTimeField(default=timezone.now)
 	points = models.IntegerField(default=settings.HUMAN_KILL_POINTS)
+	hvd = models.ForeignKey('game.HighValueDorm', null=True, blank=True, related_name='kills', on_delete=models.SET_NULL)
+	hvt = models.ForeignKey('game.HighValueTarget', null=True, blank=True, related_name='kills', on_delete=models.SET_NULL)
 	notes = models.TextField(blank=True)
 	lat = models.FloatField(null=True, blank=True, verbose_name='latitude')
 	lng = models.FloatField(null=True, blank=True, verbose_name='longitude')
 
 	def __unicode__(self):
 		return "%s (%s) --> %s (%s) [%s]" % (self.killer.user.get_full_name(), self.killer.user.username, self.victim.user.get_full_name(), self.victim.user.username, self.killer.game.name)
+
+	def refresh_points(self):
+		"""
+		Update the number of points the kill is worth, taking into account HVT and HVD
+		"""
+		points = 0
+		if self.hvt:
+			points += self.hvt.kill_points
+		if self.hvd:
+			points += self.hvd.points
+		if not (self.hvd or self.hvt):
+			points = settings.HUMAN_KILL_POINTS
+		self.points = points
 
 	def save(self, *args, **kwargs):
 		if killer.game != victim.game:
@@ -351,6 +364,9 @@ class HighValueTarget(models.Model):
 		if self.player.opt_out_hvt:
 			return
 		super(HighValueTarget, self).save(*args, **kwargs)
+		for kill in self.kills:
+			kill.refresh_points()
+			kill.save()
 
 class HighValueDorm(models.Model):
 	class Meta:
@@ -364,3 +380,8 @@ class HighValueDorm(models.Model):
 	def __unicode__(self):
 		return "%s (%s)" % (self.get_dorm_display(), self.game.name)
 
+	def save(self, *args, **kwargs):
+		super(HighValueDorm, self).save(*args, **kwargs)
+		for kill in self.kills:
+			kill.refresh_points()
+			kill.save()

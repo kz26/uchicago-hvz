@@ -40,6 +40,7 @@ class KillAdmin(admin.ModelAdmin):
 	search_fields = ('killer__user__username', 'killer__user__first_name', 'killer__user__last_name', 
 		'victim__user__username', 'victim__user__first_name', 'victim__user__last_name')
 
+admin.site.register(Squad)
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(Kill, KillAdmin)
 admin.site.register(Award)

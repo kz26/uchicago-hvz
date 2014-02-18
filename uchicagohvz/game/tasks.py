@@ -18,6 +18,18 @@ def regenerate_stats(game_id):
 		g[fn](game, use_cache=False)
 
 @task
+def refresh_kill_points(game_id):
+	"""
+	Refresh the points field on Kill model
+	Needs to be called when an HVT or HVD model is changed or deleted
+	"""
+	kills = Kill.objects.filter(killer__game__pk=game_id)
+	for kill in kills:
+		kill.refresh_points()
+		kill.save()
+	regenerate_stats(game_id)
+
+@task
 def send_death_notification(kill):
 	killer = kill.killer
 	victim = kill.victim

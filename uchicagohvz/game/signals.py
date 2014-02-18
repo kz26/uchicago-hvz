@@ -3,7 +3,7 @@ import django.dispatch
 from django.dispatch import receiver
 from django.core.cache import cache
 from uchicagohvz.game.models import *
-from uchicagohvz.game.tasks import regenerate_stats
+from uchicagohvz.game.tasks import *
 
 @receiver(models.signals.post_delete, sender=Kill, dispatch_uid='unzombify')
 def unzombify(sender, **kwargs):
@@ -53,8 +53,11 @@ def player_changed(sender, **kwargs):
 			elif old_player.human == False and new_player.human == True:
 				pass
 
+def player_deleted(sender, **kwargs):
+	score_update_required.send(sender=sender, game=kwargs['instance'].game)
+
 models.signals.pre_save.connect(player_changed, sender=Player, dispatch_uid='player_save') 
-models.signals.post_delete.connect(player_changed, sender=Player, dispatch_uid='player_deleted')
+models.signals.post_delete.connect(player_deleted, sender=Player, dispatch_uid='player_deleted')
 
 def award_changed(sender, **kwargs):
 	score_update_required.send(sender=sender, game=kwargs['instance'].game)
@@ -67,10 +70,18 @@ def hvd_changed(sender, **kwargs):
 	score_update_required.send(sender=sender, game=kwargs['instance'].game)	
 
 models.signals.post_save.connect(hvd_changed, sender=HighValueDorm, dispatch_uid='hvd_saved')
-models.signals.post_delete.connect(hvd_changed, sender=HighValueDorm, dispatch_uid='hvd_deleted')
+
+def hvd_deleted(sender, **kwargs):
+	refresh_kill_points.delay(game=kwargs['instance'].game.pk)
+
+models.signals.post_delete.connect(hvd_deleted, sender=HighValueDorm, dispatch_uid='hvd_deleted')
 
 def hvt_changed(sender, **kwargs):
 	score_update_required.send(sender=sender, game=kwargs['instance'].player.game)
 
 models.signals.post_save.connect(hvt_changed, sender=HighValueTarget, dispatch_uid='hvt_saved')
-models.signals.post_delete.connect(hvt_changed, sender=HighValueTarget, dispatch_uid='hvt_deleted')
+
+def hvt_deleted(sender, **kwargs):
+	refresh_kill_points.delay(game=kwargs['instance'].player.game.pk)
+
+models.signals.post_delete.connect(hvt_deleted, sender=HighValueTarget, dispatch_uid='hvt_deleted')

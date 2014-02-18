@@ -1,3 +1,4 @@
+from __future__ import division
 from django.shortcuts import *
 from django.conf import settings
 from django.db import transaction
@@ -15,10 +16,9 @@ from rest_framework.response import Response
 from uchicagohvz.game.models import *
 from uchicagohvz.game.forms import *
 from uchicagohvz.game.data_apis import *
-from uchicagohvz.game.serializers import *
 from uchicagohvz.game.tasks import *
 from uchicagohvz.users.models import *
-from __future__ import division
+import re
 
 # Create your views here.
 
@@ -142,13 +142,9 @@ class AddKillGeotag(UpdateView):
 class SubmitCodeSMS(APIView):
 	@method_decorator(csrf_exempt)
 	def post(self, request, *args, **kwargs):
-		data = {k: v for (k, v) in request.DATA.iteritems()}
-		data['message_timestamp'] = data.pop('message-timestamp', '') # workaround for hyphen in field name
-		data['network_code'] = data.pop('network-code', '')
-		serializer = NexmoSMSSerializer(data=data)
-		code = data.get('text', '').lower().strip()
-		if serializer.is_valid():
-			data = serializer.object
+		if all([f in request.DATA for f in ('msisdn', 'text')]):
+			code = data.get('text', '').lower().strip()
+			code = re.sub(' {2,}', ' ', code)
 			phone_number = "%s-%s-%s" % (data['msisdn'][1:4], data['msisdn'][4:7], data['msisdn'][7:11])
 			try:
 				profile = Profile.objects.get(phone_number=phone_number)
