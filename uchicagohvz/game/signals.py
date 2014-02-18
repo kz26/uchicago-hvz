@@ -24,7 +24,7 @@ def refresh_cached_data(sender, **kwargs):
 		Add/edit/delete Award
 		Add/edit/delete HVT, HVD
 	"""
-	game = kwargs['instance'].game
+	game = kwargs['game']
 	keys = ('survival_by_dorm', 'top_humans', 'top_zombies', 
 		'most_courageous_dorms', 'most_infectious_dorms', 'humans_per_hour', 
 		'kills_by_tod', 'humans_by_major', 'zombies_by_major'
@@ -43,7 +43,7 @@ models.signals.post_delete.connect(kill_changed, sender=Kill, dispatch_uid='kill
 def player_changed(sender, **kwargs):
 	new_player = kwargs['instance']
 	try:
-		old_player = Player.objects.get(pk=instance.pk)
+		old_player = Player.objects.get(pk=new_player.pk)
 	except sender.DoesNotExist:
 		score_update_required.send(sender=sender, game=new_player.game)
 		if new_player.game.status == 'in_progress' and new_player.active:
