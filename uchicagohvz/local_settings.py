@@ -148,9 +148,7 @@ MESSAGE_TAGS = {
 } # Bootstrap 3 alert integration
 
 # Celery configuration
-import djcelery
-djcelery.setup_loader()
-BROKER_URL = 'redis://localhost:6379/0'
+BROKER_URL = 'redis://localhost:6379/3'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
