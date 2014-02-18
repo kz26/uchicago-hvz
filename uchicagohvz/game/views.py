@@ -31,8 +31,6 @@ class ShowGame(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(ShowGame, self).get_context_data(**kwargs)
-		if self.object.status == 'finished':
-			context['kill_tree'] = Kill.objects.filter(killer__game=self.object)
 		if self.object.status in ('in_progress', 'finished'):
 			if self.object.get_active_players().count() > 0:
 				context['humans_percent'] = int(round(100 * float(self.object.get_humans().count()) / self.object.get_active_players().count(), 0))

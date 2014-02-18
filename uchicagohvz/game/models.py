@@ -51,6 +51,12 @@ class Game(models.Model):
 	def get_players_in_dorm(self, dorm):
 		return self.get_active_players().filter(dorm=dorm)
 
+	def get_kills(self):
+		"""
+		Return all Kill objects for this game
+		"""
+		return Kill.objects.filter(killer__game=self)
+
 	@property
 	def status(self):
 		now = timezone.now()

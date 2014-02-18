@@ -357,12 +357,12 @@
 </div>
 {% endif %}
 
-{% if kill_tree %}
+{% if game.status == 'finished' %}
 <hr>
 <h2>Global Kill Tree</h2>
 <ul>
 {% cache 3600 kt %}
-    {% recursetree kill_tree %}
+    {% recursetree game.get_kills %}
         <li>
             <a href="{% url 'player|show' pk=node.victim.id %}">{{ node.victim.display_name }} ({{ node.victim.get_dorm_display }})</a> - 
             	killed on {{ node.date }}
