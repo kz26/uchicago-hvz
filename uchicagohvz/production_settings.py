@@ -2,7 +2,7 @@ from local_settings import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['uchicagohvz.org']
+ALLOWED_HOSTS = ['uchicagohvz.org', 'www.uchicagohvz.org']
 
 ADMINS = (
     ('Administrator', 'admin@uchicagohvz.org'),
