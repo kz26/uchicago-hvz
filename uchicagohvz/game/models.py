@@ -129,7 +129,7 @@ class Player(models.Model):
 			# (re-)generate unique bite code
 			while True:
 				bc = gen_bite_code()
-				if not Player.objects.filter(game=self.game, bite_code=bc).exists() and not Award.objects.filter(game=self.game, code=bc).exists():
+				if Player.objects.filter(game=self.game, bite_code=bc).exists() or Award.objects.filter(game=self.game, code=bc).exists():
 					self.bite_code = bc
 					break
 		old = Player.objects.get(id=self.id) if self.id else None
@@ -309,7 +309,7 @@ class Award(models.Model):
 		if not self.code:
 			while True:
 				code = gen_bite_code()
-				if not Award.objects.filter(game=self.game, code=code).exists() and not Player.objects.filter(game=self.game, bite_code=code).exists():
+				if Award.objects.filter(game=self.game, code=code).exists() or Player.objects.filter(game=self.game, bite_code=code).exists():
 					self.code = code
 					break
 		super(Award, self).save(*args, **kwargs)
