@@ -4,6 +4,7 @@ from django.conf import settings
 from cache_utils import cache_func
 from datetime import timedelta
 from collections import OrderedDict
+from uchicagohvz.game.models import *
 
 @cache_func(settings.LEADERBOARD_CACHE_DURATION)
 def kills_per_hour(game, **kwargs):
