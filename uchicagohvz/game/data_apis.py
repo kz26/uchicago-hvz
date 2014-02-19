@@ -48,7 +48,7 @@ def top_human_squads(game, **kwargs):
 			'squad_id': squad.id,
 			'name': squad.name,
 			'size': squad.players(active=True).count(),
-			'humans': squad.players(active=True, human=True).count(),
+			'num_humans': squad.players(active=True, human=True).count(),
 			'human_points': squad.human_points
 		}
 		data.append(d)
@@ -63,8 +63,9 @@ def top_zombie_squads(game, **kwargs):
 			d = {
 				'squad_id': squad.id,
 				'name': squad.name,
-				'size': squad.players(active=True).count(),
-				'zombies': squad.players(active=True, human=False).count(),
+				'size': squad.players.filter(active=True).count(),
+				'num_zombies': squad.players.filter(active=True, human=False).count(),
+				'kills': Kill.objects.filter(killer__in=squad.players.filter(active=True)).count(),
 				'zombie_points': squad.zombie_points
 			}
 			data.append(d)

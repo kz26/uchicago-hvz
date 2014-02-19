@@ -225,140 +225,206 @@
 <div class="center">
 	<h2>Average Kills per Hour</h2>
 	<p class="lead text-danger">{{ kills_per_hour|floatformat:2 }}</p>
-	<p>All data below is updated in real time.</p>
+	{% if game.status == 'in_progress' %}<p>All data below is updated in real time.</p>{% endif %}
 </div>
-<div class="row">
-	<div class="col-md-6">
-		<h2>Survival by Dorm</h2>
-		<table class="table table-bordered table-striped">
-			<thead>
-				<tr>
-					<th>Dorm</th>
-					<th>Humans Alive</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for e in survival_by_dorm %}
-				<tr>
-					<td>{{ e.dorm }}</td>
-					<td>{{ e.alive }}/{{ e.original }} ({{e.percent|floatformat}}%)</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-		<h2>Kills by Location <small>geotagged kills only</small></h2>
-		<div id="killMap" style="height: 350px;"></div>
-		<div class="center">
-			<div id="mapTimeFilters" class="btn-group" data-toggle="buttons">
-				<label class="btn btn-danger">
-					<input type="radio" name="mapTime" value="all" checked="checked"> all
-				</label>
-				{% if player and not player.human %}
-				<label class="btn btn-danger">
-					<input type="radio" name="mapTime" value="my-kills"> my kills
-				</label>
-				{% endif %}
-				<label class="btn btn-danger">
-					<input type="radio" name="mapTime" value="1"> last hour
-				</label>
-				<label class="btn btn-danger">
-					<input type="radio" name="mapTime" value="6"> last 6 hours
-				</label>
-				<label class="btn btn-danger">
-					<input type="radio" name="mapTime" value="12"> last 12 hours
-				</label>
-				<label class="btn btn-danger">
-					<input type="radio" name="mapTime" value="24"> last 24 hours
-				</label>
+
+<ul class="nav nav-tabs">
+	<li class="active"><a href="#analytics" data-toggle="tab">Analytics</a></li>
+	<li><a href="#leaderboards-individual" data-toggle="tab">Individual Leaderboards</a></li>
+	{% if game.squads.count %}<li><a href="#leaderboards-squad" data-toggle="tab">Squad Leaderboards</a></li></li>
+</ul>
+<div class="tab-content">
+	<div id="analytics" class="tab-pane active">
+		<div class="row">
+			<div class="col-md-6">
+				<h2>Survival by Dorm</h2>
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Dorm</th>
+							<th>Humans Alive</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for e in survival_by_dorm %}
+						<tr>
+							<td>{{ e.dorm }}</td>
+							<td>{{ e.alive }}/{{ e.original }} ({{e.percent|floatformat}}%)</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<h2>Human Survival</h2>
+				<div id="hphChart"></div>
+				<h2>Most Courageous Dorms</h2>
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Dorm</th>
+							<th>Ounces of Courage</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for e in most_courageous_dorms %}
+						<tr>
+							<td>{{ e.dorm }}</td>
+							<td>{{ e.points|floatformat }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			<h2>Humans by Major</h2>
+			<div id="hMajorsChart"></div>
+			</div>
+			<div class="col-md-6">
+				<h2>Kills by Location <small>geotagged kills only</small></h2>
+				<div id="killMap" style="height: 350px;"></div>
+				<div class="center">
+					<div id="mapTimeFilters" class="btn-group" data-toggle="buttons">
+						<label class="btn btn-danger">
+							<input type="radio" name="mapTime" value="all" checked="checked"> all
+						</label>
+						{% if player and not player.human %}
+						<label class="btn btn-danger">
+							<input type="radio" name="mapTime" value="my-kills"> my kills
+						</label>
+						{% endif %}
+						<label class="btn btn-danger">
+							<input type="radio" name="mapTime" value="1"> last hour
+						</label>
+						<label class="btn btn-danger">
+							<input type="radio" name="mapTime" value="6"> last 6 hours
+						</label>
+						<label class="btn btn-danger">
+							<input type="radio" name="mapTime" value="12"> last 12 hours
+						</label>
+						<label class="btn btn-danger">
+							<input type="radio" name="mapTime" value="24"> last 24 hours
+						</label>
+					</div>
+				</div>
+				<h2>Most Infectious Dorms</h2>
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Dorm</th>
+							<th>Infectivity</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for e in most_infectious_dorms %}
+						<tr>
+							<td>{{ e.dorm }}</td>
+							<td>{{ e.points|floatformat }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<h2>Kills by Time of Day</h2>
+				<div id="todChart"></div>
+				<h2>Zombies by Major</h2>
+				<div id="zMajorsChart"></div>
 			</div>
 		</div>
-		<h2>Human Survival</h2>
-		<div id="hphChart"></div>
-		<h2>Kills by Time of Day</h2>
-		<div id="todChart"></div>
-		<h2>Humans by Major</h2>
-		<div id="hMajorsChart"></div>
 	</div>
-	<div class="col-md-6">
-		<h2><a href="{% url 'game|leaderboard' pk=game.id %}">Top Humans</a></h2>
-		{% if game.status == "in_progress" %}
-		<p>The names of surviving humans have been obfuscated in the interest of national human security.</p>
-		{% endif %}
-		<table class="table table-bordered table-striped">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Human Points</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for p in top_humans %}
-				<tr>
-					<td>
-						<a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a>
-						{% if not p.human %}<span class="text-danger">(dead)</span>{% endif %}
-					</td>
-					<td>{{ p.human_points }}</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-		<h2><a href="{% url 'game|leaderboard' pk=game.id %}">Top Zombies</a></h2>
-		<table class="table table-bordered table-striped">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Kills</th>
-					<th>Zombie Points</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for p in top_zombies %}
-				<tr>
-					<td><a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a></td>
-					<td>{{ p.kills }}</td>
-					<td>{{ p.zombie_points }}</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-		<h2>Most Courageous Dorms</h2>
-		<table class="table table-bordered table-striped">
-			<thead>
-				<tr>
-					<th>Dorm</th>
-					<th>Ounces of Courage</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for e in most_courageous_dorms %}
-				<tr>
-					<td>{{ e.dorm }}</td>
-					<td>{{ e.points|floatformat }}</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-		<h2>Most Infectious Dorms</h2>
-		<table class="table table-bordered table-striped">
-			<thead>
-				<tr>
-					<th>Dorm</th>
-					<th>Infectivity</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for e in most_infectious_dorms %}
-				<tr>
-					<td>{{ e.dorm }}</td>
-					<td>{{ e.points|floatformat }}</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-		<h2>Zombies by Major</h2>
-		<div id="zMajorsChart"></div>
+	<div id="leaderboards-individual" class="tab-pane">
+		<div class="row">
+			{% if game.status == "in_progress" %}
+			<p>The names of surviving humans have been obfuscated in the interest of national human security.</p>
+			{% endif %}
+			<div class="col-md-6">
+				<h2>Top Humans</h2>
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Human Points</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for p in top_humans %}
+						<tr>
+							<td>
+								<a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a>
+								{% if not p.human %}<span class="text-danger">(dead)</span>{% endif %}
+							</td>
+							<td>{{ p.human_points }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-6">
+				<h2>Top Zombies</h2>
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Kills</th>
+							<th>Zombie Points</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for p in top_zombies %}
+						<tr>
+							<td><a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a></td>
+							<td>{{ p.kills }}</td>
+							<td>{{ p.zombie_points }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<h3><a href="{% url 'game|leaderboard' pk=game.id %}">View full leaderboards</a></h3>
+		</div>
 	</div>
+	{% if game.squads.count %}
+	<div id="leaderboards-squad" class="tab-pane">
+		<div class="row">
+			<div class="col-md-6">
+				<h2>Top Human Squads</h2>
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th># Alive</th>
+							<th>Human Points</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for s in top_human_squads %}
+						<tr>
+							<td><a href="{% url 'squad|show' pk=s.squad_id %}">{{ s.name }}</a></td>
+							<td>{{ s.num_humans }} of {{ s.size }}</td>
+							<td>{{ s.human_points }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-6">
+				<h2>Top Zombie Squads</h2>
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th># Undead</th>
+							<th>Zombie Points</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for s in top_zombie_squads %}
+						<tr>
+							<td><a href="{% url 'squad|show' pk=s.squad_id %}">{{ s.name }}</a></td>
+							<td>{{ s.num_zombies }} of {{ s.size }}</td>
+							<td>{{ s.zombie_points }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+	</div>
+	{% endif %}
 </div>
 {% endif %}
 
