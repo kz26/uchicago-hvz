@@ -190,11 +190,11 @@ class Player(models.Model):
 
 	@property
 	def kills(self):
-		return Kill.objects.filter(killer__id=self.id).exclude(victim__id=self.id).order_by('-date')
+		return Kill.objects.filter(killer=self).exclude(victim__id=self.id).order_by('-date')
 
 	@property
-	def non_geotagged_kills(self):
-		return Kill.objects.filter(killer__id=self.id).filter(Q(lat__isnull=True) | Q(lng__isnull=True))
+	def unannotated_kills(self):
+		return Kill.objects.filter(killer=self).filter(Q(lat__isnull=True) | Q(lng__isnull=True) | Q(notes=u''))
 
 	@transaction.atomic
 	def kill_me(self, killer):

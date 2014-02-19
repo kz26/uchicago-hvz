@@ -105,12 +105,12 @@
 		<h3>My Bite Code</h3>
 		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
 		{% if not player.human %}
-		{% if player.non_geotagged_kills.count %}
+		{% if player.unannotated_kills.count %}
 		<div class="well">
-			<p class="text-warning">You still need to add geotags to the kills below:</p>
+			<p class="text-warning">You still need to add geotags and/or notes to the kills below:</p>
 			<ul class="list-unstyled">
-			{% for kill in player.non_geotagged_kills %}
-				<li><a href="{% url 'kill|geotag' pk=kill.id %}">{{ kill.victim.user.get_full_name}} ({{ kill.victim.bite_code }})</a></li>
+			{% for kill in player.unannotated_kills %}
+				<li><a href="{% url 'kill|annotate' pk=kill.id %}">{{ kill.victim.user.get_full_name}} ({{ kill.victim.bite_code }})</a></li>
 			{% endfor %}
 			</ul>
 		</div>

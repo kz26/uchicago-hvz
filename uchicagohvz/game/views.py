@@ -44,6 +44,9 @@ class ShowGame(DetailView):
 				context['most_infectious_dorms'] = most_infectious_dorms(self.object)
 				context['top_humans'] = top_humans(self.object)[:10]
 				context['top_zombies'] = top_zombies(self.object)[:10]
+				if self.object.squads.count():
+					context['top_human_squads'] = top_human_squads(self.object)
+					contxt['top_zombie_squads'] = top_zombie_squads(self.object)
 		if self.request.user.is_authenticated():
 			in_game = Player.objects.filter(game=self.object, user=self.request.user).exists()
 			if in_game:
@@ -117,17 +120,17 @@ class EnterBiteCode(FormView):
 		context = super(EnterBiteCode, self).get_context_data(**kwargs)
 		return context
 
-class AddKillGeotag(UpdateView):
-	form_class = AddKillGeotagForm
+class AnnotateKill(UpdateView):
+	form_class = AnnotateKillForm
 	model = Kill
-	template_name = 'game/add-kill-geotag.html'
+	template_name = 'game/annotate-kill.html'
 
 	@method_decorator(login_required)
 	def dispatch(self, request, *args, **kwargs):
-		return super(AddKillGeotag, self).dispatch(request, *args, **kwargs)
+		return super(AnnotateKill, self).dispatch(request, *args, **kwargs)
 
 	def get_object(self, queryset=None):
-		kill = super(AddKillGeotag, self).get_object()
+		kill = super(AnnotateKill, self).get_object()
 		if kill.killer.user == self.request.user and not (kill.lat and kill.lng and kill.notes):
 			return kill
 		raise PermissionDenied

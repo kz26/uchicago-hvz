@@ -53,12 +53,16 @@ class BiteCodeForm(forms.Form):
 			raise forms.ValidationError("%s is already dead!" % (self.victim.bite_code))
 		return bite_code
 
-class AddKillGeotagForm(forms.ModelForm):
+class AnnotateKillForm(forms.ModelForm):
 	class Meta:
 		model = Kill
 		fields = ('lat', 'lng', 'notes')
 	lat = forms.FloatField(required=False, validators=[validate_lat])
 	lng = forms.FloatField(required=False, validators=[validate_lng])
+
+	def __init__(self, *args, **kwargs):
+		super(AnnotateKillForm, self).__init__(*args, **kwargs)
+		self.fields['notes'].required = True
 
 class AwardCodeForm(forms.Form):
 	code = forms.CharField()
