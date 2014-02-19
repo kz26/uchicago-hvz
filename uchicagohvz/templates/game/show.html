@@ -334,7 +334,7 @@
 	<div id="leaderboards-individual" class="tab-pane">
 		<div class="row">
 			{% if game.status == "in_progress" %}
-			<p>The names of surviving humans have been obfuscated in the interest of national human security.</p>
+			<p class="center" style="margin-top: 1em;">The names of surviving humans have been obfuscated in the interest of national human security.</p>
 			{% endif %}
 			<div class="col-md-6">
 				<h2>Top Humans</h2>
@@ -379,7 +379,7 @@
 					</tbody>
 				</table>
 			</div>
-			<h3><a href="{% url 'game|leaderboard' pk=game.id %}">View full leaderboards</a></h3>
+			<h3 class="center"><a href="{% url 'game|leaderboard' pk=game.id %}">View full leaderboards</a></h3>
 		</div>
 	</div>
 	{% if game.squads.count %}

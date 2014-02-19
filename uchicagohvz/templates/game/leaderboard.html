@@ -4,7 +4,7 @@
 	<h1>Leaderboard <small>{{ game.name }}</small></h1>
 </div>
 {% if game.status == 'in_progress' %}
-<p>The names of surviving humans have been obfuscated in the interest of national human security.</p>
+<p class="center">The names of surviving humans have been obfuscated in the interest of national human security.</p>
 {% endif %}
 <div class="row">
 	<div class="col-md-6">
@@ -20,7 +20,7 @@
 				{% for p in top_humans %}
 				<tr>
 					<td>
-						<a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a>
+						<a href="{{ p.url }}">{{ p.display_name }}</a>
 						{% if not p.human %}<span class="text-danger">(dead)</span>{% endif %}
 					</td>
 					<td>{{ p.human_points }}</td>
@@ -42,7 +42,7 @@
 			<tbody>
 				{% for p in top_zombies %}
 				<tr>
-					<td><a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a></td>
+					<td><a href="{{ p.url }}">{{ p.display_name }}</a></td>
 					<td>{{ p.kills }}</td>
 					<td>{{ p.zombie_points }}</td>
 				</tr>
