@@ -46,7 +46,7 @@ class ShowGame(DetailView):
 				context['top_zombies'] = top_zombies(self.object)[:10]
 				if self.object.squads.count():
 					context['top_human_squads'] = top_human_squads(self.object)
-					contxt['top_zombie_squads'] = top_zombie_squads(self.object)
+					context['top_zombie_squads'] = top_zombie_squads(self.object)
 		if self.request.user.is_authenticated():
 			in_game = Player.objects.filter(game=self.object, user=self.request.user).exists()
 			if in_game:
@@ -244,3 +244,10 @@ class Leaderboard(TemplateView):
 			return context
 		else:
 			raise Http404
+
+class ShowSquad(DetailView):
+	model = Squad
+	template_name = 'game/show_squad.html'
+
+	def get_object(self, queryset=None):
+		return get_object_or_404(Squad, id=self.kwargs['pk'])

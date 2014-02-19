@@ -102,6 +102,31 @@ class Squad(models.Model):
 	game = models.ForeignKey(Game, related_name='squads')
 	name = models.CharField(max_length=128)
 
+	def __unicode__(self):
+		return "%s (%s)" % (self.name, self.game)
+
+	@models.permalink
+	def get_absolute_url(self):
+		return ('squad|show', [self.pk])
+
+	def get_active_players(self):
+		return self.players.filter(active=True)
+
+	def get_kills(self):
+		return Kill.objects.filter(killer__in=self.players.all())
+
+	@property
+	def size(self):
+		return self.get_active_players().count()
+
+	@property
+	def num_humans(self):
+		return self.get_active_players().filter(human=True).count()
+
+	@property
+	def num_zombies(self):
+		return self.get_active_players().filter(human=False).count()
+
 	@property
 	def human_points(self):
 		return sum([p.human_points for p in self.players.filter(active=True, human=True)]) / self.players.filter(active=True).count()
@@ -194,7 +219,7 @@ class Player(models.Model):
 
 	@property
 	def unannotated_kills(self):
-		return Kill.objects.filter(killer=self).filter(Q(lat__isnull=True) | Q(lng__isnull=True) | Q(notes=u''))
+		return Kill.objects.exclude(killer=self, victim=self).filter(killer=self).filter(Q(lat__isnull=True) | Q(lng__isnull=True) | Q(notes=u''))
 
 	@transaction.atomic
 	def kill_me(self, killer):
@@ -271,7 +296,7 @@ class Player(models.Model):
 
 	@models.permalink
 	def get_absolute_url(self):
-		return ('player|show', [self.id])
+		return ('player|show', [self.pk])
 
 class Kill(MPTTModel):
 	class Meta:
@@ -308,7 +333,7 @@ class Kill(MPTTModel):
 		self.points = points
 
 	def save(self, *args, **kwargs):
-		if killer.game != victim.game:
+		if self.killer.game != self.victim.game:
 			raise Exception('Killer.game and victim.game do not match')
 		try:
 			parent = Kill.objects.exclude(id=self.id).filter(victim=self.killer)[0]
@@ -364,7 +389,7 @@ class HighValueTarget(models.Model):
 		if self.player.opt_out_hvt:
 			return
 		super(HighValueTarget, self).save(*args, **kwargs)
-		for kill in self.kills:
+		for kill in self.kills.all():
 			kill.refresh_points()
 			kill.save()
 

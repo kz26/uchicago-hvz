@@ -1,9 +1,3 @@
-
-div#cke_id_terms {
-	float: left;
-	width: 50%;
-}
-
 .errorlist {
 	color: rgb(238, 95, 91);
 }
@@ -18,4 +12,8 @@ div#cke_id_terms {
 
 .bold {
 	font-weight: bold;
+}
+
+.bigger {
+	font-size: 150%;
 }

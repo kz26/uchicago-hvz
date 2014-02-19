@@ -82,6 +82,8 @@
 			<dd>{{ game.get_humans.count }} ({{ humans_percent }}%)</dd>
 			<dt>Zombies</dt>
 			<dd>{{ game.get_zombies.count }} ({{ zombies_percent }}%)</dd>
+			<dt>Squads</dt>
+			<dd>{{ game.squads.count }}</dd>
 			{% endif %}
 		</dl>
 	</div>
@@ -133,7 +135,9 @@
 		</form>
 		<p class="text-warning" style="margin-top: 1em;">
 		{% if player.user.profile.phone_number %}
-			You can also text {% if not player.human %}bite codes and {% endif %}mission codes (one code per message) to <b>{{ sms_code_number }}</b>!*
+			You can also text {% if not player.human %}bite codes and {% endif %}mission codes (one code per message)!*
+			Simply send a text message containing a code to <b>{{ sms_code_number }}</b>. If you have multiple codes,
+			send them one at a time.
 		{% else %}
 			Add your phone number to your <a href="{% url 'users|profile' %}">profile</a> so you can submit
 			bite codes and mission codes via text message!
@@ -148,6 +152,10 @@
 	<div class="col-lg-4">
 		<h2>My Info</h2>
 		<dl class="dl-horizontal">
+			{% if player.squad %}
+			<dt>Your squad</dt>
+			<dd><a href="{{ player.squad.get_absolute_url }}">{{ player.squad.name }}</a></dd>
+			{% endif %}
 			<dt>Your dorm</dt>
 			<dd>{{ player.get_dorm_display }}</dd>
 			<dt>Your major</dt>
@@ -181,10 +189,6 @@
 		<h3 style="font-weight: bold; font-size: 15pt;">{{ player.points }} points</h3>
 		<p>You are ranked <b>#{{ player_rank.0 }}</b> of {{ player_rank.1 }} {% if player.human %}humans{% else %}zombies{% endif %}.</p>
 		{% if player.score != 0 or player.awards.all.count %}
-		{% if not player.human %}
-		<p class="text-info">
-			<b>NOTE: </b>Points earned when you were still human are not counted in the official score rankings.
-		</p>
 		{% endif %}
 		<table class="table table-bordered table-striped">
 			<thead>
@@ -198,7 +202,8 @@
 				<tr>
 					<td>{{ kill.points }}</td>
 					<td>Kill: <a href="{% url 'player|show' pk=kill.victim.id %}">{{ kill.victim.user.get_full_name }} ({{ kill.victim.bite_code }}, 
-						{{ kill.victim.get_dorm_display }})</a> on {{ kill.date|date:"SHORT_DATE_FORMAT" }} {% if kill.notes %} [{{ kill.notes}}]{% endif %}
+						{{ kill.victim.get_dorm_display }})</a> on {{ kill.date|date:"SHORT_DATE_FORMAT" }}
+						{% if kill.hvd %}<span class="text-danger">HVD</span>{% endif %}{% if kill.hvt %} <span class="text-danger">HVT</span>{% endif %}
 					</td>
 				</tr>
 				{% endfor %}
@@ -210,9 +215,8 @@
 				{% endfor %}
 			</tbody>
 		</table>
-		<a class="btn btn-primary" href="{% url 'player|show' pk=player.id %}">My Player Page</a>
-		{% endif %}
-		
+		<a class="btn btn-primary" href="{{ player.get_absolute_url }}">My Player Page</a>
+		{% if player.squad %}<a class="btn btn-primary" href="{{ player.squad.get_absolute_url }}">My Squad Page</a>{% endif %}		
 	</div>
 </div>
 {% elif game.status == "in_progress" %}
@@ -231,7 +235,7 @@
 <ul class="nav nav-tabs">
 	<li class="active"><a href="#analytics" data-toggle="tab">Analytics</a></li>
 	<li><a href="#leaderboards-individual" data-toggle="tab">Individual Leaderboards</a></li>
-	{% if game.squads.count %}<li><a href="#leaderboards-squad" data-toggle="tab">Squad Leaderboards</a></li></li>
+	{% if game.squads.count %}<li><a href="#leaderboards-squad" data-toggle="tab">Squad Leaderboards</a></li></li>{% endif %}
 </ul>
 <div class="tab-content">
 	<div id="analytics" class="tab-pane active">
@@ -345,7 +349,7 @@
 						{% for p in top_humans %}
 						<tr>
 							<td>
-								<a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a>
+								<a href="{{ p.url }}">{{ p.display_name }}</a>
 								{% if not p.human %}<span class="text-danger">(dead)</span>{% endif %}
 							</td>
 							<td>{{ p.human_points }}</td>
@@ -367,7 +371,7 @@
 					<tbody>
 						{% for p in top_zombies %}
 						<tr>
-							<td><a href="{% url 'player|show' pk=p.player_id %}">{{ p.display_name }}</a></td>
+							<td><a href="{{ p.url }}">{{ p.display_name }}</a></td>
 							<td>{{ p.kills }}</td>
 							<td>{{ p.zombie_points }}</td>
 						</tr>
@@ -394,7 +398,7 @@
 					<tbody>
 						{% for s in top_human_squads %}
 						<tr>
-							<td><a href="{% url 'squad|show' pk=s.squad_id %}">{{ s.name }}</a></td>
+							<td><a href="{{ s.url }}">{{ s.name }}</a></td>
 							<td>{{ s.num_humans }} of {{ s.size }}</td>
 							<td>{{ s.human_points }}</td>
 						</tr>
@@ -404,6 +408,7 @@
 			</div>
 			<div class="col-md-6">
 				<h2>Top Zombie Squads</h2>
+				{% if top_zombie_squads %}
 				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
@@ -415,13 +420,16 @@
 					<tbody>
 						{% for s in top_zombie_squads %}
 						<tr>
-							<td><a href="{% url 'squad|show' pk=s.squad_id %}">{{ s.name }}</a></td>
+							<td><a href="{{ s.url }}">{{ s.name }}</a></td>
 							<td>{{ s.num_zombies }} of {{ s.size }}</td>
 							<td>{{ s.zombie_points }}</td>
 						</tr>
 						{% endfor %}
 					</tbody>
 				</table>
+				{% else %}
+				<p>There are no zombie squads...yet.</p>
+				{% endif %}
 			</div>
 	</div>
 	{% endif %}

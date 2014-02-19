@@ -1,31 +1,26 @@
 {% extends 'base.html' %}{% load mptt_tags %}{% load compress %}
 {% block content %}
 <div class="page-header">
-	<h1>{{ player.display_name }} <small>{{ player.game.name }}</small></h1>
+	<h1>{{ squad.name }} <small>{{ squad.game.name }}</small></h1>
 </div>
 
+<h2>Members ({{ squad.size }})</h2>
+<ul class="bigger">
+	{% for p in squad.get_active_players %}
+	<li>{{ p.user.get_full_name }}</li>
+	{% endfor %}
+</ul>
+
 <dl style="font-size: 15pt;">
-	<dt>Status</dt>
-	<dd>{% if player.human %}<span class="text-success">HUMAN</span>{% else %}<span class="text-danger">ZOMBIE</span>{% endif %}
-	<dt>Dorm</dt>
-	<dd>{{ player.get_dorm_display }}</dd>
-	{% if player.squad %}
-	<dt>Squad</dt>
-	<dd><a href="{{ player.squad.get_absolute_url }}">{{ player.squad.name }}</a></dd>
-	{% endif %}
-	<dt>Major</dt>
-	<dd>{{ player.major }}</dd>
+	<dt>Deaths</dt>
+	<dd>{{ squad.num_zombies }}</dd>
 	<dt>Human Points</dt>
-	<dd>{{ player.human_points }} (#{{ player.human_rank.0 }} of {{ player.human_rank.1 }})</dd>
-	{% if not player.human %}
-	{% if player.killed_by %}
-	<dt>Killed by</dt>
-	<dd><a href="{% url 'player|show' pk=player.killed_by.id %}">{{ player.killed_by.display_name }}</a> on {{ player.time_of_death }}</dd>
-	{% endif %}
+	<dd>{{ squad.human_points }} (#{{ squad.human_rank.0 }} of {{ squad.human_rank.1 }})</dd>
+	{% if squad.num_zombies > 1 %}
 	<dt>Kills</dt>
-	<dd>{{ player.kills.count }}</dd>
+	<dd>{{ squad.kills.count }}</dd>
 	<dt>Zombie Points</dt>
-	<dd>{{ player.zombie_points }} (#{{ player.zombie_rank.0 }} of {{ player.zombie_rank.1 }})</dd>
+	<dd>{{ squad.zombie_points }} (#{{ squad.zombie_rank.0 }} of {{ squad.zombie_rank.1 }})</dd>
 	{% endif %}
 </dl>
 
@@ -39,11 +34,13 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% for kill in player.kills %}
+				{% for kill in squad.get_kills %}
 				<tr>
 					<td>{{ kill.points }}</td>
-					<td>Kill: <a href="{% url 'player|show' pk=kill.victim.id %}">{{ kill.victim.display_name }} ({{ kill.victim.get_dorm_display }})</a>
-						on {{ kill.date|date:"SHORT_DATE_FORMAT" }} {% if kill.notes %} [{{ kill.notes}}]{% endif %}
+					<td>
+						{{ kill.killer.display_name }} killed
+						<a href="{% url 'player|show' pk=kill.victim.id %}">{{ kill.victim.display_name }} ({{ kill.victim.get_dorm_display }})</a>
+						on {{ kill.date|date:"SHORT_DATE_FORMAT" }}
 						{% if kill.hvd %}<span class="text-danger">HVD</span>{% endif %}{% if kill.hvt %} <span class="text-danger">HVT</span>{% endif %}
 					</td>
 				</tr>
@@ -56,7 +53,7 @@
 				{% endfor %}
 			</tbody>
 		</table>
-		{% if player.human == False and player.kills.count > 0 %}
+		{% if squad.get_kills.count > 0 %}
 		<h2>Kills <small>geotagged kills only</small></h2>
 		<div id="killMap" style="height: 350px;"></div>
 		{% endif %}

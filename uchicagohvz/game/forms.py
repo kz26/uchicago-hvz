@@ -27,7 +27,7 @@ class BiteCodeForm(forms.Form):
 	bite_code = forms.CharField()
 	lat = forms.FloatField(required=False, validators=[validate_lat])
 	lng = forms.FloatField(required=False, validators=[validate_lng])
-	notes = forms.TextField(required=False)
+	notes = forms.CharField(required=False)
 
 	def __init__(self, *args, **kwargs):
 		self.killer = kwargs.pop('killer')
@@ -40,7 +40,7 @@ class BiteCodeForm(forms.Form):
 	def clean_bite_code(self):
 		if self.killer.human:
 			raise forms.ValidationError('Player entering bite code is not a zombie.')
-		bite_code = self.cleaned_data['bite_code']
+		bite_code = self.cleaned_data['bite_code'].lower().strip()
 		try:
 			self.victim = Player.objects.get(game=self.killer.game, active=True, bite_code__iexact=bite_code)
 		except Player.DoesNotExist:
@@ -73,13 +73,13 @@ class AwardCodeForm(forms.Form):
 
 	def clean(self):
 		data = super(AwardCodeForm, self).clean()
-		code = data.get('code')
+		code = data.get('code', '').lower().strip()
 		if code:
-			redeem_types = ["A"]
+			redeem_types = ['A']
 			if self.player.human:
-				redeem_types.append("H")
+				redeem_types.append('H')
 			else:
-				redeem_types.append("Z")
+				redeem_types.append('Z')
 			redeem_types = set(redeem_types)
 			try:
 				self.award = Award.objects.get(game=self.player.game, code__iexact=code)

@@ -30,14 +30,17 @@
 				<div id="killMap" style="height: 350px;"></div>
 			</div>
 		</div>
+	</div>
+	<div class="form-group">
 		<div class="row">
 			<div class="col-lg-6">
-				<label for="notes">Kill notes (optional, can be completed later): Tell us how it all went down. Was it a quick, painless death for them
+				<label for="notes">Kill notes (optional, can be completed later)</label>
+				<span class="help-block">Tell us how it all went down. Was it a quick, painless death for them
 				or did your juicy human succumb only after a prolonged struggle? Feel free to tell the story of your kill using as
 				few or as many words as you want.
-				</label>
+				</span>
 				{{ form.notes.errors }}
-				<textarea id="notes" class="form-control" name="notes" rows="6">{{ form.notes.value }}</textarea>
+				<textarea id="notes" class="form-control" name="notes" rows="6">{{ form.notes.value|default_if_none:"" }}</textarea>
 			</div>
 		</div>
 	</div>
