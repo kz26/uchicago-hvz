@@ -27,6 +27,7 @@ class BiteCodeForm(forms.Form):
 	bite_code = forms.CharField()
 	lat = forms.FloatField(required=False, validators=[validate_lat])
 	lng = forms.FloatField(required=False, validators=[validate_lng])
+	notes = forms.TextField(required=False)
 
 	def __init__(self, *args, **kwargs):
 		self.killer = kwargs.pop('killer')
@@ -55,7 +56,7 @@ class BiteCodeForm(forms.Form):
 class AddKillGeotagForm(forms.ModelForm):
 	class Meta:
 		model = Kill
-		fields = ('lat', 'lng')
+		fields = ('lat', 'lng', 'notes')
 	lat = forms.FloatField(required=False, validators=[validate_lat])
 	lng = forms.FloatField(required=False, validators=[validate_lng])
 

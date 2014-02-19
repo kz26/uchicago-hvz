@@ -97,8 +97,9 @@ class EnterBiteCode(FormView):
 			send_death_notification.delay(kill)
 			kill.lat = form.cleaned_data.get('lat')
 			kill.lng = form.cleaned_data.get('lng')
+			kill.notes = form.cleaned_data.get('notes')
 			kill.save()
-			messages.success(self.request, "Bite code entered successfully! %s has joined the ranks of the undead." % (victim.user.get_full_name()))
+			messages.success(self.request, "Kill logged successfully! %s has joined the ranks of the undead." % (victim.user.get_full_name()))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
 	def get_form_kwargs(self):
@@ -127,15 +128,12 @@ class AddKillGeotag(UpdateView):
 
 	def get_object(self, queryset=None):
 		kill = super(AddKillGeotag, self).get_object()
-		if kill.killer.user == self.request.user and not (kill.lat and kill.lng):
+		if kill.killer.user == self.request.user and not (kill.lat and kill.lng and kill.notes):
 			return kill
 		raise PermissionDenied
 
 	def form_valid(self, form):
-		kill = self.object
-		kill.lat = form.cleaned_data.get('lat')
-		kill.lng = form.cleaned_data.get('lng')
-		kill.save()
+		kill = form.save()
 		messages.success(self.request, 'Kill geotagged successfully.')
 		return HttpResponseRedirect(kill.killer.game.get_absolute_url())
 
