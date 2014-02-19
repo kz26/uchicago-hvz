@@ -184,7 +184,7 @@ def humans_by_major(game, **kwargs):
 			lifespans.append(max_lifespan)
 		if lifespans:
 			total_ls = sum(lifespans, timedelta())
-			avg_ls_seconds = (total_ls.days * 24 * 3600 + total_ls.seconds * 3600) / len(lifespans)
+			avg_ls_seconds = (total_ls.days * 24 * 3600 + total_ls.seconds) / len(lifespans)
 			avg_ls_hours = round(avg_ls_seconds / 3600, 1)
 		else:
 			avg_ls_hours = max_lifespan_hours
@@ -214,8 +214,9 @@ def zombies_by_major(game, **kwargs):
 		for kill in kills:
 			tszs.append(end_date - kill.date)
 		if tszs:
-			avg_tsz = sum(tszs, timedelta()) / len(tszs)
-			avg_tsz_hours = avg_tsz.days * 24 + round(avg_tsz.seconds / 3600, 1)
+			total_tsz = sum(tszs, timedelta())
+			avg_tsz_seconds = (total_tsz.days * 24 * 3600 + total_tsz.seconds) / len(tszs)
+			avg_tsz_hours = round(avg_tsz_seconds / 3600, 1)
 		else:
 			avg_tsz_hours = 0
 		point['x'] = avg_tsz_hours
