@@ -5,11 +5,13 @@ from hashlib import sha256
 def cache_func(seconds):
 	def dec(f):
 		def inner(*args, **kwargs):
-			key = sha256("%s%s%s%s" % (f.__module__, f.__name__, args, kwargs)).hexdigest()
-			result = cache.get(key)
-			if result is None or settings.DEBUG or kwargs.pop('use_cache', True) == False:
+			use_cache = kwargs.pop('use_cache', True)
+			key = "%s%s%s%s" % (f.__module__, f.__name__, args, kwargs)
+			key_hash = sha256(key).hexdigest()
+			result = cache.get(key_hash)
+			if result is None or settings.DEBUG or use_cache == False:
 				result = f(*args, **kwargs)
-				cache.set(key, result, seconds)
+				cache.set(key_hash, result, seconds)
 			return result
 		return inner
 	return dec
