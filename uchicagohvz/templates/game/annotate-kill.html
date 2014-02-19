@@ -7,8 +7,8 @@
 
 <form role="form" method="post">
 	{% csrf_token %}
-	<input id="latField" type="hidden" name="lat" value="">
-	<input id="lngField" type="hidden" name="lng" value="">
+	<input id="latField" type="hidden" name="lat" value="{{ form.lat.value }}">
+	<input id="lngField" type="hidden" name="lng" value="{{ form.lng.value }}">
 	<div class="form-group">
 		<label for="killMap">Kill location</label>
 		<span class="help-block">Left-click on map to mark location</span>
@@ -20,6 +20,16 @@
 		<div class="row">
 			<div class="col-lg-6">
 				<div id="killMap" style="height: 350px;"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6">
+				<label for="notes">Kill notes: tell us how it all went down. Was it a quick, painless death for them
+				or did your victim succumb only after a prolonged struggle? Feel free to tell the story of your kill using as
+				few or as many words as you want.
+				</label>
+				{{ form.notes.errors }}
+				<textarea class="form-control" name="notes" rows="6" required>{{ form.notes.value }}</textarea>
 			</div>
 		</div>
 	</div>
@@ -59,7 +69,8 @@ $(document).ready ->
 		$('#latField').val(marker.position.lat())
 		$('#lngField').val(marker.position.lng())
 
-	#marker.setPosition(mapOptions.center)
+	if $('#latField').val() and $('#lngField').val()
+		marker.setPosition(new google.maps.LatLng($('#latField').val(), $('#lngField').val()))
 
 	if 'geolocation' of navigator
 		navigator.geolocation.getCurrentPosition (pos) ->

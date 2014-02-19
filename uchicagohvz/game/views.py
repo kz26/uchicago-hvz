@@ -131,13 +131,14 @@ class AnnotateKill(UpdateView):
 
 	def get_object(self, queryset=None):
 		kill = super(AnnotateKill, self).get_object()
-		if kill.killer.user == self.request.user and not (kill.lat and kill.lng and kill.notes):
-			return kill
+		if kill.killer.game.status == 'in_progress':
+			if kill.killer.user == self.request.user and not (kill.lat and kill.lng and kill.notes):
+				return kill
 		raise PermissionDenied
 
 	def form_valid(self, form):
 		kill = form.save()
-		messages.success(self.request, 'Kill geotagged successfully.')
+		messages.success(self.request, 'Kill annotated successfully.')
 		return HttpResponseRedirect(kill.killer.game.get_absolute_url())
 
 class SubmitCodeSMS(APIView):
@@ -163,6 +164,8 @@ class SubmitCodeSMS(APIView):
 					if form.is_valid():
 						kill = form.victim.kill_me(player)
 						if kill:
+							kill.notes = u'This kill was logged via text message'
+							kill.save()
 							send_sms_confirmation.delay(player, kill)
 							send_death_notification.delay(kill)
 						return Response()
@@ -174,9 +177,9 @@ class SubmitCodeSMS(APIView):
 							award.save()
 						send_sms_confirmation.delay(player, award)
 						return Response()
-		# player has a valid number but entered an invalid code
-		if code:
-			send_sms_invalid_code.delay(profile, code)
+			# player has a valid number but entered an invalid code
+			if code:
+				send_sms_invalid_code.delay(profile, code)
 		return Response()
 
 class SubmitAwardCode(BaseFormView):

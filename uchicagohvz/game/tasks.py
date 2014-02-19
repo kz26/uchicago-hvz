@@ -8,9 +8,18 @@ import random
 @task
 def regenerate_stats(game_id):
 	game = Game.objects.get(pk=game_id)
-	keys = ('survival_by_dorm', 'top_humans', 'top_zombies', 
-		'most_courageous_dorms', 'most_infectious_dorms', 'humans_per_hour', 
-		'kills_by_tod', 'humans_by_major', 'zombies_by_major'
+	keys = (
+		'survival_by_dorm',
+		'top_humans',
+		'top_zombies', 
+		'top_human_squads',
+		'top_zombie_squads',
+		'most_courageous_dorms',
+		'most_infectious_dorms',
+		'humans_per_hour',
+		'kills_by_tod',
+		'humans_by_major',
+		'zombies_by_major'
 	)
 	g = globals()
 	# regenerate 
