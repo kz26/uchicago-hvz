@@ -23,8 +23,7 @@ class SquadKillFeed(ListAPIView):
 	serializer_class = KillSerializer
 	def get_queryset(self):
 		squad = get_object_or_404(Squad, id=self.kwargs['pk'])
-		squad_players = squad.players.all()
-		return Kill.objects.exclude(parent=None).exclude(victim__in=squad_players).filter(killer__in=squad_players)
+		return squad.get_kills()
 
 class HumansPerHour(APIView):
 	def get(self, request, *args, **kwargs):

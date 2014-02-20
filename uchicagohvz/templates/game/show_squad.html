@@ -43,11 +43,21 @@
 					</td>
 				</tr>
 				{% endfor %}
-				{% for award in player.awards.all %}
+				{% for player in squad.get_active_players %}
+				{% if player.human and player.hvt and player.hvt.award_points > 0 and player.hvt.expired %}
+				<tr>
+					<td>{{ player.hvt.award_points }}</td>
+					<td>{{ player.user.get_full_name }}: survived being a high-value target</td>
+				</tr>
+				{% endif %}
+				{% endfor %}
+				{% for award, award_count in player.awards.all %}
+				{% for c in award_count %}
 				<tr>
 					<td>{{ award.points }}</td>
 					<td>{{ award.name }}</td>
 				</tr>
+				{% endfor %}
 				{% endfor %}
 			</tbody>
 		</table>
@@ -76,7 +86,7 @@
 {% endif %}
 {% endblock %}
 {% block script %}
-{% if player.human == False and player.kills > 0 %}
+{% if squad.get_kills.count > 0 %}
 {% include 'includes/google-maps.html' %}
 {% include 'includes/moment.html' %}
 {% compress js %}

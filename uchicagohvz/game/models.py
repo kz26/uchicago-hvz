@@ -113,7 +113,14 @@ class Squad(models.Model):
 		return self.players.filter(active=True)
 
 	def get_kills(self):
-		return Kill.objects.filter(killer__in=self.players.all())
+		return Kill.objects.exclude(parent=None).filter(killer__in=self.get_active_players().all())
+
+	def get_awards(self): # returns a list of tuples: (Award, count)
+		awards = []
+		sp = self.get_active_players().all()
+		for aw in Award.objects.filter(players__in=sp):
+			awards.append(aw, aw.players.filter(players__in=sp).count())
+		return awards
 
 	@property
 	def size(self):
@@ -129,11 +136,11 @@ class Squad(models.Model):
 
 	@property
 	def human_points(self):
-		return sum([p.human_points for p in self.players.filter(active=True, human=True)]) / self.players.filter(active=True).count()
+		return sum([p.human_points for p in self.players.filter(active=True, human=True)]) / self.get_active_players().count()
 
 	@property
 	def zombie_points(self):
-		return sum([p.zombie_points for p in self.players.filter(active=True, human=False)]) / self.players.filter(active=True).count()
+		return sum([p.zombie_points for p in self.players.filter(active=True, human=False)]) / self.get_active_players().count()
 
 	@property
 	def human_rank(self):
@@ -264,10 +271,12 @@ class Player(models.Model):
 
 	@property
 	def human_points(self):
-		try:
-			hvt_points = self.hvt.award_points
-		except HighValueTarget.DoesNotExist:
-			hvt_points = 0
+		hvt_points = 0
+		if self.human:
+			try:
+				hvt_points = self.hvt.award_points
+			except HighValueTarget.DoesNotExist:
+				hvt_points = 0
 		return (self.awards.filter(redeem_type__in=('H', 'A')).aggregate(points=models.Sum('points'))['points'] or 0) + hvt_points
 
 	@property
@@ -351,6 +360,7 @@ class Kill(MPTTModel):
 		victim = self.victim
 		victim.human = False
 		victim.save()
+		self.refresh_points()
 		super(Kill, self).save(*args, **kwargs)
 
 REDEEM_TYPES = (
@@ -392,6 +402,9 @@ class HighValueTarget(models.Model):
 
 	def __unicode__(self):
 		return "%s" % (self.player)
+	
+	def expired(self):
+		return timezone.now() > self.end_date
 
 	def save(self, *args, **kwargs):
 		if self.player.opt_out_hvt:

@@ -18,9 +18,9 @@
 	<dt>Human Points</dt>
 	<dd>{{ player.human_points }} (#{{ player.human_rank.0 }} of {{ player.human_rank.1 }})</dd>
 	{% if not player.human %}
-	{% if player.killed_by %}
+	{% if player.kill_object %}
 	<dt>Killed by</dt>
-	<dd><a href="{% url 'kill|show' pk=player.killed_by.id %}">{{ player.killed_by.display_name }}</a> on {{ player.time_of_death }}</dd>
+	<dd><a href="{{ player.kill_object.get_absolute_url }}">{{ player.killed_by.display_name }}</a> on {{ player.time_of_death }}</a></dd>
 	{% endif %}
 	<dt>Kills</dt>
 	<dd>{{ player.kills.count }}</dd>
@@ -48,6 +48,12 @@
 					</td>
 				</tr>
 				{% endfor %}
+				{% if player.human and player.hvt and player.hvt.award_points > 0 and player.hvt.expired %}
+				<tr>
+					<td>{{ player.hvt.award_points }}</td>
+					<td>Survived being a High-Value Target</td>
+				</td>
+				{% endif %}
 				{% for award in player.awards.all %}
 				<tr class="{% if award.redeem_type == 'H' %}success{% elif award.redeem_type == 'Z' %}danger{% endif %}">
 					<td>{{ award.points }}</td>

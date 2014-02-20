@@ -1,7 +1,7 @@
 {% extends 'base.html' %}{% load mptt_tags %}{% load compress %}
 {% block content %}
 <div class="page-header">
-	<h1>Kill: {{ kill.victim.display_name }}</h1>
+	<h1>Kill: {{ kill.victim.display_name }} <small>{{ kill.killer.game.name }}</small></h1>
 </div>
 
 <dl style="font-size: 15pt;">

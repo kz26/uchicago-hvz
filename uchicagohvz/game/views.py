@@ -249,6 +249,13 @@ class ShowSquad(DetailView):
 	model = Squad
 	template_name = 'game/show_squad.html'
 
+	def get_context_data(self, **kwargs):
+		context = super(ShowSquad, self).get_context_data(**kwargs)
+		squad = self.object
+		if squad.game.status == 'finished':
+			context['kill_tree'] = squad.get_kills().get_descendants(include_self=True)
+		return context
+
 class ShowKill(DetailView):
 	model = Kill
 	template_name = 'game/show_kill.html'
