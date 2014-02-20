@@ -459,9 +459,9 @@
 
 {% block script %}
 {% if game.status == "in_progress" or game.status == "finished" %}
-{% include 'google-maps-script.html' %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.2.1/moment.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/3.0.2/highcharts.js"></script>
+{% include 'includes/google-maps.html' %}
+{% include 'includes/moment.html' %}
+{% include 'includes/highcharts.html' %}
 <script>
 {% if player %}
 var PLAYER_NAME = '{{ player.display_name }}';
@@ -475,7 +475,7 @@ swPoint = new google.maps.LatLng(GAME_SW_BOUND[0], GAME_SW_BOUND[1])
 nePoint = new google.maps.LatLng(GAME_NE_BOUND[0], GAME_NE_BOUND[1])
 bounds = new google.maps.LatLngBounds(swPoint, nePoint)
 mapOptions = {
-	center: new google.maps.LatLng(41.789553, -87.598586),
+	center: new google.maps.LatLng(GAME_CENTER[0], GAME_CENTER[1]),
 	zoom: 15
 }
 map = new google.maps.Map($('#killMap').get(0), mapOptions)

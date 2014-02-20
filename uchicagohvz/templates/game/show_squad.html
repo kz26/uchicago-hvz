@@ -37,10 +37,8 @@
 				{% for kill in squad.get_kills %}
 				<tr>
 					<td>{{ kill.points }}</td>
-					<td>
-						{{ kill.killer.display_name }} killed
-						<a href="{% url 'player|show' pk=kill.victim.id %}">{{ kill.victim.display_name }} ({{ kill.victim.get_dorm_display }})</a>
-						on {{ kill.date|date:"SHORT_DATE_FORMAT" }}
+					<td><a href="{{ kill.get_absolute_url }}"> {{ kill.killer.display_name }} killed
+						{{ kill.victim.display_name }} ({{ kill.victim.get_dorm_display }}) on {{ kill.date|date:"SHORT_DATE_FORMAT" }}</a>
 						{% if kill.hvd %}<span class="text-danger">HVD</span>{% endif %}{% if kill.hvt %} <span class="text-danger">HVT</span>{% endif %}
 					</td>
 				</tr>
@@ -79,16 +77,15 @@
 {% endblock %}
 {% block script %}
 {% if player.human == False and player.kills > 0 %}
-{% include 'google-maps-script.html' %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.2.1/moment.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/3.0.2/highcharts.js"></script>
+{% include 'includes/google-maps.html' %}
+{% include 'includes/moment.html' %}
 {% compress js %}
 <script type="text/coffeescript">
 swPoint = new google.maps.LatLng(GAME_SW_BOUND[0], GAME_SW_BOUND[1])
 nePoint = new google.maps.LatLng(GAME_NE_BOUND[0], GAME_NE_BOUND[1])
 bounds = new google.maps.LatLngBounds(swPoint, nePoint)
 mapOptions = {
-	center: new google.maps.LatLng(41.789553, -87.598586),
+	center: new google.maps.LatLng(GAME_CENTER[0], GAME_CENTER[1]),
 	zoom: 15
 }
 map = new google.maps.Map($('#killMap').get(0), mapOptions)

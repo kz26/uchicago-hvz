@@ -48,7 +48,7 @@
 </form>
 {% endblock %}
 {% block script %}
-{% include 'google-maps-script.html' %}
+{% include 'includes/google-maps.html' %}
 {% compress js %}
 <script type="text/coffeescript">
 
@@ -58,7 +58,7 @@ $(document).ready ->
 	bounds = new google.maps.LatLngBounds(swPoint, nePoint)
 
 	mapOptions = {
-		center: new google.maps.LatLng(41.791395,-87.599694),
+		center: new google.maps.LatLng(GAME_CENTER[0], GAME_CENTER[1]),
 		zoom: 17
 	}
 

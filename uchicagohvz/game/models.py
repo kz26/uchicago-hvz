@@ -188,19 +188,23 @@ class Player(models.Model):
 		super(Player, self).save(*args, **kwargs)
 
 	@property
-	def killed_by(self):
+	def kill_object(self):
 		kills = Kill.objects.exclude(parent=None).filter(victim=self).order_by('-date')
 		if kills.exists():
-			return kills[0].killer
-		else:
-			return None
+			return kills[0]
+		return None
+
+	@property
+	def killed_by(self):
+		ko = self.kill_object
+		if ko:
+			return ko.killer
+		return None
 
 	@property
 	def time_of_death(self):
-		if not self.human:
-			kills = Kill.objects.exclude(parent=None).filter(victim=self).order_by('-date')
-			if kills.exists():
-				return kills[0].date
+		if self.human == False and self.kill_object:
+			return self.kill_object.date
 		return None
 
 	@property
@@ -318,6 +322,10 @@ class Kill(MPTTModel):
 
 	def __unicode__(self):
 		return "%s (%s) --> %s (%s) [%s]" % (self.killer.user.get_full_name(), self.killer.user.username, self.victim.user.get_full_name(), self.victim.user.username, self.killer.game.name)
+	
+	@models.permalink
+	def get_absolute_url(self):
+		return ('kill|show', [self.pk])
 
 	def refresh_points(self):
 		"""

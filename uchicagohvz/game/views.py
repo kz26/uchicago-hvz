@@ -231,14 +231,14 @@ class ShowPlayer(DetailView):
 				pass
 		return context
 
-class Leaderboard(TemplateView):
+class Leaderboard(DetailView):
+	model = Game
 	template_name = 'game/leaderboard.html'
 
 	def get_context_data(self, **kwargs):
 		context = super(Leaderboard, self).get_context_data(**kwargs)
-		game = get_object_or_404(Game, id=self.kwargs['pk'])
+		game = context['game']
 		if game.status in ('in_progress', 'finished'):
-			context['game'] = game
 			context['top_humans'] = top_humans(game)
 			context['top_zombies'] = top_zombies(game)
 			return context
@@ -249,5 +249,6 @@ class ShowSquad(DetailView):
 	model = Squad
 	template_name = 'game/show_squad.html'
 
-	def get_object(self, queryset=None):
-		return get_object_or_404(Squad, id=self.kwargs['pk'])
+class ShowKill(DetailView):
+	model = Kill
+	template_name = 'game/show_kill.html'

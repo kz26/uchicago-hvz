@@ -1,0 +1,64 @@
+{% extends 'base.html' %}{% load mptt_tags %}{% load compress %}
+{% block content %}
+<div class="page-header">
+	<h1>Kill: {{ kill.victim.display_name }}</h1>
+</div>
+
+<dl style="font-size: 15pt;">
+	<dt>Killer</dt>
+	<dd><a href="{{ kill.killer.get_absolute_url }}">{{ kill.killer.display_name }}</a></dd>
+	<dt>Victim</dt>
+	<dd><a href="{{ kill.victim.get_absolute_url }}">{{ kill.victim.display_name }}</a></dd>
+	<dt>Time of Death</dt>
+	<dd>{{ kill.date }}</dd>
+	<dt>Points</dt>
+	<dd>{{ kill.points }}</dd>
+	<dt>High-Value Dorm</dt>
+	<dd>{% if kill.hvd %}Yes{% else %}No{% endif %}</dd>
+	<dt>High-Value Target</dt>
+	<dd>{% if kill.hvt %}Yes{% else %}No{% endif %}</dd>
+</dl>
+
+{% if kill.notes %}
+<h3>Kill Notes</h3>
+<p>{{ kill.notes }}</p>
+{% endif %}
+
+<h3>Kill Location</h3>
+<div id="killMap" style="height: 350px;"></div>
+
+{% endblock %}
+{% block script %}
+{% if kill.lat and kill.lng %}
+{% include 'includes/google-maps.html' %}
+<script>
+var KILL_LAT = {{ kill.lat }};
+var KILL_LNG = {{ kill.lng }};
+</script>
+{% compress js %}
+<script type="text/coffeescript">
+swPoint = new google.maps.LatLng(GAME_SW_BOUND[0], GAME_SW_BOUND[1])
+nePoint = new google.maps.LatLng(GAME_NE_BOUND[0], GAME_NE_BOUND[1])
+bounds = new google.maps.LatLngBounds(swPoint, nePoint)
+mapOptions = {
+	center: new google.maps.LatLng(GAME_CENTER[0], GAME_CENTER[1]),
+	zoom: 15
+}
+map = new google.maps.Map($('#killMap').get(0), mapOptions)
+lvc = map.getCenter()
+google.maps.event.addListener map, 'center_changed', (e) ->
+	nc = map.getCenter()
+	if bounds.contains(nc)
+		lvc = nc
+	else
+		map.panTo(lvc)
+
+marker = new google.maps.Marker {
+	map: map,
+	icon: '{{ STATIC_URL }}img/skull.png',
+	position: new google.maps.LatLng(KILL_LAT, KILL_LNG)
+}
+</script>
+{% endcompress %}
+{% endif %}
+{% endblock %}
