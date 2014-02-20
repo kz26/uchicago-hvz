@@ -305,7 +305,12 @@ class Player(models.Model):
 		return (Ranking(scores, start=1).rank(player_score), len(tz))
 
 	def __unicode__(self):
-		return "%s - %s - %s (%s)" % (self.user.username, self.user.get_full_name(), self.bite_code, self.game.name)
+		name = "%s, %s, %s, %s" % (self.user.username, self.user.get_full_name(), self.bite_code, self.game.name)
+		if self.squad:
+			return "[%s] %s" % (self.squad.name, name)
+		else:
+			return name
+
 
 	@models.permalink
 	def get_absolute_url(self):
