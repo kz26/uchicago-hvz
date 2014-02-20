@@ -187,7 +187,9 @@
 	<div class="col-lg-4">
 		<h2>My Score</h2>
 		<h3 style="font-weight: bold; font-size: 15pt;">{{ player.points }} points</h3>
-		<p>You are ranked <b>#{{ player_rank.0 }}</b> of {{ player_rank.1 }} {% if player.human %}humans{% else %}zombies{% endif %}.</p>
+		<p>You are ranked <b>#{{ player_rank.0 }}</b> of {{ player_rank.1 }} {% if player.human %}humans{% else %}zombies{% endif %}.
+		Visit your player and/or squad pages for more details and point breakdowns.</p>
+		</p>
 		<a class="btn btn-primary" href="{{ player.get_absolute_url }}">My Player Page</a>
 		{% if player.squad %}<a class="btn btn-primary" href="{{ player.squad.get_absolute_url }}">My Squad Page</a>{% endif %}		
 	</div>
