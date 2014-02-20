@@ -188,33 +188,6 @@
 		<h2>My Score</h2>
 		<h3 style="font-weight: bold; font-size: 15pt;">{{ player.points }} points</h3>
 		<p>You are ranked <b>#{{ player_rank.0 }}</b> of {{ player_rank.1 }} {% if player.human %}humans{% else %}zombies{% endif %}.</p>
-		{% if player.score != 0 or player.awards.all.count %}
-		{% endif %}
-		<table class="table table-bordered table-striped">
-			<thead>
-				<tr>
-					<th>Points</th>
-					<th>For</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for kill in player.kills %}
-				<tr>
-					<td>{{ kill.points }}</td>
-					<td>Kill: <a href="{% url 'player|show' pk=kill.victim.id %}">{{ kill.victim.user.get_full_name }} ({{ kill.victim.bite_code }}, 
-						{{ kill.victim.get_dorm_display }})</a> on {{ kill.date|date:"SHORT_DATE_FORMAT" }}
-						{% if kill.hvd %}<span class="text-danger">HVD</span>{% endif %}{% if kill.hvt %} <span class="text-danger">HVT</span>{% endif %}
-					</td>
-				</tr>
-				{% endfor %}
-				{% for award in player.awards.all %}
-				<tr>
-					<td>{{ award.points }}</td>
-					<td>{{ award.name }}</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
 		<a class="btn btn-primary" href="{{ player.get_absolute_url }}">My Player Page</a>
 		{% if player.squad %}<a class="btn btn-primary" href="{{ player.squad.get_absolute_url }}">My Squad Page</a>{% endif %}		
 	</div>
