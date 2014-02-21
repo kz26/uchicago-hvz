@@ -1,7 +1,7 @@
 {% extends 'base.html' %}{% load mptt_tags %}{% load compress %}
 {% block content %}
 <div class="page-header">
-	<h1>Kill: {{ kill.victim.display_name }} <small>{{ kill.killer.game.name }}</small></h1>
+	<h1><span class="text-danger">Kill: {{ kill.victim.display_name }}</span> <small>{{ kill.killer.game.name }}</small></h1>
 </div>
 
 <dl style="font-size: 15pt;">
@@ -25,7 +25,7 @@
 {% endif %}
 
 <h3>Kill Location</h3>
-<div id="killMap" style="height: 350px;"></div>
+<div id="killMap" style="height: 500px;"></div>
 
 {% endblock %}
 {% block script %}
