@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% load mptt_tags %}{% load compress %}
+{% extends 'base.html' %}{% load mptt_tags %}{% load compress %}{% load game_extras %}
 {% block content %}
 <div class="page-header">
 	<h1>{{ player.display_name }} <small>{{ player.game.name }}</small></h1>
@@ -51,13 +51,13 @@
 				{% if player.human and player.hvt and player.hvt.award_points > 0 and player.hvt.expired %}
 				<tr>
 					<td>{{ player.hvt.award_points }}</td>
-					<td>Survived being a High-Value Target</td>
+					<td><span class="text-success">Survived being a High-Value Target</span></td>
 				</td>
 				{% endif %}
 				{% for award in player.awards.all %}
 				<tr>
 					<td>{{ award.points }}</td>
-					<td>{{ award.name }}</td>
+					<td>{{ award|award_colorize }}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
