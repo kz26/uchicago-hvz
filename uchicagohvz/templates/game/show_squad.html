@@ -37,9 +37,9 @@
 				{% for kill in squad.get_kills %}
 				<tr>
 					<td>{{ kill.points }}</td>
-					<td><a href="{{ kill.get_absolute_url }}"> {{ kill.killer.display_name }} killed
+					<td><a class="text-danger" href="{{ kill.get_absolute_url }}"> {{ kill.killer.display_name }} killed
 						{{ kill.victim.display_name }} ({{ kill.victim.get_dorm_display }}) on {{ kill.date|date:"SHORT_DATE_FORMAT" }}</a>
-						{% if kill.hvd %}<span class="text-danger">HVD</span>{% endif %}{% if kill.hvt %} <span class="text-danger">HVT</span>{% endif %}
+						{% if kill.hvd %}<span class="text-info">HVD</span>{% endif %}{% if kill.hvt %} <span class="text-info">HVT</span>{% endif %}
 					</td>
 				</tr>
 				{% endfor %}
