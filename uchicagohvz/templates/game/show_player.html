@@ -62,12 +62,13 @@
 				{% endfor %}
 			</tbody>
 		</table>
-		{% if player.human == False and player.kills.count > 0 %}
-		<h2>Kills <small>geotagged kills only</small></h2>
-		<div id="killMap" style="height: 350px;"></div>
-		{% endif %}
 	</div>
 </div>
+
+{% if player.human == False and player.kills.count > 0 %}
+<h2>Kills <small>geotagged kills only</small></h2>
+<div id="killMap" style="height: 350px;"></div>
+{% endif %}
 
 {% if kill_tree %}
 <h2>Kill Tree</h2>

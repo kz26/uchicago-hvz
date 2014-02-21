@@ -25,7 +25,7 @@
 </dl>
 
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-8">
 		<table class="table table-bordered table-striped">
 			<thead>
 				<tr>
@@ -61,12 +61,13 @@
 				{% endfor %}
 			</tbody>
 		</table>
-		{% if squad.get_kills.count > 0 %}
-		<h2>Kills <small>geotagged kills only</small></h2>
-		<div id="killMap" style="height: 350px;"></div>
-		{% endif %}
 	</div>
 </div>
+
+{% if squad.get_kills.count > 0 %}
+<h2>Kills <small>geotagged kills only</small></h2>
+<div id="killMap" style="height: 350px;"></div>
+{% endif %}
 
 {% if kill_tree %}
 <h2>Kill Tree</h2>
