@@ -72,17 +72,17 @@
 {% if kill_tree %}
 <h2>Kill Tree</h2>
 <ul>
-    {% recursetree kill_tree %}
-        <li>
-            <a href="{% url 'player|show' pk=node.victim.id %}">{{ node.victim.display_name }} ({{ node.victim.get_dorm_display }})</a> - 
-            	killed on {{ node.date }}
-            {% if not node.is_leaf_node %}
-                <ul>
-                    {{ children }}
-                </ul>
-            {% endif %}
-        </li>
-    {% endrecursetree %}
+	{% recursetree kill_tree %}
+		<li>
+			<a href="{{ node.get_absolute_url }}">{{ node.victim.display_name }}
+			({{ node.victim.get_dorm_display }}) - killed on {{ node.date }}</a>
+			{% if not node.is_leaf_node %}
+				<ul>
+					{{ children }}
+				</ul>
+			{% endif %}
+		</li>
+	{% endrecursetree %}
 </ul>
 {% endif %}
 {% endblock %}

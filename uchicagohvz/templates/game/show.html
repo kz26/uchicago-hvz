@@ -416,17 +416,17 @@
 <h2>Global Kill Tree</h2>
 <ul>
 {% cache 3600 kt %}
-    {% recursetree game.get_kills %}
-        <li>
-            <a href="{% url 'player|show' pk=node.victim.id %}">{{ node.victim.display_name }} ({{ node.victim.get_dorm_display }})</a> - 
-            	killed on {{ node.date }}
-            {% if not node.is_leaf_node %}
-                <ul>
-                    {{ children }}
-                </ul>
-            {% endif %}
-        </li>
-    {% endrecursetree %}
+	{% recursetree game.get_kills %}
+		<li>
+			<a href="{{ node.get_absolute_url }}">{{ node.victim.display_name }}
+			({{ node.victim.get_dorm_display }}) - killed on {{ node.date }}</a>
+			{% if not node.is_leaf_node %}
+				<ul>
+					{{ children }}
+				</ul>
+			{% endif %}
+		</li>
+	{% endrecursetree %}
 {% endcache %}
 </ul>
 {% endif %}
