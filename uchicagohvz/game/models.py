@@ -381,7 +381,9 @@ class Award(models.Model):
 	points = models.IntegerField(help_text='Can be negative, e.g. to penalize players')
 	players = models.ManyToManyField(Player, related_name='awards', null=True, blank=True, help_text='Players that should receive this award.')
 	code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
-	redeem_limit = models.IntegerField(help_text='Maximum number of players that can redeem award via code entry (set to 0 for moderator-added awards/points)')
+	redeem_limit = models.IntegerField(
+		help_text='Maximum number of players that can redeem award via code entry (set to 0 for awards to be added by moderators only)'
+	)
 	redeem_type = models.CharField(max_length=1, choices=REDEEM_TYPES)
 
 	def __unicode__(self):
@@ -400,8 +402,8 @@ class HighValueTarget(models.Model):
 	player = models.OneToOneField(Player, unique=True, related_name='hvt')
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
-	kill_points = models.IntegerField(default=settings.HVT_KILL_POINTS)
-	award_points = models.IntegerField(default=settings.HVT_AWARD_POINTS)
+	kill_points = models.IntegerField(default=settings.HVT_KILL_POINTS, help_text='# of points zombies receive for killing this HVT')
+	award_points = models.IntegerField(default=settings.HVT_AWARD_POINTS, help_text='# of points the HVT earns if he/she survives for the entire duration')
 
 	def __unicode__(self):
 		return "%s" % (self.player)
@@ -431,6 +433,5 @@ class HighValueDorm(models.Model):
 
 	def save(self, *args, **kwargs):
 		super(HighValueDorm, self).save(*args, **kwargs)
-		for kill in self.kills:
-			kill.refresh_points()
-			kill.save()
+		from uchicagohvz.game.tasks import refresh_kill_points
+		refresh_kill_points.delay(self.game.id)
