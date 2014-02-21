@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django import forms
 from django.conf import settings
 from django.http import HttpResponse
 from uchicagohvz.game.models import *
@@ -34,7 +35,15 @@ class PlayerAdmin(admin.ModelAdmin):
 		return response
 	players_to_csv.short_description = 'Export to CSV'
 
+class KillAdminForm(forms.ModelForm):
+	def clean(self):
+		cleaned_data = super(KillAdminForm, self).clean()
+		if cleaned_data['killer'].game != cleaned_data['victim'].game:
+			raise forms.ValidationError('Killer and victim games do not match.')
+		return cleaned_data
+
 class KillAdmin(admin.ModelAdmin):
+	form = KillAdminForm
 	list_filter = ('killer__game',)
 	readonly_fields = ('parent',)
 	search_fields = ('killer__user__username', 'killer__user__first_name', 'killer__user__last_name', 
