@@ -55,7 +55,7 @@
 				</td>
 				{% endif %}
 				{% for award in player.awards.all %}
-				<tr class="{% if award.redeem_type == 'H' %}success{% elif award.redeem_type == 'Z' %}danger{% endif %}">
+				<tr>
 					<td>{{ award.points }}</td>
 					<td>{{ award.name }}</td>
 				</tr>
