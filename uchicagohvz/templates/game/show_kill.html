@@ -24,8 +24,10 @@
 <p>{{ kill.notes }}</p>
 {% endif %}
 
+{% if kill.lat and kill.lng %}
 <h3>Kill Location</h3>
 <div id="killMap" style="height: 500px;"></div>
+{% endif %}
 
 {% endblock %}
 {% block script %}
