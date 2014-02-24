@@ -41,31 +41,13 @@
 		<p><b>{{ game.end_date|timeuntil }}</b> until it all ends.</p>
 		{% if user.is_authenticated and not player %}
 		<p class="text-info">Interested in joining this game? Please contact a moderator.</p>
+		{% elif player and not player.active %}
+		<p class="text-danger">You registered for this game but have not been activated. Please contact a moderator for assistance.</p>
 		{% endif %}
 		{% elif game.status == "finished" %}
 		<h4 class="text-info">Finished</h4>
 		{% elif game.status == "future" %}
 		<h4 class="text-warning">Future game</h4>
-		{% endif %}
-		{% if player %}
-		{% if game.status != "in_progress" or not player.active %}
-		<dl class="dl-horizontal">
-			<dt>Your dorm</dt>
-			<dd>{{ player.get_dorm_display }}</dd>
-			<dt>Your major</dt>
-			<dd>{{ player.major }}</dd>
-			{% if game.status == 'registration' %}
-			<dt>Gun rental requested</dt>
-			<dd>{{ player.gun_requested|yesno:"Yes,No,N/A" }}</dd>
-			{% else %}
-			<dt>Renting Gun</dt>
-			<dd>{{ player.renting_gun|yesno:"Yes,No,N/A" }}</dd>
-			{% endif %}
-		</dl>
-		{% endif %}
-		{% if game.status == "finished" and player.renting_gun and not player.gun_returned %}
-		<p class="text-danger">Please return your gun as soon as possible!</p>
-		{% endif %}
 		{% endif %}
 		
 	</div>
@@ -78,7 +60,7 @@
 			<dt>Registered squads</dt>
 			<dd>{{ game.squads.count }}</dd>
 			{% else %}
-			<dt>Total</dt>
+			<dt>Total players</dt>
 			<dd>{{ game.get_active_players.count }}</dd>
 			<dt>Humans</dt>
 			<dd>{{ game.get_humans.count }} ({{ humans_percent }}%)</dd>
@@ -92,7 +74,6 @@
 </div>
 
 {% if player %}
-{% if player.active %}
 <hr>
 <div class="row">
 	<div class="col-lg-4">
@@ -105,7 +86,7 @@
 		<p>Killed by <a href="{% url 'player|show' pk=player.killed_by.id %}">{{ player.killed_by.user.get_full_name }} ({{ player.killed_by.get_dorm_display }})</a> on {{ player.time_of_death }}
 		{% endif %}
 		{% endif %}
-		{% if game.status == 'in_progress' %}
+		{% if player.active and  game.status == 'in_progress' %}
 		<h3>My Bite Code</h3>
 		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
 		{% if not player.human %}
@@ -142,7 +123,7 @@
 			send them one at a time.
 		{% else %}
 			Add your phone number to your <a href="{% url 'users|profile' %}">profile</a> so you can submit
-			bite codes and mission codes via text message!
+			{% if not player.human %}bite codes and {% endif %}mission codes via text message!
 		{% endif %}
 		</p>
 		<p class="text-default">
@@ -160,11 +141,19 @@
 			<dd>{{ player.get_dorm_display }}</dd>
 			<dt>Your major</dt>
 			<dd>{{ player.major }}</dd>
+			{% if game.status == 'registration' %}
+			<dt>Gun rental requested</dt>
+			<dd>{{ player.gun_requested|yesno:"Yes,No,N/A" }}</dd>
+			{% else %}
 			<dt>Renting Gun</dt>
 			<dd>{{ player.renting_gun|yesno:"Yes,No,N/A" }}</dd>
 			<dt>Gun returned</dt>
 			<dd>{{ player.gun_returned|yesno:"Yes,No,N/A" }}</dd>
+			{% endif %}
 		</dl>
+		{% if game.status == "finished" and player.renting_gun and not player.gun_returned %}
+        <p class="text-danger">Please return your gun as soon as possible!</p>
+		{% endif %}
 		{% if game.status == 'in_progress' %}
 		{% if player.user.profile.phone_number %}
 		{% if player.user.profile.subscribe_death_notifications %}
@@ -186,17 +175,21 @@
 	</div>
 	<div class="col-lg-4">
 		<h2>My Score</h2>
-		<h3 style="font-weight: bold; font-size: 15pt;">{{ player.points }} points</h3>
+		{% if game.status == 'in_progress' or game.status == 'finished' %}
+		{% if player.active %}
+		<h4 class="point-marker"><span class="text-success">{{ player.human_points }} human points</span></h4>
+		{% if not player.human %}<h4 class="point-marker"><span class="text-danger">{{ player.zombie_points }} human points</span></h4>{% endif %}
 		<p>You are ranked <b>#{{ player_rank.0 }}</b> of {{ player_rank.1 }} {% if player.human %}humans{% else %}zombies{% endif %}.
 		Visit your player and/or squad pages for more details and point breakdowns.</p>
 		</p>
 		<a class="btn btn-primary" href="{{ player.get_absolute_url }}">My Player Page</a>
 		{% if player.squad %}<a class="btn btn-primary" href="{{ player.squad.get_absolute_url }}">My Squad Page</a>{% endif %}		
+		{% endif %}
+		{% else %}
+		<p>Scores are not available at this time.</p>
+		{% endif %}
 	</div>
 </div>
-{% elif game.status == "in_progress" %}
-<h3 class="text-danger">You have not been activated yet for this game. Please contact a moderator for assistance.</h3>
-{% endif %}
 {% endif %}
 
 {% if game.status == "in_progress" or game.status == "finished" %}

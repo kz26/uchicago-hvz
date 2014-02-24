@@ -17,3 +17,8 @@
 .bigger {
 	font-size: 150%;
 }
+
+h4.point-marker {
+	font-weight: bold;
+	font-size: 15pt;
+}

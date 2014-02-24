@@ -38,6 +38,8 @@ class BiteCodeForm(forms.Form):
 			self.fields['lng'].required = True
 
 	def clean_bite_code(self):
+		if not self.killer.active:
+			raise forms.ValidationError('Player entering bite code is not activated for this game.')
 		if self.killer.human:
 			raise forms.ValidationError('Player entering bite code is not a zombie.')
 		bite_code = self.cleaned_data['bite_code'].lower().strip()
@@ -72,6 +74,8 @@ class AwardCodeForm(forms.Form):
 		super(AwardCodeForm, self).__init__(*args, **kwargs)
 
 	def clean(self):
+		if not self.player.active:
+			raise forms.ValidationError('Player entering code is not activated for this game.')
 		data = super(AwardCodeForm, self).clean()
 		code = data.get('code', '').lower().strip()
 		if code:

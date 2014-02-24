@@ -5,7 +5,7 @@
 </div>
 
 <h2>Members ({{ squad.size }})</h2>
-<ul class="bigger">
+<ul class="bigger list-unstyled">
 	{% for p in squad.get_active_players %}
 	<li>{{ p.user.get_full_name }}</li>
 	{% endfor %}
@@ -24,6 +24,7 @@
 	{% endif %}
 </dl>
 
+{% if squad.human_points or squad.zombie_points %}
 <div class="row">
 	<div class="col-md-8">
 		<table class="table table-bordered table-striped">
@@ -63,6 +64,7 @@
 		</table>
 	</div>
 </div>
+{% endif %}
 
 {% if squad.get_kills.count > 0 %}
 <h2>Kills <small>geotagged kills only</small></h2>

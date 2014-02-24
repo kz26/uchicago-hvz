@@ -29,6 +29,7 @@
 	{% endif %}
 </dl>
 
+{% if player.human_points or player.zombie_points %}
 <div class="row">
 	<div class="col-md-6">
 		<table class="table table-bordered table-striped">
@@ -64,6 +65,7 @@
 		</table>
 	</div>
 </div>
+{% endif %}
 
 {% if player.human == False and player.kills.count > 0 %}
 <h2>Kills <small>geotagged kills only</small></h2>
