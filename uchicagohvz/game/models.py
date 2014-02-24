@@ -261,13 +261,17 @@ class Player(models.Model):
 
 	@property
 	def display_name(self): # real name when game is over; otherwise, dorm + obfuscated code for humans and bite code for zombies
+		name = ''
 		if self.game.status == 'in_progress':
 			if self.human:
-				return "%s %s" % (self.get_dorm_display(), hashlib.sha256(self.bite_code).hexdigest()[:2].upper())
+				name = "%s %s" % (self.get_dorm_display(), hashlib.sha256(self.bite_code).hexdigest()[:2].upper())
 			else:
-				return self.bite_code
+				name = self.bite_code
 		else:
-			return self.user.get_full_name()
+			name = self.user.get_full_name()
+		if self.squad:
+			name = "%s [%s]" % (name, self.squad.name)
+		return name
 
 	@property
 	def human_points(self):
@@ -305,12 +309,10 @@ class Player(models.Model):
 		return (Ranking(scores, start=1).rank(player_score), len(tz))
 
 	def __unicode__(self):
-		name = "%s, %s, %s, %s" % (self.user.username, self.user.get_full_name(), self.bite_code, self.game.name)
+		name = self.user.username
 		if self.squad:
-			return "[%s] %s" % (self.squad.name, name)
-		else:
-			return name
-
+			name = "%s [%s]" (name, self.squad.name)
+		return "%s, %s, %s, %s" % (name, self.user.get_full_name(), self.bite_code, self.game.name)
 
 	@models.permalink
 	def get_absolute_url(self):

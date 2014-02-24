@@ -121,7 +121,7 @@
 		{% endif %}
 		<a class="btn btn-danger btn-block" href="{% url 'game|bite' pk=game.pk %}">Log a kill...</a>
 		<p class="bold text-info">
-			***Kills are timestamped at the time of submission, so enter bite codes as soon as possible!***
+			***Kills are timestamped at the time of submission, so enter your bite codes while they're still fresh!***
 		</p>
 		{% endif %}
 		
@@ -156,8 +156,7 @@
 		<dl class="dl-horizontal">
 			{% if player.squad %}
 			<dt>Your squad</dt>
-			<dd><a href="{{ player.squad.get_absolute_url }}">{{ player.squad.name }}</a></dd>
-			{% endif %}
+			<dd>{% if player.squad %}<a href="{{ player.squad.get_absolute_url }}">{{ player.squad.name }}</a>{% else %}(None){% endif %}</dd>
 			<dt>Your dorm</dt>
 			<dd>{{ player.get_dorm_display }}</dd>
 			<dt>Your major</dt>
