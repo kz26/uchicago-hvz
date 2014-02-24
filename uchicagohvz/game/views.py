@@ -13,6 +13,8 @@ from django.contrib.auth.decorators import *
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
+from uchicagohvz.secrets import SMS_AUTH_KEY
 from uchicagohvz.game.models import *
 from uchicagohvz.game.forms import *
 from uchicagohvz.game.data_apis import *
@@ -144,6 +146,8 @@ class AnnotateKill(UpdateView):
 class SubmitCodeSMS(APIView):
 	@method_decorator(csrf_exempt)
 	def post(self, request, *args, **kwargs):
+		if request.QUERY_PARAMS.get('auth_key') != SMS_AUTH_KEY:
+			return Response(status=status.HTTP_403_FORBIDDEN)
 		if all([f in request.DATA for f in ('msisdn', 'text')]):
 			code = data.get('text', '').lower().strip()
 			code = re.sub(' {2,}', ' ', code)
