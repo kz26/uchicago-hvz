@@ -136,11 +136,15 @@ class Squad(models.Model):
 
 	@property
 	def human_points(self):
-		return sum([p.human_points for p in self.players.filter(active=True, human=True)]) / self.get_active_players().count()
+		if self.get_active_players().count() > 0:
+			return sum([p.human_points for p in self.players.filter(active=True, human=True)]) / self.get_active_players().count()
+		return 0
 
 	@property
 	def zombie_points(self):
-		return sum([p.zombie_points for p in self.players.filter(active=True, human=False)]) / self.get_active_players().count()
+		if self.get_active_players().count() > 0:
+			return sum([p.zombie_points for p in self.players.filter(active=True, human=False)]) / self.get_active_players().count()
+		return 0
 
 	@property
 	def human_rank(self):

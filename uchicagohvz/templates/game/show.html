@@ -120,16 +120,14 @@
 		{% if player.user.profile.phone_number %}
 			You can also text {% if not player.human %}bite codes and {% endif %}mission codes (one code per message)!*
 			Simply send a text message containing a code to <b>{{ sms_code_number }}</b>. If you have multiple codes,
-			send them one at a time.
+			send them one at a time.{% if not player.human %} Kills submitted via text will not be geotagged, but you can
+			come back here and geotag them later.{% endif %}
 		{% else %}
 			Add your phone number to your <a href="{% url 'users|profile' %}">profile</a> so you can submit
 			{% if not player.human %}bite codes and {% endif %}mission codes via text message!
 		{% endif %}
 		</p>
-		<p class="text-default">
-			* Standard text messaging rates apply. {% if not player.human %}We recommend that you submit bite codes online instead of texting
-			whenever possible, so that you can geotag your kills.{% endif %}
-		</p>
+		<p class="text-default">* Standard text messaging rates apply.</p>
 		{% endif %}
 	</div>
 	<div class="col-lg-4">
@@ -154,7 +152,7 @@
 		{% if game.status == "finished" and player.renting_gun and not player.gun_returned %}
         <p class="text-danger">Please return your gun as soon as possible!</p>
 		{% endif %}
-		{% if game.status == 'in_progress' %}
+		{% if player.active and game.status == 'in_progress' %}
 		{% if player.user.profile.phone_number %}
 		{% if player.user.profile.subscribe_death_notifications %}
 		<p class="text-success">We'll send death notifications to you via text message.
