@@ -73,8 +73,10 @@
 		<h2>Players</h2>
 		<dl class="dl-horizontal">
 			{% if game.status == "registration" or game.status == "future" %}
-			<dt>Registered</dt>
+			<dt>Registered players</dt>
 			<dd>{{ game.get_registered_players.count }}</dd>
+			<dt>Registered squads</dt>
+			<dd>{{ game.squads.count }}</dd>
 			{% else %}
 			<dt>Total</dt>
 			<dd>{{ game.get_active_players.count }}</dd>
