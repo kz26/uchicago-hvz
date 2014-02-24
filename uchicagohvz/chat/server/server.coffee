@@ -66,9 +66,10 @@ class ChatServer
 						@removeUser conn
 
 	chat: (conn, data) =>
-		if data.room?
-			@broadcast conn, data
-			@log conn, data
+		if conn.userObject.rooms.length == 1
+			data.room = conn.userObject.room[0]
+		@broadcast conn, data
+		@log conn, data
 
 	updateUserRooms: (uid, roomList) =>
 		for conn, i in @lobby

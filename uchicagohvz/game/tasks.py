@@ -1,6 +1,6 @@
 from celery import task
 from django.core import mail
-from uchicagohvz.game.models import Game, Kill, Award
+from uchicagohvz.game.models import Game, Player, Kill, Award
 from uchicagohvz.users.phone import CARRIERS
 from uchicagohvz.game.data_apis import *
 import random
@@ -37,6 +37,10 @@ def refresh_kill_points(game_id):
 		kill.refresh_points()
 		kill.save()
 	regenerate_stats(game_id)
+
+@task
+def update_chat_privs(player_id):
+	player = Player.objects.get(active=True, pk=player_id)
 
 @task
 def send_death_notification(kill):
@@ -85,12 +89,4 @@ def send_sms_invalid_code(profile, code):
 	to_addr = CARRIERS[profile.phone_carrier] % (phone_number)
 	email = mail.EmailMessage(body=body, to=[to_addr])
 	email.send()
-
-#@task
-#def send_sms_unregistered(player):
-#	body = 'Unrecognized phone #. Add your phone # and carrier to your profile.'
-#	phone_number = player.user.profile.phone_number.replace('-', '')
-#    to_addr = CARRIERS[player.user.profile.phone_carrier] % (phone_number)
-#    email = mail.EmailMessage(body=body, to=[to_addr])
-#    email.send()
 
