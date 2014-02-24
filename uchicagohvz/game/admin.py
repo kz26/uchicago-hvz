@@ -9,7 +9,7 @@ from uchicagohvz.game.models import *
 admin.site.register(Game)
 
 class PlayerAdmin(admin.ModelAdmin):
-	list_filter = ('game', 'active', 'human', 'dorm', 'renting_gun', 'gun_requested', 'gun_returned', 'major')
+	list_filter = ('game', 'active', 'human', 'dorm', 'squad', 'renting_gun', 'gun_requested', 'gun_returned', 'major')
 	if not settings.DEBUG:
 		readonly_fields = ('major',)
 	search_fields = ('user__username', 'user__first_name', 'user__last_name', 'bite_code')
