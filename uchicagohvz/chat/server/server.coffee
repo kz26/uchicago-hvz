@@ -8,7 +8,7 @@ httpServer = http.createServer app
 httpServer.listen 36452, '127.0.0.1'
 
 class ChatServer
-	constructor: (@hs) -> # takes an HTTP server object
+	constructor: (httpServer) -> # takes an HTTP server object
 		@server = sockjs.createServer {
 			prefix: '/chat',
 			log: (severity, message) ->
@@ -16,7 +16,7 @@ class ChatServer
 					console.log message
 		}
 		@lobby = []
-		@hs.installHandlers(@server)
+		httpServer.installHandlers(@server)
 
 		@server.on 'connection', (conn) ->
 			conn.on 'data', (data) ->
@@ -67,4 +67,4 @@ class ChatServer
 
 	removeUser: (conn) =>
 		@lobby = @lobby.filter (v) ->
-			return v.session_id == conn.session_id
+			return v.session_id != conn.session_id
