@@ -311,7 +311,7 @@ class Player(models.Model):
 	def __unicode__(self):
 		name = self.user.get_full_name()
 		if self.squad:
-			name = "%s [%s]" (name, self.squad.name)
+			name = "%s [%s]" % (name, self.squad.name)
 		return "%s, %s, %s, %s" % (self.user.username, name, self.bite_code, self.game.name)
 
 	@models.permalink
