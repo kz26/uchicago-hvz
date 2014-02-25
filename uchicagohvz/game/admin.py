@@ -40,10 +40,10 @@ class KillAdminForm(forms.ModelForm):
 		hvd = self.cleaned_data.get('hvd')
 		if hvd:
 			victim = self.cleaned_data['victim']
-			if hvd.dorm == victim.dorm:
-				if hvd.game == victim.game:
-					return hvd
-			raise forms.ValidationError('HVD game/dorm do not match those of the victim.')
+			kill_date = self.cleaned_data['date']
+			if hvd.dorm == victim.dorm and hvd.game == victim.game and hvd.start_date <= kill_date <= hvd.end_date:
+				return hvd
+			raise forms.ValidationError('HVD game/dorm do not match those of the victim, or kill date out of bounds.')
 		else:
 			return hvd
 
@@ -51,10 +51,11 @@ class KillAdminForm(forms.ModelForm):
 		hvt = self.cleaned_data.get('hvt')
 		if hvt:
 			victim = self.cleaned_data['victim']
+			if victim.opt_out_hvt:
+				raise forms.ValidationError("%s has opted out of HVT; the selected HVT entry is no longer valid." % (victim.user.get_full_name()))
 			kill_date = self.cleaned_data['date']
-			if hvt.player == victim:
-				if hvt.start_date <= kill_date <= hvt.end_date:
-					return hvt
+			if hvt.player == victim and hvt.start_date <= kill_date <= hvt.end_date:
+				return hvt
 			raise forms.ValidationError('HVT does not match victim, or kill date out of bounds.')
 		else:
 			return hvt
