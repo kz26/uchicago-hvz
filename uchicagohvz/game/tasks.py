@@ -1,9 +1,12 @@
 from celery import task
 from django.core import mail
+from django.conf import settings
 from uchicagohvz.game.models import Game, Player, Kill, Award
 from uchicagohvz.users.phone import CARRIERS
 from uchicagohvz.game.data_apis import *
 import random
+import json
+import requests
 
 @task
 def regenerate_stats(game_id):
@@ -41,6 +44,15 @@ def refresh_kill_points(game_id):
 @task
 def update_chat_privs(player_id):
 	player = Player.objects.get(active=True, pk=player_id)
+	rooms = []
+	if player.human:
+		rooms.append("%s-human" % (player.game.pk))
+	else:
+		rooms.append("%s-zombie" % (player.game.pk))
+	requests.post(settings.CHAT_ADMIN_URL + 'updateUserRooms', headers={'Content-type': 'application/json'},
+		data=json.dumps({'uid': player.user.pk, 'rooms': rooms})
+	)
+	
 
 @task
 def send_death_notification(kill):

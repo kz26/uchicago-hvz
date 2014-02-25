@@ -44,14 +44,13 @@ def player_changed(sender, **kwargs):
 	else:
 		if old_player.squad != new_player.squad:
 			score_update_required.send(sender=sender, game=new_player.game)
-		if new_player.game.status == 'in_progress':
-			new_player.user.profile.subscribe_zombies_listhost = True
-			new_player.user.profile.save()
-			# TODO: call celery task for human/zombie switching in chat
-			if old_player.human == True and new_player.human == False:
-				pass
-			elif old_player.human == False and new_player.human == True:
-				pass
+		if old_player.human == True and new_player.human == False:
+			update_chat_privs.delay(new_player.pk)
+		elif old_player.human == False and new_player.human == True:
+			update_chat_privs.delay(new_player.pk)
+	if new_player.game.status == 'in_progress':
+		new_player.user.profile.subscribe_zombies_listhost = True
+		new_player.user.profile.save()
 
 def player_deleted(sender, **kwargs):
 	score_update_required.send(sender=sender, game=kwargs['instance'].game)

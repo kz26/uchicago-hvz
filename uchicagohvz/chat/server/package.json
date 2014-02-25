@@ -5,7 +5,8 @@
 		"coffee-script": "*",
 		"moment": "*",
 		"sockjs": "*",
-		"express": ">=3.4.7"
+		"express": ">=3.4.7",
+		"request": ">=2.33.0"
 	},
 	"engines": {
 		"node": ">=0.10.0"

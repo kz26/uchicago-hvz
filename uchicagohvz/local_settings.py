@@ -134,6 +134,7 @@ CACHES = {
 	}
 }
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+SESSION_COOKIE_HTTPONLY = False # required for reading sessionid cookie in chat JS
 
 # HTTPS settings
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
@@ -170,3 +171,7 @@ GAME_NE_BOUND = (41.798128, -87.584016)
 # Dealer settings
 TEMPLATE_CONTEXT_PROCESSORS += 'dealer.contrib.django.staff.context_processor',
 DEALER_PATH = os.path.dirname(BASE_DIR)
+
+# Chat settings
+CHAT_SERVER_URL = 'http://192.168.1.20:36452/chat'
+CHAT_ADMIN_URL = 'http://localhost:36452/admin/'

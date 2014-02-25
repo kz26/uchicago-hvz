@@ -68,9 +68,7 @@ class RegisterForGame(FormView):
 	@method_decorator(login_required)
 	def dispatch(self, request, *args, **kwargs):
 		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
-		if self.game.status != 'registration':
-			return HttpResponseForbidden()
-		if Player.objects.filter(game=self.game, user=request.user).exists():
+		if self.game.status != 'registration' or Player.objects.filter(game=self.game, user=request.user).exists():
 			return HttpResponseRedirect(self.game.get_absolute_url())
 		return super(RegisterForGame, self).dispatch(request, *args, **kwargs)
 

@@ -77,6 +77,13 @@
 {% if player %}
 <hr>
 <div class="row">
+
+	{% if player.active and game.status == 'in_progress' %}
+	<a class="btn btn-block bigger btn-{% if player.human %}success{% else %}danger {% endif %}" href="{% url 'game|chat' pk=game.pk %}" target="_blank">
+		{% if player.human %}Get on the radio{% else %}Congregate with other zombies{% endif %}
+	</a>
+	{% endif %}
+
 	<div class="col-lg-4">
 		<h2>I am a...</h2>
 		{% if player.human %}

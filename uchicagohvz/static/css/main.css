@@ -22,3 +22,14 @@ h4.point-marker {
 	font-weight: bold;
 	font-size: 15pt;
 }
+
+#chat-messages {
+	border: 1px solid white; 
+	height: 500px;
+	padding: 0.5em;
+	overflow: scroll;
+}
+
+#chat-input {
+	margin-top: 5px;
+}

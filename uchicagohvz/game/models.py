@@ -173,7 +173,7 @@ class Player(models.Model):
 	squad = models.ForeignKey(Squad, null=True, blank=True, related_name='players')
 	bite_code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
 	dorm = models.CharField(max_length=4, choices=DORMS)
-	major = models.CharField(max_length=255, editable=settings.DEBUG)
+	major = models.CharField(max_length=255, blank=True, editable=settings.DEBUG, help_text='leave blank to autopopulate from LDAP')
 	human = models.BooleanField(default=True)
 	opt_out_hvt = models.BooleanField(default=False)
 	gun_requested = models.BooleanField(default=False)
@@ -181,7 +181,7 @@ class Player(models.Model):
 	gun_returned = models.BooleanField(default=False)
 
 	def save(self, *args, **kwargs):
-		if self.game.status == 'registration': # allow updates to major during registration
+		if self.game.status == 'registration' or not self.major: # allow updates to major during registration
 			backend = UChicagoLDAPBackend()
 			self.major = backend.get_user_major(self.user.username)
 		if not self.bite_code:

@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from uchicagohvz.game.views import *
 from uchicagohvz.game.api_views import *
+from uchicagohvz.chat.views import *
 
 urlpatterns = patterns('',
     # Examples:
@@ -11,6 +12,8 @@ urlpatterns = patterns('',
     url(r'^game/(?P<pk>[0-9]+)/$', ShowGame.as_view(), name='game|show'),
     url(r'^game/(?P<pk>[0-9]+)/leaderboard/$', Leaderboard.as_view(), name='game|leaderboard'),
     url(r'^game/(?P<pk>[0-9]+)/register/$', RegisterForGame.as_view(), name='game|register'),
+    url(r'^game/(?P<pk>[0-9]+)/chat/$', ChatView.as_view(), name='game|chat'),
+    url(r'^game/(?P<pk>[0-9]+)/chat/auth/$', ChatAuth.as_view(), name='game|chat|auth'),
     url(r'^game/(?P<pk>[0-9]+)/bite/$', EnterBiteCode.as_view(), name='game|bite'),
     url(r'^game/sms/$', SubmitCodeSMS.as_view(), name='game|sms'),
     url(r'^game/(?P<pk>[0-9]+)/code/$', SubmitAwardCode.as_view(), name='game|code'),

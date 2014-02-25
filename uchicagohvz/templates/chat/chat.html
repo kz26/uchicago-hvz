@@ -1,0 +1,110 @@
+{% extends 'base.html' %}{% load compress %}
+{% block content %}
+<div class="page-header">
+	<h1>{% if player.human %}<span class="text-success">RADIO</span>{% else %}<span class="text-danger">FEEDING AREA</span>{% endif %} <small>{{ player.game.name }}</small></h1>
+</div>
+
+<div id="chat" ng-app="chat" ng-controller="ChatCtrl" ng-cloak>
+	<div class="alert alert-danger" ng-show="!connected">The chat server is currently offline due to zombie attack. Please try again later.</div>
+	<div id="chat-messages" scroll-bottom link-new-window>
+		<p ng-repeat="m in messages track by $index" ng-bind-html="m"></p>
+	</div>
+	<form id="chat-input" ng-submit="transmit()">
+		<input id="msg" class="form-control" type="text" ng-disabled="!connected" ng-model="transmission" keep-focus autofocus>
+	</form>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+	var CHAT_SERVER_URL = '{{ CHAT_SERVER_URL }}';
+	var GAME_ID = {{ game.pk }};
+</script>
+{% include 'includes/angular.html' %}
+{% include 'includes/moment.html' %}
+{% include 'includes/sockjs.html' %}
+{% compress js %}
+<script type="text/coffeescript">
+app = angular.module 'chat', ['ngCookies', 'ngSanitize']
+
+app.factory 'moment', ->
+	return moment
+
+app.factory 'chatServer', ($rootScope) ->
+	service = {}
+	service.connect = ->
+		socket = new SockJS(CHAT_SERVER_URL)
+		socket.onopen = ->
+			$rootScope.$apply ->
+				$rootScope.$broadcast 'sockjs:open'
+		socket.onmessage = (e) ->
+			$rootScope.$apply ->
+				$rootScope.$broadcast 'sockjs:message', e.data
+				data = JSON.parse(e.data)
+				if data.type?
+					$rootScope.$broadcast "chat:#{ data.type }", data
+		socket.onerror = (e) ->
+			$rootScope.$apply ->
+				$rootScope.$broadcast 'sockjs:error', e.data
+		socket.onclose = ->
+			$rootScope.$apply ->
+				$rootScope.$broadcast 'sockjs:close'
+		socket.sendJSON = (data) ->
+			socket.send JSON.stringify(data)
+		service.socket = socket
+	service.connect()
+	return service
+
+app.directive 'keepFocus', ($window) ->
+	return (scope, element, attrs) ->
+		parent = element.closest('#chat')
+		parent.on 'click', 'a', (e) ->
+			element.focus()
+		$($window).focus ->
+			element.focus()
+
+app.directive 'scrollBottom', ($timeout) ->
+	return (scope, element, attrs) ->
+		scope.$watch 'messages.length', ->
+			$timeout ->
+				element.animate {scrollTop: element.prop("scrollHeight")}, 'fast'
+			, 10
+			
+app.directive 'linkNewWindow', ->
+	return (scope, element, attrs) ->
+		element.on 'click', 'a', ->
+			window.open $(this).attr 'href'
+			return false
+
+ChatCtrl = ($scope, $window, $cookies, chatServer, moment) ->
+	# Utilities
+	dtNow = ->
+		return moment().format('hh:mm A')
+
+	$scope.messages = []
+
+	$scope.$on 'sockjs:open', ->
+		chatServer.socket.sendJSON {type: 'auth', gameID: GAME_ID, sessionid: $cookies.sessionid}
+
+	$scope.$on 'chat:authenticated', ->
+		$scope.connected = true
+
+	$scope.$on 'chat:chat', (e, data) ->
+		$scope.messages.push "[#{ dtNow() }]: #{ data.message }"
+
+	$scope.$on 'chat:refresh', ->
+		$window.location.reload()
+
+	$scope.$on 'sockjs:close', ->
+		$scope.connected = false
+		chatServer.connect()
+
+	$scope.transmit = ->
+		if $scope.transmission and $scope.connected
+			chatServer.socket.sendJSON {type: 'chat', message: $scope.transmission}
+			$scope.transmission = ''
+
+</script>
+{% endcompress %}
+{% endblock %}

@@ -36,3 +36,6 @@ CELERY_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #EMAIL_PORT = '587'
 EMAIL_HOST = 'localhost'
 #EMAIL_USE_TLS = True
+
+# Chat settings
+CHAT_SERVER_URL = '//www.uchicagohvz.org/chat'
