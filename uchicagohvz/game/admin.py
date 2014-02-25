@@ -49,9 +49,19 @@ class KillAdmin(admin.ModelAdmin):
 	search_fields = ('killer__user__username', 'killer__user__first_name', 'killer__user__last_name', 
 		'victim__user__username', 'victim__user__first_name', 'victim__user__last_name')
 
+class HVTAdminForm(forms.ModelForm):
+	def clean_player(self):
+		player = self.cleaned_data['player']
+		if player.opt_out_hvt:
+			raise forms.ValidationError("%s has opted out of HVT. Please choose another player." % (player.user.get_full_name()))
+		return player
+
+class HVTAdmin(admin.ModelAdmin):
+	form = HVTAdminForm
+
 admin.site.register(Squad)
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(Kill, KillAdmin)
 admin.site.register(Award)
-admin.site.register(HighValueTarget)
+admin.site.register(HighValueTarget, HVTAdmin)
 admin.site.register(HighValueDorm)

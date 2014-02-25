@@ -335,7 +335,7 @@ class Kill(MPTTModel):
 	date = models.DateTimeField(default=timezone.now)
 	points = models.IntegerField(default=settings.HUMAN_KILL_POINTS)
 	hvd = models.ForeignKey('game.HighValueDorm', null=True, blank=True, related_name='kills', on_delete=models.SET_NULL)
-	hvt = models.ForeignKey('game.HighValueTarget', null=True, blank=True, related_name='kills', on_delete=models.SET_NULL)
+	hvt = models.OneToOneField('game.HighValueTarget', null=True, blank=True, related_name='kill', on_delete=models.SET_NULL)
 	notes = models.TextField(blank=True)
 	lat = models.FloatField(null=True, blank=True, verbose_name='latitude')
 	lng = models.FloatField(null=True, blank=True, verbose_name='longitude')
@@ -418,10 +418,12 @@ class HighValueTarget(models.Model):
 		return timezone.now() > self.end_date
 
 	def save(self, *args, **kwargs):
-		if self.player.opt_out_hvt:
-			return
 		super(HighValueTarget, self).save(*args, **kwargs)
-		for kill in self.kills.all():
+		try:
+			kill = self.kill
+		except Kill.DoesNotExist:
+			return
+		else:
 			kill.refresh_points()
 			kill.save()
 
