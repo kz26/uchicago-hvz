@@ -1,11 +1,17 @@
 {% extends 'base.html' %}{% load compress %}
 {% block content %}
 <div class="page-header">
-	<h1>{% if player.human %}<span class="text-success">RADIO</span>{% else %}<span class="text-danger">FEEDING AREA</span>{% endif %} <small>{{ player.game.name }}</small></h1>
+	<h1>{% if player.human %}<span class="text-success">RADIO</span>{% else %}<span class="text-danger">THE HORDE</span>{% endif %} <small>{{ player.game.name }}</small></h1>
 </div>
 
+<p class="lead">
+	{% if player.human %}Meet people with brains who may or may not be in your area.{% else %}
+	Meet brainless, undead singles in your area.
+	{% endif %}
+</p>
+
 <div id="chat" ng-app="chat" ng-controller="ChatCtrl" ng-cloak>
-	<div class="alert alert-danger" ng-show="!connected">The chat server is currently offline due to zombie attack. Please try again later.</div>
+	<div class="alert alert-danger" ng-show="!connected">The chat server is currently offline due to a zombie attack. Please try again later.</div>
 	<div id="chat-messages" scroll-bottom link-new-window>
 		<p ng-repeat="m in messages track by $index" ng-bind-html="m"></p>
 	</div>
