@@ -147,41 +147,7 @@ class SubmitCodeSMS(APIView):
 		if request.QUERY_PARAMS.get('auth_key') != SMS_AUTH_KEY:
 			return Response(status=status.HTTP_403_FORBIDDEN)
 		if all([f in request.DATA for f in ('msisdn', 'text')]):
-			code = data.get('text', '').lower().strip()
-			code = re.sub(' {2,}', ' ', code)
-			phone_number = "%s-%s-%s" % (data['msisdn'][1:4], data['msisdn'][4:7], data['msisdn'][7:11])
-			try:
-				profile = Profile.objects.get(phone_number=phone_number)
-			except:
-				return Response()
-			games = Game.objects.all().order_by('-start_date')
-			for game in games:
-				if game.status == 'in_progress':
-					try:
-						player = Player.objects.get(game=game, user=profile.user)
-					except Player.DoesNotExist:
-						return Response()
-					form = BiteCodeForm(data={'bite_code': code}, killer=player)
-					# player is the killer
-					if form.is_valid():
-						kill = form.victim.kill_me(player)
-						if kill:
-							kill.notes = u'This kill was logged via text message'
-							kill.save()
-							send_sms_confirmation.delay(player, kill)
-							send_death_notification.delay(kill)
-						return Response()
-					form = AwardCodeForm(data={'code': code}, player=player)
-					if form.is_valid():
-						with transaction.atomic():
-							award = form.award
-							award.players.add(player)
-							award.save()
-						send_sms_confirmation.delay(player, award)
-						return Response()
-			# player has a valid number but entered an invalid code
-			if code:
-				send_sms_invalid_code.delay(profile, code)
+			process_sms_code.delay(request.DATA['msisdn'], request.DATA['text'])
 		return Response()
 
 class SubmitAwardCode(BaseFormView):

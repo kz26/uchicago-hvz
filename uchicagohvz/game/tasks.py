@@ -1,7 +1,10 @@
 from celery import task
 from django.core import mail
+from django.db import transaction
 from django.conf import settings
 from uchicagohvz.game.models import Game, Player, Kill, Award
+from uchicagohvz.game.forms import *
+from uchicagohvz.users.models import Profile
 from uchicagohvz.users.phone import CARRIERS
 from uchicagohvz.game.data_apis import *
 import random
@@ -53,6 +56,41 @@ def update_chat_privs(player_id):
 		data=json.dumps({'uid': player.user.pk, 'rooms': rooms})
 	)
 	
+@task
+def process_sms_code(msisdn, text):
+	code = text.lower().strip()
+	code = re.sub(' {2,}', ' ', code)
+	phone_number = "%s-%s-%s" % (msisdn[1:4], msisdn[4:7], msisdn[7:11])
+	try:
+		profile = Profile.objects.get(phone_number=phone_number)
+	except:
+		return
+	for game in Game.objects.games_in_progress().order_by('-start_date'):
+		try:
+			player = Player.objects.get(game=game, user=profile.user)
+		except Player.DoesNotExist:
+			return
+		form = BiteCodeForm(data={'bite_code': code}, killer=player)
+		# player is the killer
+		if form.is_valid():
+			kill = form.victim.kill_me(player)
+			if kill:
+				kill.notes = u'This kill was logged via text message'
+				kill.save()
+				send_sms_confirmation(player, kill)
+				send_death_notification(kill)
+			return
+		form = AwardCodeForm(data={'code': code}, player=player)
+		if form.is_valid():
+			with transaction.atomic():
+				award = form.award
+				award.players.add(player)
+				award.save()
+			send_sms_confirmation(player, award)
+			return
+	# player has a valid number but entered an invalid code
+	if code:
+		send_sms_invalid_code(profile, code)
 
 @task
 def send_death_notification(kill):
