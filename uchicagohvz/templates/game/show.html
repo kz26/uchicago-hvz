@@ -87,9 +87,9 @@
 	<div class="col-lg-4">
 		<h2>I am a...</h2>
 		{% if player.human %}
-		<h3 class="text-success">HUMAN</h3>
+		<h3 class="bold text-success">HUMAN</h3>
 		{% else %}
-		<h3 class="text-danger">ZOMBIE</h3>
+		<h3 class="bold text-danger">ZOMBIE</h3>
 		{% if player.killed_by %}
 		<p>Killed by <a href="{% url 'player|show' pk=player.killed_by.id %}">{{ player.killed_by.user.get_full_name }} ({{ player.killed_by.get_dorm_display }})</a> on {{ player.time_of_death }}
 		{% endif %}
