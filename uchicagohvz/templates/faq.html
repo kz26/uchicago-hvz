@@ -33,13 +33,12 @@ As above, if no dispute is made, then simply ask the human player for their band
 
 <p class="bold">Why do I need to enter my CNetID and password? Is this safe? Are you going to steal my password?<br><p>
 We need to verify you're an actual member of the UChicago community, and also retrieve information such as your name
-and major for demographic purposes. And yes - it's totally safe! We can't steal your password because we never store it.</p>
+and major for demographic purposes. And yes - it's totally safe! We can't steal your password because we never store it in plaintext.</p>
 
 <p>
-For the technically minded, we delegate authentication to 
-<a href="https://answers.uchicago.edu/page.php?id=15820">UChicago's LDAP service</a>.
-Additionally, we follow industry best practices when it comes to protecting your data,
-including the use of high-grade HTTPS encryption to protect user sessions.
+For the technically minded, we delegate authentication to <a href="https://answers.uchicago.edu/page.php?id=15820">UChicago's LDAP service</a>.
+Additionally, we follow industry best practices when it comes to protecting your data, including the use of high-grade HTTPS encryption to protect user data
+in transit and cryptographically secure password hashing algorithms.
 </p>
 
 {% endblock %}

@@ -121,6 +121,7 @@ MEDIA_URL = "/media/"
 # Authentication
 AUTHENTICATION_BACKENDS = (
 	'uchicagohvz.users.backend.UChicagoLDAPBackend',
+	'django.contrib.auth.backends.ModelBackend',
 )
 LOGIN_URL = "/users/login/"
 LOGIN_REDIRECT_URL = "/"
