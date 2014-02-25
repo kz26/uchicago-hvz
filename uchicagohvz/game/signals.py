@@ -48,7 +48,7 @@ def player_changed(sender, **kwargs):
 			update_chat_privs.delay(new_player.pk)
 		elif old_player.human == False and new_player.human == True:
 			update_chat_privs.delay(new_player.pk)
-	if new_player.game.status == 'in_progress':
+	if new_player.active and new_player.game.status in ('registration', 'in_progress'):
 		new_player.user.profile.subscribe_zombies_listhost = True
 		new_player.user.profile.save()
 
