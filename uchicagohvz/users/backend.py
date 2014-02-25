@@ -23,7 +23,8 @@ class UChicagoLDAPBackend(object):
 		results = self.conn.search_ext_s("dc=uchicago,dc=edu", ldap.SCOPE_SUBTREE, query)
 		if results:
 			user_data = results[0][1]
-			user_data['uid'] = [cnetid]
+			if not user_data.get('uid'):
+				return None
 			if not user_data.get('givenName'):
 				user_data['givenName'] = ['Unknown']
 			if not user_data.get('sn'):
@@ -45,7 +46,7 @@ class UChicagoLDAPBackend(object):
 
 	def authenticate(self, username=None, password=None):
 		if username and password:
-			cnetid = ldap.filter.escape_filter_chars(username)
+			cnetid = ldap.filter.escape_filter_chars(username).lower()
 			bound = self.bind(cnetid, password)
 			if bound:
 				user_data = self.get_user_data(cnetid)
