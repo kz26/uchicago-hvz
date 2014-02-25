@@ -36,6 +36,29 @@ class PlayerAdmin(admin.ModelAdmin):
 	players_to_csv.short_description = 'Export to CSV'
 
 class KillAdminForm(forms.ModelForm):
+	def clean_hvd(self):
+		hvd = self.cleaned_data.get('hvd')
+		if hvd:
+			victim = self.cleaned_data['victim']
+			if hvd.dorm == victim.dorm:
+				if hvd.game == victim.game:
+					return hvd
+			raise forms.ValidationError('HVD game/dorm do not match those of the victim.')
+		else:
+			return hvd
+
+	def clean_hvt(self):
+		hvt = self.cleaned_data.get('hvt')
+		if hvt:
+			victim = self.cleaned_data['victim']
+			kill_date = self.cleaned_data['date']
+			if hvt.player == victim:
+				if hvt.start_date <= kill_date <= hvt.end_date:
+					return hvt
+			raise forms.ValidationError('HVT does not match victim, or kill date out of bounds.')
+		else:
+			return hvt
+
 	def clean(self):
 		cleaned_data = super(KillAdminForm, self).clean()
 		if cleaned_data['killer'].game != cleaned_data['victim'].game:
