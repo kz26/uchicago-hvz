@@ -52,7 +52,7 @@ class UChicagoLDAPBackend(object):
 				user_data = self.get_user_data(cnetid)
 				if user_data:
 					try:
-						user = User.objects.get(username=cnetid)
+						user = User.objects.get(username__iexact=cnetid)
 					except User.DoesNotExist:
 						user = self.provision_user(user_data, password)[0]
 					else:
