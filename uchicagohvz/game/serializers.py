@@ -4,7 +4,7 @@ from uchicagohvz.game.models import *
 class KillSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Kill
-		fields = ('killer', 'victim', 'location', 'date', 'points', 'notes')
+		fields = ('pk', 'killer', 'victim', 'location', 'date', 'points')
 
 	killer = serializers.SerializerMethodField('get_killer')
 	victim = serializers.SerializerMethodField('get_victim')

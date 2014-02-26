@@ -474,7 +474,14 @@ $.get("data/kills/")
 						position: new google.maps.LatLng(k.location[0], k.location[1])
 					}
 				killDT = moment(k.date).format('M/D/YY h:mm:ss A')
-				content = $("<ul><li><b>Killer:</b> #{k.killer}</li><li><b>Victim:</b> #{k.victim}</li><li><b>Date:</b> #{killDT}</li></ul>")
+				content = $(
+					"<ul>
+						<li><b>Killer:</b> #{k.killer}</li>
+						<li><b>Victim:</b> #{k.victim}</li>
+						<li><b>Date:</b> #{killDT}</li>
+						<li><a href=\"/kill/#{ k.pk }/\">Details</li>
+					</ul>"
+				)
 				content.css('width', '300px')
 				markers.push([marker, k])
 				google.maps.event.addListener marker, 'click', ((marker, content) ->
