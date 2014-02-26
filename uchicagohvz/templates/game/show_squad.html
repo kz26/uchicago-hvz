@@ -15,12 +15,12 @@
 	<dt>Deaths</dt>
 	<dd>{{ squad.num_zombies }}</dd>
 	<dt>Human Points</dt>
-	<dd>{{ squad.human_points }} (#{{ squad.human_rank.0 }} of {{ squad.human_rank.1 }})</dd>
+	<dd>{{ squad.human_points|floatformat:1 }} (#{{ squad.human_rank.0 }} of {{ squad.human_rank.1 }})</dd>
 	{% if squad.num_zombies > 1 %}
 	<dt>Kills</dt>
 	<dd>{{ squad.kills.count }}</dd>
 	<dt>Zombie Points</dt>
-	<dd>{{ squad.zombie_points }} (#{{ squad.zombie_rank.0 }} of {{ squad.zombie_rank.1 }})</dd>
+	<dd>{{ squad.zombie_points|floatformat:1 }} (#{{ squad.zombie_rank.0 }} of {{ squad.zombie_rank.1 }})</dd>
 	{% endif %}
 </dl>
 
