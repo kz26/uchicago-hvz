@@ -15,7 +15,7 @@
 <div id="chat" ng-app="chat" ng-controller="ChatCtrl" ng-cloak>
 	<div class="alert alert-danger" ng-show="!connected">The chat server is currently offline due to a zombie attack. Please try again later.</div>
 	<div id="chat-messages" scroll-bottom link-new-window>
-		<p ng-repeat="m in messages track by $index" ng-bind-html="m"></p>
+		<p ng-repeat="m in messages track by $index" ng-bind-html="m | linky"></p>
 	</div>
 	<form id="chat-input" ng-submit="transmit()">
 		<input id="msg" class="form-control" type="text" ng-disabled="!connected" ng-model="transmission" keep-focus autofocus>
