@@ -147,7 +147,7 @@ def humans_per_hour(game, **kwargs):
 		d = OrderedDict([(0, sh)])
 		kills = Kill.objects.exclude(parent=None).filter(victim__game=game, victim__dorm=dorm).order_by('date')
 		for index, kill in enumerate(kills, 1):
-			kd = kill.date - game.start_date
+			kd = max(kill.date, game.start_date) - game.start_date
 			hours = kd.days * 24 + round(kd.seconds / 3600, 1)
 			d[min(hours, end_hour)] = sh - index # overwrite
 		if end_hour not in d:
@@ -158,7 +158,7 @@ def humans_per_hour(game, **kwargs):
 	d = OrderedDict([(0, sh)])
 	kills = Kill.objects.exclude(parent=None).filter(victim__game=game).order_by('date')
 	for index, kill in enumerate(kills, 1):
-		kd = kill.date - game.start_date
+		kd = max(kill.date, game.start_date) - game.start_date
 		hours = kd.days * 24 + round(kd.seconds / 3600, 1)
 		d[min(hours, end_hour)] = sh - index # overwrite
 	if end_hour not in d:
