@@ -9,7 +9,7 @@ from uchicagohvz.game.models import *
 
 @cache_func(settings.LEADERBOARD_CACHE_DURATION)
 def kills_per_hour(game, **kwargs):
-	kills = Kill.objects.filter(victim__game=game)
+	kills = Kill.objects.exclude(parent=None).filter(victim__game=game)
 	delta = min(timezone.now(), game.end_date) - game.start_date
 	hours = (delta.days * 24 * 3600 + delta.seconds) / 3600
 	return kills.count() / hours
