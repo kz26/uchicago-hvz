@@ -119,7 +119,7 @@ class Squad(models.Model):
 		awards = []
 		sp = self.get_active_players()
 		for aw in Award.objects.filter(players__in=sp):
-			for i in aw.players.filter(pk__in=sp.values_list('pk', flat=True)).count():
+			for i in range(aw.players.filter(pk__in=sp.values_list('pk', flat=True)).count()):
 				awards.append(aw)
 		return awards
 
