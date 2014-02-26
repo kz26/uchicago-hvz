@@ -117,9 +117,9 @@ class Squad(models.Model):
 
 	def get_awards(self): # returns a list of tuples: (Award, count)
 		awards = []
-		sp = self.get_active_players().all()
+		sp = self.get_active_players()
 		for aw in Award.objects.filter(players__in=sp):
-			awards.append(aw, aw.players.filter(players__in=sp).count())
+			awards.append((aw, aw.players.filter(pk__in=sp.values_list('pk', flat=True)).count()))
 		return awards
 
 	@property
