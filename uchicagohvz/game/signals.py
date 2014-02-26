@@ -42,7 +42,7 @@ def player_changed(sender, **kwargs):
 			new_player.user.profile.subscribe_zombies_listhost = True
 			new_player.user.profile.save()
 	else:
-		if old_player.squad != new_player.squad:
+		if old_player.squad != new_player.squad or old_player.active != new_player.active:
 			score_update_required.send(sender=sender, game=new_player.game)
 		if old_player.human != new_player.human:
 			update_chat_privs.delay(new_player.pk)
