@@ -355,8 +355,8 @@
 					</tbody>
 				</table>
 			</div>
-			<h3 class="center"><a href="{% url 'game|leaderboard' pk=game.id %}">View full leaderboards</a></h3>
 		</div>
+		<h3 class="center" style="margin-top: 1em;"><a href="{% url 'game|leaderboard' pk=game.id %}">View full leaderboards</a></h3>
 	</div>
 	{% if game.squads.count %}
 	<div id="leaderboards-squad" class="tab-pane">
