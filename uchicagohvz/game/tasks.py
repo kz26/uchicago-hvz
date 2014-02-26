@@ -121,9 +121,9 @@ def send_death_notification(kill):
 @task
 def send_sms_confirmation(player, obj): # obj is either a kill or an award object
 	if isinstance(obj, Kill):
-		body = "Kill: %s confirmed. Points earned: %s" % (obj.victim.bite_code, obj.points)		
+		body = "Kill: %s confirmed. Points: %s" % (obj.victim.bite_code, obj.points)		
 	elif isinstance(obj, Award):
-		body = "Mission code redeemed. Name: %s, Points: %s" % (obj.name, obj.points)
+		body = "Mission code: %s redeemed. Name: %s, Points: %s" % (obj.code, obj.name, obj.points)
 	else:
 		return
 	phone_number = player.user.profile.phone_number.replace('-', '')

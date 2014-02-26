@@ -36,8 +36,11 @@ class ProfileForm(forms.ModelForm):
 		data = super(ProfileForm, self).clean()
 		phone_number = data.get('phone_number')
 		phone_carrier = data.get('phone_carrier')
+		sdn = data.get('subscribe_death_notifications')
+		if sdn and not phone_number:
+			self._errors['phone_number'] = self.error_class(['You must provide your phone number to receive death notifications.'])
 		if phone_number and not phone_carrier:
-			self._errors["phone_carrier"] = self.error_class(["Carrier must be specified."])
+			self._errors['phone_carrier'] = self.error_class(["Carrier must be specified."])
 		if not phone_number:
 			data['phone_carrier'] = ''
 			data['subscribe_death_notifications'] = False
