@@ -7,7 +7,7 @@
 <h2>Members ({{ squad.size }})</h2>
 <ul class="bigger list-unstyled">
 	{% for p in squad.get_active_players %}
-	<li><a href="{{ p.get_absolute_url }}">{{ p.display_name }}</a></li>
+	<li><a href="{{ p.get_absolute_url }}"><span class="text-{% if p.human %}success{% else %}danger">{{ p.display_name }}</span></a></li>
 	{% endfor %}
 </ul>
 
