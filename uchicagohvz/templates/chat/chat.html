@@ -99,7 +99,7 @@ ChatCtrl = ($scope, $window, $cookies, chatServer, moment) ->
 		$scope.connected = true
 
 	$scope.$on 'chat:chat', (e, data) ->
-		$scope.messages.push "[#{ dtNow() }]: #{ data.message }"
+		$scope.messages.push "[#{ dtNow() }] #{ data.message }"
 
 	$scope.$on 'chat:refresh', ->
 		$window.location.reload()
