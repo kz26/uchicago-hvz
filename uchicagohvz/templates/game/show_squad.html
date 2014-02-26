@@ -52,7 +52,7 @@
 				</tr>
 				{% endif %}
 				{% endfor %}
-				{% for award, award_count in player.awards.all %}
+				{% for award, award_count in squad.get_awards %}
 				{% for c in award_count %}
 				<tr>
 					<td>{{ award.points }}</td>
