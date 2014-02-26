@@ -33,7 +33,7 @@ class ChatServer
 	broadcast: (data) ->
 		if data.room?
 			for conn in @lobby
-				if conn.userObject.rooms.indexOf(data.room) isnt -1
+				if data.room in conn.userObject.rooms
 					conn.writeJSON data
 
 	auth: (conn, authData) ->
@@ -70,7 +70,7 @@ class ChatServer
 
 	removeConn: (conn) ->
 		@lobby = @lobby.filter (v) ->
-			return v.session_id != conn.session_id
+			return v.id != conn.id
 
 	log: (conn, data) ->
 		console.log "[#{ moment().format('MM/DD/YYYY hh:mm:ss A') }] #{ conn.userObject.name }: #{ JSON.stringify(data) }"

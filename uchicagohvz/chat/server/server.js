@@ -116,7 +116,7 @@ ChatServer = (function() {
 
   ChatServer.prototype.removeConn = function(conn) {
     return this.lobby = this.lobby.filter(function(v) {
-      return v.session_id !== conn.session_id;
+      return v.id !== conn.id;
     });
   };
 
