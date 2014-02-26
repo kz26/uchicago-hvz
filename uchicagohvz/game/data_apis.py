@@ -149,8 +149,9 @@ def humans_per_hour(game, **kwargs):
 		for index, kill in enumerate(kills, 1):
 			kd = kill.date - game.start_date
 			hours = kd.days * 24 + round(kd.seconds / 3600, 1)
-			d[hours] = sh - index # overwrite
-		d[end_hour] = d[d.keys()[-1]]
+			d[min(hours, end_hour)] = sh - index # overwrite
+		if end_hour not in d:
+			d[end_hour] = d[d.keys()[-1]]
 		data.append({'name': dormName, 'data': d.items()})
 	# add dataset for all dorms
 	sh = game.get_active_players().count() - Kill.objects.filter(parent=None, killer__game=game).count() # subtract LZs
@@ -159,8 +160,9 @@ def humans_per_hour(game, **kwargs):
 	for index, kill in enumerate(kills, 1):
 		kd = kill.date - game.start_date
 		hours = kd.days * 24 + round(kd.seconds / 3600, 1)
-		d[hours] = sh - index # overwrite
-	d[end_hour] = d[d.keys()[-1]]
+		d[min(hours, end_hour)] = sh - index # overwrite
+	if end_hour not in d:
+		d[end_hour] = d[d.keys()[-1]]
 	data.append({'name': 'ALL', 'data': d.items()})
 	return data
 
