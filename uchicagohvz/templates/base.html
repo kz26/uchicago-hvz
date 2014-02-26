@@ -54,7 +54,7 @@
 						</li>
 					</ul>
 					{% else %}
-					<form class="navbar-form navbar-right" action="{% url 'users|login' %}" method="post">
+					<form class="navbar-form navbar-right" action="{% url 'users|login' %}?next={{ request.path }}" method="post">
 						{% csrf_token %}
 						<div class="form-group">
 							<input type="text" name="username" placeholder="CNetID" class="form-control" required>

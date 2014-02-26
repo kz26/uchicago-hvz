@@ -4,7 +4,7 @@
 	<h1>Login</h1>
 </div>
 
-{% if next %}
+{% if 'required' in request.GET %}
 <div class="alert alert-info">Please log in to continue.</div>
 {% endif %}
 
@@ -14,7 +14,6 @@
 
 <form class="form-horizontal" role="form" action="{% url 'users|login' %}" method="post">
 	{% csrf_token %}
-	<input type="hidden" name="next" value="{{ next }}">
 	<div class="form-group">
 		<label for="username" class="col-lg-4 control-label">CNetID</label>
 		<div class="col-lg-4">
