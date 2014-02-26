@@ -145,7 +145,7 @@ def humans_per_hour(game, **kwargs):
 	for dorm, dormName in DORMS:
 		sh = game.get_active_players().filter(dorm=dorm).count() # starting humans in this dorm
 		d = OrderedDict([(0, sh)])
-		kills = Kill.objects.filter(victim__game=game, victim__dorm=dorm).order_by('date')
+		kills = Kill.objects.exclude(parent=None).filter(victim__game=game, victim__dorm=dorm).order_by('date')
 		for index, kill in enumerate(kills, 1):
 			kd = kill.date - game.start_date
 			hours = kd.days * 24 + round(kd.seconds / 3600, 1)
