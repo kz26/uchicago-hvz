@@ -73,6 +73,20 @@ class KillAdmin(admin.ModelAdmin):
 	search_fields = ('killer__user__username', 'killer__user__first_name', 'killer__user__last_name', 
 		'victim__user__username', 'victim__user__first_name', 'victim__user__last_name')
 
+class AwardAdminForm(forms.ModelForm):
+	def clean_players(self):
+		players = self.cleaned_data.get('players', [])
+		game = self.cleaned_data['game']
+		for player in players:
+			if player.game != game:
+				raise forms.ValidationError("%s is part of game %s but this Award is for game %s." % (
+					player.user.get_full_name(), player.game.name, game.name)
+				)
+		return players
+
+class AwardAdmin(admin.ModelAdmin):
+	form = AwardAdminForm
+
 class HVTAdminForm(forms.ModelForm):
 	def clean_player(self):
 		player = self.cleaned_data['player']
@@ -86,6 +100,6 @@ class HVTAdmin(admin.ModelAdmin):
 admin.site.register(Squad)
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(Kill, KillAdmin)
-admin.site.register(Award)
+admin.site.register(Award, AwardAdmin)
 admin.site.register(HighValueTarget, HVTAdmin)
 admin.site.register(HighValueDorm)
