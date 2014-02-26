@@ -32,7 +32,7 @@
 				</label>
 				{{ form.subscribe_death_notifications.errors }}
 				<p class="text-default">* Standard text messaging rates apply.
-				{% if not form.phone_carrier.value and form.phone_number.value %}<b>You'll need to provide your phone number and carrier first.{% endif %}
+				{% if not form.phone_number.value %}<b>You'll need to provide your phone number and carrier first.</b>{% endif %}
 				</p>
 			</div>
 		</div>
