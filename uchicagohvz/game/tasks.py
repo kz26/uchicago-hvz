@@ -11,7 +11,7 @@ import random
 import json
 import requests
 
-@task
+@task(rate_limit=0.1)
 def regenerate_stats(game_id):
 	game = Game.objects.get(pk=game_id)
 	keys = (
