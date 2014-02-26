@@ -360,7 +360,9 @@
 	</div>
 	{% if game.squads.count %}
 	<div id="leaderboards-squad" class="tab-pane">
-		<p class="center" style="margin-top: 1em;">Where squad points = (total human or zombie points / # of squad members) * 10</p>
+		<p class="center" style="margin-top: 1em;">Where squad points = (total human or zombie points / # of squad members) * 10<br>
+			Squads must have &ge;2 casualties to qualify as a zombie squad.
+		</p>
 		<div class="row">
 			<div class="col-md-6">
 				<h2><span class="bold text-success">Human Squads</span></h2>
@@ -369,7 +371,7 @@
 						<tr>
 							<th>Name</th>
 							<th># Alive</th>
-							<th>Human Points</th>
+							<th>Human Squad Points</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -391,7 +393,7 @@
 						<tr>
 							<th>Name</th>
 							<th># Undead</th>
-							<th>Zombie Points</th>
+							<th>Zombie Squad Points</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -405,7 +407,7 @@
 					</tbody>
 				</table>
 				{% else %}
-				<p>There are no zombie squads...yet. (Squads must have &ge;2 casualties to qualify as a zombie squad.)</p>
+				<p>There are no zombie squads...yet.</p>
 				{% endif %}
 			</div>
 	</div>
