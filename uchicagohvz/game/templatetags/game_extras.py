@@ -9,9 +9,9 @@ def pp_timedelta(td):
 	"""
 	Pretty-prints a timedelta representation a duration
 	"""
-	hours, remainder = divmod(td, 3600)
+	hours, remainder = divmod(td.seconds, 3600)
 	minutes, seconds = divmod(remainder, 60)
-	return "%s hours, %s minutes, %s seconds" % (hours, minutes, seconds)
+	return "%s days, %s hours, %s minutes, %s seconds" % (td.days, hours, minutes, seconds)
 
 
 @register.filter
