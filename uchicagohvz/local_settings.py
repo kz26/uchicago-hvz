@@ -53,7 +53,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
-TEMPLATE_CONTEXT_PROCESSORS += 'django.core.context_processors.request'
+TEMPLATE_CONTEXT_PROCESSORS += 'django.core.context_processors.request',
 
 
 ROOT_URLCONF = 'uchicagohvz.urls'
@@ -169,7 +169,7 @@ GAME_SW_BOUND = (41.783985, -87.606053)
 GAME_NE_BOUND = (41.798128, -87.584016)
 
 # Dealer settings
-TEMPLATE_CONTEXT_PROCESSORS += 'dealer.contrib.django.staff.context_processor'
+TEMPLATE_CONTEXT_PROCESSORS += 'dealer.contrib.django.staff.context_processor',
 DEALER_PATH = os.path.dirname(BASE_DIR)
 
 # Chat settings
