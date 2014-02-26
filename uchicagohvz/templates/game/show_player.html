@@ -21,6 +21,8 @@
 	{% if player.kill_object %}
 	<dt>Killed by</dt>
 	<dd><a href="{{ player.kill_object.get_absolute_url }}">{{ player.killed_by.display_name }}</a> on {{ player.time_of_death }}</a></dd>
+	<dt>Lifespan</dt>
+	<dd>{{ player.lifespan|pp_timedelta }}</dd>
 	{% endif %}
 	<dt>Kills</dt>
 	<dd>{{ player.kills.count }}</dd>
@@ -43,8 +45,8 @@
 				{% for kill in player.kills %}
 				<tr>
 					<td>{{ kill.points }}</td>
-					<td><a class="text-danger" href="{{ kill.get_absolute_url }}">Kill: {{ kill.victim.display_name }} ({{ kill.victim.get_dorm_display }})
-						on {{ kill.date|date:"SHORT_DATE_FORMAT" }}</a>
+					<td><a class="text-danger" href="{{ kill.get_absolute_url }}">Kill: {{ kill.victim.display_name }}
+						on {{ kill.date }}</a>
 						{% if kill.hvd %}<span class="text-info">HVD</span>{% endif %}{% if kill.hvt %} <span class="text-info">HVT</span>{% endif %}
 					</td>
 				</tr>
@@ -77,8 +79,7 @@
 <ul>
 	{% recursetree kill_tree %}
 		<li>
-			<a href="{{ node.get_absolute_url }}">{{ node.victim.display_name }}
-			({{ node.victim.get_dorm_display }}) - killed on {{ node.date }}</a>
+			<a href="{{ node.get_absolute_url }}">{{ node.victim.display_name }} - killed on {{ node.date }}</a>
 			{% if not node.is_leaf_node %}
 				<ul>
 					{{ children }}

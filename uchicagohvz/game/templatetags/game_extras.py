@@ -5,6 +5,16 @@ from uchicagohvz.game.models import *
 register = template.Library()
 
 @register.filter
+def pp_timedelta(td):
+	"""
+	Pretty-prints a timedelta representation a duration
+	"""
+	hours, remainder = divmod(td, 3600)
+	minutes, seconds = divmod(remainder, 60)
+	return "%s hours, %s minutes, %s seconds" % (hours, minutes, seconds)
+
+
+@register.filter
 def award_colorize(award):
 	if award.redeem_type == 'H':
 		return mark_safe("<span class='text-success'>%s</span>" % (award.name))

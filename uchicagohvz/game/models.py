@@ -227,6 +227,8 @@ class Player(models.Model):
 			end_time = self.game.end_date
 		else:
 			return None
+		if not self.human:
+			end_time = self.time_of_death
 		return end_time - self.game.start_date
 
 	@property
