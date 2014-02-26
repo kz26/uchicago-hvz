@@ -9,6 +9,7 @@ from uchicagohvz.users.phone import CARRIERS
 from uchicagohvz.game.data_apis import *
 import random
 import json
+import re
 import requests
 
 @task(rate_limit=0.1)
@@ -73,12 +74,13 @@ def process_sms_code(msisdn, text):
 		form = BiteCodeForm(data={'bite_code': code}, killer=player)
 		# player is the killer
 		if form.is_valid():
-			kill = form.victim.kill_me(player)
-			if kill:
-				kill.notes = u'This kill was logged via text message'
-				kill.save()
-				send_sms_confirmation(player, kill)
-				send_death_notification(kill)
+			with transaction.atomic():
+				kill = form.victim.kill_me(player)
+				if kill:
+					kill.notes = u'This kill was logged via text message'
+					kill.save()
+			send_sms_confirmation(player, kill)
+			send_death_notification(kill)
 			return
 		form = AwardCodeForm(data={'code': code}, player=player)
 		if form.is_valid():
