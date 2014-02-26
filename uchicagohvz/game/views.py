@@ -14,7 +14,6 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from uchicagohvz.secrets import SMS_AUTH_KEY
 from uchicagohvz.game.models import *
 from uchicagohvz.game.forms import *
 from uchicagohvz.game.data_apis import *
