@@ -52,13 +52,11 @@
 				</tr>
 				{% endif %}
 				{% endfor %}
-				{% for award, award_count in squad.get_awards %}
-				{% for c in award_count %}
+				{% for award in squad.get_awards %}
 				<tr>
 					<td>{{ award.points }}</td>
 					<td>{{ award|award_colorize }}</td>
 				</tr>
-				{% endfor %}
 				{% endfor %}
 			</tbody>
 		</table>

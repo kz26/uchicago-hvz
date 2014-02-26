@@ -115,11 +115,12 @@ class Squad(models.Model):
 	def get_kills(self):
 		return Kill.objects.exclude(parent=None).filter(killer__in=self.get_active_players().all())
 
-	def get_awards(self): # returns a list of tuples: (Award, count)
+	def get_awards(self): # returns a list of awards (with duplicates if won more than once)
 		awards = []
 		sp = self.get_active_players()
 		for aw in Award.objects.filter(players__in=sp):
-			awards.append((aw, aw.players.filter(pk__in=sp.values_list('pk', flat=True)).count()))
+			for i in aw.players.filter(pk__in=sp.values_list('pk', flat=True)).count():
+				awards.append(aw)
 		return awards
 
 	@property
