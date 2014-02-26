@@ -362,7 +362,7 @@
 	<div id="leaderboards-squad" class="tab-pane">
 		<div class="row">
 			<div class="col-md-6">
-				<h2>Top Human Squads</h2>
+				<h2>Human Squads</h2>
 				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
@@ -383,7 +383,7 @@
 				</table>
 			</div>
 			<div class="col-md-6">
-				<h2>Top Zombie Squads</h2>
+				<h2>Zombie Squads</h2>
 				{% if top_zombie_squads %}
 				<table class="table table-bordered table-striped">
 					<thead>
@@ -404,7 +404,7 @@
 					</tbody>
 				</table>
 				{% else %}
-				<p>There are no zombie squads...yet.</p>
+				<p>There are no zombie squads...yet. (Squads must have &ge;2 casualties to qualify as a zombie squad.)</p>
 				{% endif %}
 			</div>
 	</div>
