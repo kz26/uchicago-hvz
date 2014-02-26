@@ -79,7 +79,7 @@
 <div class="row">
 
 	{% if player.active and game.status == 'in_progress' %}
-	<a class="btn btn-block bigger btn-{% if player.human %}success{% else %}danger {% endif %}" href="{% url 'game|chat' pk=game.pk %}" target="_blank">
+	<a class="btn btn-block bigger btn-{% if player.human %}success{% else %}danger{% endif %}" href="{% url 'game|chat' pk=game.pk %}" target="_blank">
 		{% if player.human %}Get on the radio{% else %}ENTER FEEDING AREA{% endif %}
 	</a>
 	{% endif %}

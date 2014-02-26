@@ -144,8 +144,6 @@ class AnnotateKill(UpdateView):
 class SubmitCodeSMS(APIView):
 	@method_decorator(csrf_exempt)
 	def post(self, request, *args, **kwargs):
-		if request.QUERY_PARAMS.get('auth_key') != SMS_AUTH_KEY:
-			return Response(status=status.HTTP_403_FORBIDDEN)
 		if all([f in request.DATA for f in ('msisdn', 'text')]):
 			process_sms_code.delay(request.DATA['msisdn'], request.DATA['text'])
 		return Response()
