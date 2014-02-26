@@ -92,6 +92,11 @@
 				ga('create', 'UA-10371252-13', 'uchicagohvz.org');
 				ga('send', 'pageview');
 			</script>
+			<script>
+				$('form').submit(function() {
+					$(this).find('button:submit').html('Processing...').attr('disabled', true);
+				});
+			</script>
 			{% block script %}{% endblock %}
 		</body>
 </html>
