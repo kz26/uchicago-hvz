@@ -151,10 +151,12 @@
 			<dt>Gun rental requested</dt>
 			<dd>{{ player.gun_requested|yesno:"Yes,No,N/A" }}</dd>
 			{% else %}
-			<dt>Renting Gun</dt>
+			<dt>Renting gun</dt>
 			<dd>{{ player.renting_gun|yesno:"Yes,No,N/A" }}</dd>
+			{% if game.status == 'finished' %}
 			<dt>Gun returned</dt>
 			<dd>{{ player.gun_returned|yesno:"Yes,No,N/A" }}</dd>
+			{% endif %}
 			{% endif %}
 		</dl>
 		{% if game.status == "finished" and player.renting_gun and not player.gun_returned %}
