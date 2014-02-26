@@ -33,7 +33,7 @@ class ChatServer
 	broadcast: (data) ->
 		if data.room?
 			for conn in @lobby
-				if data.room in conn.userObject.rooms
+				if conn.userObject.rooms.indexOf(data.room) isnt -1
 					conn.writeJSON data
 
 	auth: (conn, authData) ->
