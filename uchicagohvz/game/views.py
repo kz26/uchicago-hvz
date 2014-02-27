@@ -101,7 +101,7 @@ class EnterBiteCode(FormView):
 			kill.lng = form.cleaned_data.get('lng')
 			kill.notes = form.cleaned_data.get('notes')
 			kill.save()
-			messages.success(self.request, "Kill logged successfully! %s has joined the ranks of the undead." % (victim.user.get_full_name()))
+			messages.success(self.request, "Kill logged successfully! <b>%s</b> has joined the ranks of the undead." % (victim.user.get_full_name()))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
 	def get_form_kwargs(self):
@@ -159,7 +159,7 @@ class SubmitAwardCode(BaseFormView):
 		award = form.award
 		award.players.add(self.player)
 		award.save()
-		messages.success(self.request, "Code entry accepted!")
+		messages.success(self.request, "Code entry for <b>%s</b> accepted!" % (award.name))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
 	def form_invalid(self, form):
