@@ -4,6 +4,10 @@
 	<h1><span class="text-danger">Kill: {{ kill.victim.display_name }}</span> <small>{{ kill.killer.game.name }}</small></h1>
 </div>
 
+{% if kill.killer.user == request.user %}
+<a class="btn btn-primary" href="{% url 'kill|annotate' pk=kill.pk %}">Edit</a>
+{% endif %}
+
 <dl style="font-size: 15pt;">
 	<dt>Killer</dt>
 	<dd><a href="{{ kill.killer.get_absolute_url }}">{{ kill.killer.display_name }}</a></dd>

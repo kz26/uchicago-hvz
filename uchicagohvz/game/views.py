@@ -130,9 +130,8 @@ class AnnotateKill(UpdateView):
 
 	def get_object(self, queryset=None):
 		kill = super(AnnotateKill, self).get_object()
-		if kill.killer.game.status == 'in_progress':
-			if kill.killer.user == self.request.user and not (kill.lat and kill.lng and kill.notes):
-				return kill
+		if kill.killer.user == self.request.user:
+			return kill
 		raise PermissionDenied
 
 	def form_valid(self, form):

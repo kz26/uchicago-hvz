@@ -64,7 +64,6 @@ class AnnotateKillForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(AnnotateKillForm, self).__init__(*args, **kwargs)
-		self.fields['notes'].required = True
 
 class AwardCodeForm(forms.Form):
 	code = forms.CharField()
