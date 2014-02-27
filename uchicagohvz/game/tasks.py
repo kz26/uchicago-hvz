@@ -16,6 +16,7 @@ import requests
 def regenerate_stats(game_id):
 	game = Game.objects.get(pk=game_id)
 	keys = (
+		'kills_per_hour',
 		'survival_by_dorm',
 		'top_humans',
 		'top_zombies', 
