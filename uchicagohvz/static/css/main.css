@@ -30,9 +30,9 @@ h4.point-marker {
 	overflow: scroll;
 }
 
-@media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi), (max-width: 767px) {
+@media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi), (max-width: 767px), (min-width: 768px) and (max-width: 979px) {
 	.chat-mobile {
-		height: 250px;
+		height: 250px !important;
 	}
 }
 
