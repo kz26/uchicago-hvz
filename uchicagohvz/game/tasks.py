@@ -78,7 +78,6 @@ def process_sms_code(msisdn, text):
 			with transaction.atomic():
 				kill = form.victim.kill_me(player)
 				if kill:
-					kill.notes = u'This kill was logged via text message'
 					kill.save()
 			send_sms_confirmation(player, kill)
 			send_death_notification(kill)
