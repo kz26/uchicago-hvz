@@ -86,12 +86,13 @@ class KillAdmin(admin.ModelAdmin):
 class AwardAdminForm(forms.ModelForm):
 	def clean_players(self):
 		players = self.cleaned_data.get('players', [])
-		game = self.cleaned_data['game']
-		for player in players:
-			if player.game != game:
-				raise forms.ValidationError("%s is part of game %s but this Award is for game %s." % (
-					player.user.get_full_name(), player.game.name, game.name)
-				)
+		game = self.cleaned_data.get('game')
+		if game:
+			for player in players:
+				if player.game != game:
+					raise forms.ValidationError("%s is part of game %s but this Award is for game %s." % (
+						player.user.get_full_name(), player.game.name, game.name)
+					)
 		return players
 
 class AwardAdmin(admin.ModelAdmin):
