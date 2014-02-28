@@ -96,6 +96,7 @@ class AwardAdminForm(forms.ModelForm):
 
 class AwardAdmin(admin.ModelAdmin):
 	form = AwardAdminForm
+	filter_horizontal = ('players',)
 
 class HVTAdminForm(forms.ModelForm):
 	def clean_player(self):
