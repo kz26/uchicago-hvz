@@ -186,7 +186,7 @@
 		{% if game.status == 'in_progress' or game.status == 'finished' %}
 		{% if player.active %}
 		<h4 class="point-marker"><span class="text-success">{{ player.human_points }} human points</span></h4>
-		{% if not player.human %}<h4 class="point-marker"><span class="text-danger">{{ player.zombie_points }} human points</span></h4>{% endif %}
+		{% if not player.human %}<h4 class="point-marker"><span class="text-danger">{{ player.zombie_points }} zombie points</span></h4>{% endif %}
 		<p>You are ranked <b>#{{ player_rank.0 }}</b> of {{ player_rank.1 }} {% if player.human %}humans{% else %}zombies{% endif %}.
 		Visit your player and/or squad pages for more details and point breakdowns.</p>
 		</p>
