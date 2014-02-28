@@ -174,7 +174,7 @@ class Player(models.Model):
 	squad = models.ForeignKey(Squad, null=True, blank=True, related_name='players')
 	bite_code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
 	dorm = models.CharField(max_length=4, choices=DORMS)
-	major = models.CharField(max_length=255, blank=True, editable=settings.DEBUG, help_text='leave blank to autopopulate from LDAP')
+	major = models.CharField(max_length=255, blank=True, editable=settings.DEBUG, help_text='autopopulates from LDAP')
 	human = models.BooleanField(default=True)
 	opt_out_hvt = models.BooleanField(default=False)
 	gun_requested = models.BooleanField(default=False)
@@ -251,17 +251,17 @@ class Player(models.Model):
 		points = 0
 		now = timezone.now()
 		try:
-			hvt = HighValueTarget.objects.get(player=self)
-			if hvt.start_date <= now <= hvt.end_date:
-				points += hvt.kill_points
+			hvt = HighValueTarget.objects.get(player=self, start_date__lte=now, end_date__gte=now)
 		except HighValueTarget.DoesNotExist:
 			hvt = None
+		else:
+			points += hvt.kill_points
 		try:
-			hvd = HighValueDorm.objects.get(game=self.game, dorm=self.dorm)
-			if hvd.start_date <= now <= hvd.end_date:
-				points += hvd.points
+			hvd = HighValueDorm.objects.get(game=self.game, dorm=self.dorm, start_date__lte=now, end_date__gte=now)
 		except HighValueDorm.DoesNotExist:
 			hvd = None
+		else:
+			points += hvd.points
 		if not (hvt or hvd):
 			points = settings.HUMAN_KILL_POINTS
 		return Kill.objects.create(parent=parent_kill, killer=killer, victim=self, points=points, date=now, hvt=hvt, hvd=hvd)
