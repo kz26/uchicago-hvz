@@ -1,9 +1,9 @@
+pkg = require './package.json'
 express = require 'express'
 http = require 'http'
 moment = require 'moment'
 sockjs = require 'sockjs'
 request = require 'request'
-
 
 class ChatServer
 	constructor: (httpServer) -> # takes an HTTP server object
@@ -41,6 +41,7 @@ class ChatServer
 		request.get {
 			uri: "http://127.0.0.1:8000/game/#{ authData.gameID }/chat/auth/",
 			headers: {
+				'User-Agent': "#{ pkg.name }/#{ pkg.version }",
 				Host: 'www.uchicagohvz.org',
 				Cookie: "sessionid=#{ authData.sessionid }"
 			},
