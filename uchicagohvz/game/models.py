@@ -118,7 +118,10 @@ class Squad(models.Model):
 	def get_awards(self): # returns a list of awards (with duplicates if won more than once)
 		awards = []
 		sp = self.get_active_players()
-		return Award.objects.filter(players__in=self.get_active_players())
+		for aw in Award.objects.filter(players__in=self.get_active_players()).distinct():
+			awpl = aw.players.filter(pk__in=sp.values_list('pk', flat=True))
+			awards.append((aw, awpl))
+		return awards
 
 	@property
 	def size(self):
