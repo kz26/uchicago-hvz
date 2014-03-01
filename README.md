@@ -15,15 +15,15 @@ This codebase is made available under the terms of the MIT license.
 * Pre-register players, and record players' majors and dorms
 * Automatic code generation for players and awards/missions
 * Real-time stats - game analytics, individual and squad leaderboards
-* Kills can be annotated with geotags (powered by Google maps) and notes
+* Kills can be annotated with geotags (powered by Google Maps) and notes
+* Kill submission and award/mission code redemption via web form and inbound Nexmo SMS
 * SMS death notifications (uses free email-to-SMS gateways)
-* Squad support
+* Player squad support
 * Individual profile pages for players, squads, and kills
 * Separate radio-like chat rooms for humans and zombies (no history and no usernames shown, only timestamps)
 * "Award" system for assigning/deducting points to players (useful for missions, minigames, etc.)
 * High-value Target and High-value Dorm system, which awards additional points for killing a specific
 player or players from a specific dorm within a specified timeframe
-* Kill submission and award/mission code redemption via web form and inbound Nexmo SMS
 * Track gun rentals and returns
 * Full Bootstrap 3.1 frontend
 * Full-featured admin panel, courtesy of Django
@@ -41,9 +41,9 @@ player or players from a specific dorm within a specified timeframe
 **Familiarity with Python and the Django web framework is highly recommended.**
 
 1. For starters, you'll need to edit the templates and Django settings to reflect your organizations' branding and environment.
-The hosts header in the auth method in `chat/server.coffee` will also need to be updated to reflect your site's domain name.
-2. Create a secrets.py file in the same directory as `local_settings.py`. At minimum this file should
-contain a `SECRET_KEY`.
+The hosts header in the auth method in `chat/server/server.coffee` will also need to be updated to reflect your site's domain name.
+2. Create a `secrets.py` file in the same directory as `local_settings.py`. At minimum this file should
+contain a `SECRET_KEY`. Also make sure to substitute your own Google API key in `templates/includes/google-maps.html`.
 3. Implement a Django authentication backend specific to your organization/deployment. Our reference implementation's
 primary authentication backend talks to UChicago's LDAP server and allows us to directly retrieve player names, usernames,
 and major, in addition to authenticating user credentials during login. Ideally, your authentication backend will be able to do all of these
