@@ -56,7 +56,7 @@
 				{% for p in pl %}
 				<tr>
 					<td>{{ award.points }}</td>
-					<td>{{ award|award_colorize }} {{ p.display_name }}</td>
+					<td>{{ award|award_colorize }} <a href="{{ p.get_absolute_url }}">{{ p.display_name }}</a></td>
 				</tr>
 				{% endfor %}
 				{% endfor %}
