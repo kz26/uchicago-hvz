@@ -160,7 +160,7 @@
 			{% endif %}
 		</dl>
 		{% if game.status == "finished" and player.renting_gun and not player.gun_returned %}
-        <p class="text-danger">Please return your gun as soon as possible!</p>
+		<p class="text-danger">Please return your gun as soon as possible!</p>
 		{% endif %}
 		{% if player.active and game.status == 'in_progress' %}
 		{% if player.user.profile.phone_number %}
@@ -236,7 +236,7 @@
 				</table>
 				<h2>Human Survival</h2>
 				<div id="hphChart"></div>
-				<h2>Most Courageous Dorms</h2>  
+				<h2>Most Courageous Dorms</h2>	
 				<p>Where courageousness = (total human points earned by dorm / # players in dorm) * 100</p>
 				<table class="table table-bordered table-striped">
 					<thead>
@@ -425,6 +425,8 @@
 	{% recursetree game.get_kills %}
 		<li>
 			<a href="{{ node.get_absolute_url }}">{{ node.victim.display_name }} - killed on {{ node.date }}</a>
+			{% if node.geotagged %}<span class="glyphicon glyphicon-globe"></span>{% endif %}
+			{% if node.notes %}<span class="glyphicon glyphicon-pencil"></span>{% endif %}
 			{% if not node.is_leaf_node %}
 				<ul>
 					{{ children }}

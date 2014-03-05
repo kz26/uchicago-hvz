@@ -41,6 +41,8 @@
 					<td><a class="text-danger" href="{{ kill.get_absolute_url }}">{{ kill.killer.display_name }} killed
 						{{ kill.victim.display_name }} on {{ kill.date }}</a>
 						{% if kill.hvd %}<span class="text-info">HVD</span>{% endif %}{% if kill.hvt %} <span class="text-info">HVT</span>{% endif %}
+						{% if kill.geotagged %}<span class="glyphicon glyphicon-globe"></span>{% endif %}
+						{% if kill.notes %}<span class="glyphicon glyphicon-pencil"></span>{% endif %}
 					</td>
 				</tr>
 				{% endfor %}
