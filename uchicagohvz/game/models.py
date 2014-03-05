@@ -345,6 +345,10 @@ class Kill(MPTTModel):
 
 	def __unicode__(self):
 		return "%s (%s) --> %s (%s) [%s]" % (self.killer.user.get_full_name(), self.killer.user.username, self.victim.user.get_full_name(), self.victim.user.username, self.killer.game.name)
+
+	@property
+	def geotagged(self):
+		return self.lat and self.lng
 	
 	@models.permalink
 	def get_absolute_url(self):
