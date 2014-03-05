@@ -70,22 +70,6 @@
 <h2>Kills <small>geotagged kills only</small></h2>
 <div id="killMap" style="height: 500px;"></div>
 {% endif %}
-
-{% if kill_tree %}
-<h2>Kill Tree</h2>
-<ul>
-	{% recursetree kill_tree %}
-		<li>
-			<a href="{{ node.get_absolute_url }}">{{ node.victim.display_name }} - killed on {{ node.date }}</a>
-			{% if not node.is_leaf_node %}
-				<ul>
-					{{ children }}
-				</ul>
-			{% endif %}
-		</li>
-	{% endrecursetree %}
-</ul>
-{% endif %}
 {% endblock %}
 {% block script %}
 {% if squad.get_kills.count > 0 %}
