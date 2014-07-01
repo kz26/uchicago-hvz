@@ -421,7 +421,7 @@
 <hr>
 <h2>Global Kill Tree</h2>
 <ul>
-{% cache 3600 kt %}
+{% cache 3600 kt game.id %}
 	{% recursetree game.get_kills %}
 		<li>
 			<a href="{{ node.get_absolute_url }}">{{ node.victim.display_name }} - killed on {{ node.date }}</a>
