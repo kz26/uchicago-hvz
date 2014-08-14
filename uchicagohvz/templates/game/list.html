@@ -6,28 +6,33 @@
 {% for game in object_list %}
 <div class="row">
 	<div class="col-md-6">
-		<h2><a class="btn btn-default btn-lg btn-block" href="{% url 'game|show' pk=game.pk %}">{{ game.name }}</a></h2>
-		<h3>
-			{% if game.status == "registration" %}
-			<span class="text-success">Open for registration</span>
-			{% elif game.status == "in_progress" %}
-			<span class="text-success">LIVE</span>
-			{% elif game.status == "finished" %}
-			<span class="text-info">Finished</span>
-			{% elif game.status == "future" %}
-			<span class="text-warning">Future game</span>
-			{% endif %}
-		</h3>
+	  <h1><a class="btn btn-default btn-lg btn-block" href="{% url 'game|show' pk=game.pk %}">
+	      
+	      {{ game.name }}
+	     
+	  </a></h1>
+	  <h3>
+	    {% if game.status == "registration" %}
+	    <span class="text-success">Open for registration</span>
+	    {% elif game.status == "in_progress" %}
+	    <span class="text-success">LIVE</span>
+	    {% elif game.status == "finished" %}
+	    <span class="text-info">Finished</span>
+	    {% elif game.status == "future" %}
+	    <span class="text-warning">Future game</span>
+	    {% endif %}
+	  </h3>
+	  
 	</div>
 	<div class="col-md-6">
-		<dl class="dl-horizontal" style="margin-top: 20px;">
-			<dt>Registration starts</dt>
-			<dd>{{ game.registration_date }}</dd>
-			<dt>Game starts</dt>
-			<dd>{{ game.start_date }}</dd>
-			<dt>Game ends</dt>
-			<dd>{{ game.end_date }}</dd>
-		</dl>
+	  <dl class="dl-horizontal" style="margin-top: 20px;">
+	    <dt>Registration starts</dt>
+	    <dd>{{ game.registration_date }}</dd>
+	    <dt>Game starts</dt>
+	    <dd>{{ game.start_date }}</dd>
+	    <dt>Game ends</dt>
+	    <dd>{{ game.end_date }}</dd>
+	  </dl>
 	</div>
 </div>
 {% empty %}
