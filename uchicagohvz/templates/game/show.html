@@ -380,7 +380,7 @@
 						{% for s in top_human_squads %}
 						<tr>
 							<td><a href="{{ s.url }}">{{ s.name }}</a>{% if s.num_humans == 0 %} <span class="text-danger">(killed in action)</span>{% endif %}</td>
-							<td>{{ s.num_humans }} of {{ s.size }}</td>
+							<td style="width:80px">{{ s.num_humans }} of {{ s.size }}</td>
 							<td>{{ s.human_points }}</td>
 						</tr>
 						{% endfor %}
@@ -424,7 +424,7 @@
 {% cache 3600 kt game.id %}
 	{% recursetree game.get_kills %}
 		<li>
-			<a href="{{ node.get_absolute_url }}">{{ node.victim.display_name }} - killed on {{ node.date }}</a>
+			<a href="{{ node.get_absolute_url }}"><b>{{ node.victim.display_name }}</b> - killed on {{ node.date }}</a>
 			{% if node.geotagged %}<span class="glyphicon glyphicon-globe"></span>{% endif %}
 			{% if node.notes %}<span class="glyphicon glyphicon-pencil"></span>{% endif %}
 			{% if not node.is_leaf_node %}
@@ -483,11 +483,11 @@ $.get("data/kills/")
 					}
 				killDT = moment(k.date).format('M/D/YY h:mm:ss A')
 				content = $(
-					"<ul>
+					"<ul style='color:black'>
 						<li><b>Killer:</b> #{k.killer}</li>
 						<li><b>Victim:</b> #{k.victim}</li>
 						<li><b>Date:</b> #{killDT}</li>
-						<li><a href=\"/kill/#{ k.id }/\" target='_blank' style='color: gray; font-weight: bold;'>Details</a></li>
+						<li><a href=\"/kill/#{ k.id }/\" target='_blank' style='font-weight: bold;'>Details</a></li>
 					</ul>"
 				)
 				content.css('width', '300px')
@@ -533,6 +533,8 @@ $.get("data/humans-per-hour/")
 				type: 'line',
 				backgroundColor: '#333',
 			},
+			colors: ['#7cb5ec', '#4369FF', '#90ed7d', '#f7a35c', '#8085e9', 
+   '#f15c80', '#e4d354', '#FF85e8', '#8d4653', '#91e8e1', '#2397fe', '#FF115a', '#102bBF'],
 			credits: {
 				enabled: false
 			},
@@ -544,10 +546,12 @@ $.get("data/humans-per-hour/")
 			},
 			plotOptions: {
 				series: {
+					
 					marker: {
 						enabled: false
 					}
-				}
+					visible: true
+		                }
 			},
 			xAxis: {
 				tickInterval: null,
@@ -631,6 +635,8 @@ $.get("data/humans-by-major/")
 			credits: {
 				enabled: false
 			},
+			colors: ['#7cb5ec', '#4369FF', '#90ed7d', '#f7a35c', '#8085e9', 
+   '#f15c80', '#e4d354', '#FF85e8', '#8d4653', '#91e8e1', '#2397fe', '#FF115a', '#102bBF'],
 			title: {
 				text: null,
 			},
@@ -658,7 +664,7 @@ $.get("data/humans-by-major/")
 			series: data,
 			tooltip: {
 				formatter: ->
-					return "#{this.series.name}<br><b>X:</b> #{this.point.x}<br><b>Y:</b> #{this.point.y}"
+					return "#{this.series.name}<br><b>Hours:</b> #{this.point.x}<br><b>Points:</b> #{this.point.y}"
 			}
 		}
 
@@ -672,6 +678,8 @@ $.get("data/zombies-by-major/")
 			credits: {
 				enabled: false
 			},
+			colors: ['#7cb5ec', '#4369FF', '#90ed7d', '#f7a35c', '#8085e9', 
+   '#f15c80', '#e4d354', '#FF85e8', '#8d4653', '#91e8e1', '#2397fe', '#FF115a', '#102bBF'],
 			title: {
 				text: null,
 			},
@@ -699,7 +707,7 @@ $.get("data/zombies-by-major/")
 			series: data,
 			tooltip: {
 				formatter: ->
-					return "#{this.series.name}<br><b>X:</b> #{this.point.x}<br><b>Y:</b> #{this.point.y}"
+					return "#{this.series.name}<br><b>Hours:</b> #{this.point.x}<br><b>Points:</b> #{this.point.y}"
 			}
 		}
 </script>

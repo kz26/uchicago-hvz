@@ -61,6 +61,7 @@ class ShowGame(DetailView):
 						context['player_rank'] = player.zombie_rank
 		return context
 
+
 class RegisterForGame(FormView):
 	form_class = GameRegistrationForm
 	template_name = "game/register.html"

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<form class="form-horizontal" method="post">
+{% csrf_token %}
+<br />
+{% for field in form %}
+{{ field }}
+{{ field.help_text }}
+{{ field.errors }}<br /><br />
+{% endfor %}
+
+<input class="btn btn-success" type="submit" name="submit" value="Submit"/>
+</form>
+{% endblock %}

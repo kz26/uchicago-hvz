@@ -1,6 +1,35 @@
 from django import forms
+from django.contrib.auth.models import User
 from uchicagohvz.users.models import *
 from uchicagohvz.game.models import Game, Player
+
+class UserRegistrationForm(forms.ModelForm):
+	class Meta:
+		model = User
+		fields = ('username', 'first_name', 'last_name', 'email', 'password')
+
+	def __init__(self, *args, **kwargs):
+		super(UserRegistrationForm, self).__init__(*args, **kwargs)
+		self.fields['username'].help_text = "Enter a username."
+		self.fields['first_name'].help_text = "Enter your first name."
+		self.fields['last_name'].help_text = "Enter your last name."
+		self.fields['email'].help_text = "Enter your email address."
+		self.fields['password'].help_text = "Enter a password."
+		self.fields['password'].widget = forms.PasswordInput()
+	def clean(self):
+		data = super(UserRegistrationForm, self).clean()
+		username = data.get('username')
+		first_name = data.get('first_name')
+		last_name = data.get('last_name')
+		email = data.get('email')
+		password = data.get('password')
+		if not(username and first_name and last_name and email and password):
+			self.error_class(['Please fill out all of the fields.'])
+		return data
+
+	#name = forms.CharInput(help_text="Please enter your first and last name.")
+	#email = forms.CharInput(help_text="Please enter your email address.")
+	#password = forms.CharInput(widget=forms.PasswordInput(), help_text="Please enter a password.")
 
 class ProfileForm(forms.ModelForm):
 
