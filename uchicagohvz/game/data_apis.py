@@ -197,6 +197,8 @@ def humans_by_major(game, **kwargs):
 		else:
 			major_avg_pts = 0
 		point['y'] = major_avg_pts
+		point['name'] = major_players.count()
+		
 		data.append({
 			'name': major,
 			'data': [point]
@@ -228,6 +230,8 @@ def zombies_by_major(game, **kwargs):
 		else:
 			major_avg_pts = 0
 		point['y'] = major_avg_pts
+		point['name'] = major_players.count()
+
 		data.append({
 			'name': major,
 			'data': [point]

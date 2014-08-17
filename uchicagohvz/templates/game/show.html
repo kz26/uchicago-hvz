@@ -666,7 +666,7 @@ $.get("data/humans-by-major/")
 			series: data,
 			tooltip: {
 				formatter: ->
-					return "#{this.series.name}<br><b>Hours:</b> #{this.point.x}<br><b>Points:</b> #{this.point.y}"
+					return "#{this.series.name}<br><b>Players:</b> #{this.point.name}<br><b>Hours:</b> #{this.point.x}<br><b>Points:</b> #{this.point.y}"
 			}
 		}
 
@@ -710,7 +710,7 @@ $.get("data/zombies-by-major/")
 			series: data,
 			tooltip: {
 				formatter: ->
-					return "#{this.series.name}<br><b>Hours:</b> #{this.point.x}<br><b>Points:</b> #{this.point.y}"
+					return "#{this.series.name}<br><b>Players:</b> #{this.point.name}<br><b>Hours:</b> #{this.point.x}<br><b>Points:</b> #{this.point.y}"
 			}
 		}
 </script>
