@@ -2,6 +2,9 @@ from django import forms
 from django.contrib.auth.models import User
 from uchicagohvz.users.models import *
 from uchicagohvz.game.models import Game, Player
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+
 
 class UserRegistrationForm(forms.ModelForm):
 	class Meta:
@@ -25,11 +28,12 @@ class UserRegistrationForm(forms.ModelForm):
 		password = data.get('password')
 		if not(username and first_name and last_name and email and password):
 			self.error_class(['Please fill out all of the fields.'])
+		try:
+			User.objects.get(username=username)
+			self.error_class(['Someone already has that username.'])
+		except User.DoesNotExist:
+			pass		
 		return data
-
-	#name = forms.CharInput(help_text="Please enter your first and last name.")
-	#email = forms.CharInput(help_text="Please enter your email address.")
-	#password = forms.CharInput(widget=forms.PasswordInput(), help_text="Please enter a password.")
 
 class ProfileForm(forms.ModelForm):
 

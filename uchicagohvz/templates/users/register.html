@@ -1,8 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="page-header">
+	<h1>Create New User</h1>
+	<small>Not an affiliate of UChicago? No problem! Fill out this form and just log in to register for games.</small>
+</div>
+
 <form class="form-horizontal" method="post">
 {% csrf_token %}
-<br />
+<br>
 {% for field in form %}
 {{ field }}
 {{ field.help_text }}
