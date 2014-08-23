@@ -130,11 +130,11 @@ $.get("data/kills/")
 					}
 				killDT = moment(k.date).format('M/D/YY h:mm:ss A')
 				content = $(
-					"<ul>
+					"<ul style='color: black'>
 						<li><b>Killer:</b> #{k.killer}</li>
 						<li><b>Victim:</b> #{k.victim}</li>
 						<li><b>Date:</b> #{killDT}</li>
-						<li><a href=\"/kill/#{ k.id }/\" target='_blank' style='color: gray; font-weight: bold;'>Details</a></li>
+						<li><a href=\"/kill/#{ k.id }/\" target='_blank' style='color: black; font-weight: bold;'>Details</a></li>
 					</ul>"
 				)
 				content.css('width', '300px')

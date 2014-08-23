@@ -424,7 +424,7 @@
 {% cache 3600 kt game.id %}
 	{% recursetree game.get_kills %}
 		<li>
-			<a href="{{ node.get_absolute_url }}"><b>{{ node.victim.display_name }}</b> - killed on {{ node.date }}</a>
+			<a href="{{ node.victim.get_absolute_url }}"><b>{{ node.victim.display_name }}</b></a> - killed on <a href="{{ node.get_absolute_url }}">{{ node.date }}</a>
 			{% if node.geotagged %}<span class="glyphicon glyphicon-globe"></span>{% endif %}
 			{% if node.notes %}<span class="glyphicon glyphicon-pencil"></span>{% endif %}
 			{% if not node.is_leaf_node %}
