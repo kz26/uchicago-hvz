@@ -2,8 +2,6 @@ from django import forms
 from django.contrib.auth.models import User
 from uchicagohvz.users.models import *
 from uchicagohvz.game.models import Game, Player
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
 
 
 class UserRegistrationForm(forms.ModelForm):
