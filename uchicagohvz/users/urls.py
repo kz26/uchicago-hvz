@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.views import password_reset, password_reset_done, password_reset_confirm, password_reset_complete
+from django.http import HttpResponse
 from uchicagohvz.users.views import *
 
 urlpatterns = patterns('',
@@ -12,4 +13,16 @@ urlpatterns = patterns('',
     url(r'^profile(?P<pk>[0-9]+)/$', ShowProfile.as_view(), name="users|profile"),
     url(r'^update_profile/$', UpdateProfile.as_view(), name="users|update_profile"),
     url(r'^register/$', RegisterUser.as_view(), name="users|register"),
+
+    url(r'^password/reset/$', 
+        password_reset, 
+        {'post_reset_redirect' : '/users/password/reset/done/'},
+        name="password_reset"),
+    (r'^password/reset/done/$',
+        password_reset_done),
+    (r'^password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 
+        'django.contrib.auth.views.password_reset_confirm', 
+        {'post_reset_redirect' : '/user/password/done/'}),
+    (r'^password/done/$', 
+        password_reset_complete),
 )

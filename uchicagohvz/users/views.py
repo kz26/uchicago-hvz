@@ -52,7 +52,7 @@ class ShowProfile(DetailView):
 	def get_context_data(self, **kwargs):
 		def add(x,y): return x+y
 		context = super(ShowProfile, self).get_context_data(**kwargs)
-		if self.request.user.is_authenticated():
+		if self.request.user.is_authenticated():		
 			player_list = Player.objects.filter(user=self.request.user)
 			total_kills = 0
 			total_human_points = 0
