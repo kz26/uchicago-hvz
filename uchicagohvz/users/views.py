@@ -1,6 +1,7 @@
 from django.shortcuts import *
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import *
+from django.contrib.auth.forms import PasswordResetForm
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.views.generic import *
@@ -26,11 +27,22 @@ class RegisterUser(FormView):
 		user = form.save(commit=False)
 		user.set_password(user.password)
 		user.save()
-		messages.success(self.request, "You can now register for games!")
 		return HttpResponseRedirect('/')
 
 	def get_context_data(self, **kwargs):
 		context = super(RegisterUser, self).get_context_data(**kwargs)
+		return context
+
+class ResetPassword(FormView):
+	form_class = PasswordResetForm
+	template_name = "users/reset_password.html"
+
+	def form_valid(self, form):
+		form.save(request=self.request)
+		return HttpResponseRedirect('/')
+
+	def get_context_data(self, **kwargs):
+		context = super(ResetPassword, self).get_context_data(**kwargs)
 		return context
 
 class ShowProfile(DetailView):
