@@ -236,6 +236,8 @@
 				</table>
 				<h2>Human Survival</h2>
 				<div id="hphChart"></div>
+				<button class="btn btn-success" id="hphcheckAll">Show All</button>
+				<button class="btn btn-success" id="hphuncheckAll">Hide All</button>
 				<h2>Most Courageous Dorms</h2>	
 				<p>Where courageousness = (total human points earned by dorm / # players in dorm) * 100</p>
 				<table class="table table-bordered table-striped">
@@ -576,6 +578,14 @@ $.get("data/humans-per-hour/")
 			},
 			series: data
 		}
+
+$('#hphcheckAll').click (e) ->
+	chart = $('#hphChart').highcharts()
+	box.show() for box in chart.series
+
+$('#hphuncheckAll').click (e) ->
+	chart = $('#hphChart').highcharts()
+	box.hide() for box in chart.series
 
 $.get("data/kills-by-tod/")
 	.done (data) ->
