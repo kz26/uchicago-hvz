@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="page-header">
-	<h1>Individual Leaderboards <a href="{% url 'game|show' pk=game.pk %}"><small>{{ game.name }}</small></a></h1>
+	<h1 style="vertical-align:bottom; line-height:36px">Individual Leaderboards <small>{{ game.name }}</small> <a style="line-height:36px; font-size: 24px; float:right"href="{% url 'game|show' pk=game.pk %}">Back to Game</a></h1>
 </div>
 {% if game.status == 'in_progress' %}
 <p class="center">The names of surviving humans have been obfuscated in the interest of national human security.</p>
@@ -43,8 +43,8 @@
 				{% for p in top_zombies %}
 				<tr>
 					<td><a href="{{ p.url }}">{{ p.display_name }}</a></td>
-					<td>{{ p.kills }}</td>
 					<td>{{ p.zombie_points }}</td>
+					<td>{{ p.kills }}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
