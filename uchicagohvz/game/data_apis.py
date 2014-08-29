@@ -28,6 +28,12 @@ def kills_by_tod(game, **kwargs):
 	return data
 
 @cache_func(settings.LEADERBOARD_CACHE_DURATION)
+def kills_in_last_hour(game, **kwargs):
+	delta = timezone.now() - timedelta(days=1)
+	kills = Kill.objects.exclude(parent=None).filter(victim__game=game,date__gte=delta)
+	return kills.count()
+
+@cache_func(settings.LEADERBOARD_CACHE_DURATION)
 def survival_by_dorm(game, **kwargs):
 	data = []
 	for dorm, dormName in DORMS:

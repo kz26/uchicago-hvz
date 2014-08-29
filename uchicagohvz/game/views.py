@@ -41,6 +41,7 @@ class ShowGame(DetailView):
 				if self.object.status == "in_progress":
 					context['sms_code_number'] = settings.NEXMO_NUMBER
 				context['kills_per_hour'] = kills_per_hour(self.object)
+				context['kills_in_last_hour'] = kills_in_last_hour(self.object)
 				context['survival_by_dorm'] = survival_by_dorm(self.object)
 				context['most_courageous_dorms'] = most_courageous_dorms(self.object)
 				context['most_infectious_dorms'] = most_infectious_dorms(self.object)

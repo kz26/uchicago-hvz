@@ -205,6 +205,10 @@
 <div class="center">
 	<h2>Average Kills per Hour</h2>
 	<p class="lead text-danger">{{ kills_per_hour|floatformat:2 }}</p>
+	{% if kills_in_last_hour and game.status == "in_progress" %}
+	<h2>Kills in the Last Hour</h2>
+	<p class="lead text-danger">{{ kills_in_last_hour|floatformat:2 }}</p>
+	{% endif %}
 	{% if game.status == 'in_progress' %}<p>All data below is updated in real time.</p>{% endif %}
 </div>
 
