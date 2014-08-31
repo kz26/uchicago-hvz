@@ -40,3 +40,8 @@ h4.point-marker {
 #chat-input {
 	margin-top: 5px;
 }
+
+.nav-tabs > li > a {
+	border-color: #1c1e22;
+	background-color: #4e555c;
+}

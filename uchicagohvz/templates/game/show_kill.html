@@ -15,12 +15,14 @@
 	<dd><a href="{{ kill.victim.get_absolute_url }}">{{ kill.victim.display_name }}</a></dd>
 	<dt>Time of Death</dt>
 	<dd>{{ kill.date }}</dd>
+	{% if kill.points > 1 %}
 	<dt>Points</dt>
 	<dd>{{ kill.points }}</dd>
 	<dt>High-Value Dorm</dt>
 	<dd>{% if kill.hvd %}Yes{% else %}No{% endif %}</dd>
 	<dt>High-Value Target</dt>
 	<dd>{% if kill.hvt %}Yes{% else %}No{% endif %}</dd>
+	{% endif %}
 </dl>
 
 {% if kill.notes %}

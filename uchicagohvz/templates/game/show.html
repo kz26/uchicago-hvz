@@ -9,7 +9,7 @@
 {% endfor %}
 
 <div>
-	<h2>Rules</h2>
+	<h2>{{ player.get_display_name }} Rules</h2>
 	<p class="text-primary">
 		By participating in this game, you certify that you have have read and agree to the 
 		<a href="{{ game.rules.url }}">game rules</a> and <a href="{% url 'terms' %}">Terms and Conditions</a> before playing.
@@ -207,15 +207,15 @@
 	<p class="lead text-danger">{{ kills_per_hour|floatformat:2 }}</p>
 	{% if kills_in_last_hour and game.status == "in_progress" %}
 	<h2>Kills in the Last Hour</h2>
-	<p class="lead text-danger">{{ kills_in_last_hour|floatformat:2 }}</p>
+	<p class="lead text-danger">{{ kills_in_last_hour|floatformat:0 }}</p>
 	{% endif %}
 	{% if game.status == 'in_progress' %}<p>All data below is updated in real time.</p>{% endif %}
 </div>
 
-<ul class="nav nav-tabs">
-	<li class="active"><a href="#analytics" data-toggle="tab">Analytics</a></li>
-	<li><a href="#leaderboards-individual" data-toggle="tab">Individual Leaderboards</a></li>
-	{% if game.squads.count %}<li><a href="#leaderboards-squad" data-toggle="tab">Squad Leaderboards</a></li></li>{% endif %}
+<ul class="nav nav-tabs nav-justified">
+	<li class="active"><a href="#analytics" data-toggle="tab"><span class="glyphicon glyphicon-stats"></span> Analytics</a></li>
+	<li><a href="#leaderboards-individual" data-toggle="tab"><span class="glyphicon glyphicon-list"></span> Individual Leaderboards</a></li>
+	{% if game.squads.count %}<li><a href="#leaderboards-squad" data-toggle="tab"><span class="glyphicon glyphicon-th-list"></span> Squad Leaderboards</a></li></li>{% endif %}
 </ul>
 <div class="tab-content">
 	<div id="analytics" class="tab-pane active">
@@ -452,7 +452,7 @@
 {% include 'includes/highcharts.html' %}
 <script>
 {% if player %}
-var PLAYER_NAME = '{{ player.get_display_name }}';
+var PLAYER_NAME = '{{ player.display_name }}';
 {% else %}
 var PLAYER_NAME = null;
 {% endif %}
@@ -556,9 +556,7 @@ $.get("data/humans-per-hour/")
 					
 					marker: {
 						enabled: false
-					}
-					visible: true
-		                }
+					}							                }
 			},
 			xAxis: {
 				tickInterval: null,
