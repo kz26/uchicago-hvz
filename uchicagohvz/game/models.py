@@ -31,7 +31,8 @@ class Game(models.Model):
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
 	rules = models.FileField(upload_to=gen_rules_filename, storage=OverwriteFileSystemStorage())
-	
+	color = models.CharField(max_length=64)	
+
 	objects = GameManager()
 
 	def __unicode__(self):

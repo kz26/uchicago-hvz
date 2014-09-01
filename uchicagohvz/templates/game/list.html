@@ -9,7 +9,7 @@
 	  <h1><a class="btn btn-default btn-lg btn-block" href="{% url 'game|show' pk=game.pk %}">
 		{% for player in game.get_active_players %}
 			{% if player.user == user %}
-			<span style="vertical-align:middle" class="glyphicon glyphicon-bookmark"></span> 
+			<span style="vertical-align:middle; color: {{ game.color }}" class="glyphicon glyphicon-bookmark"></span> 
 			{% endif %}
 		{% endfor %}
 		{{ game.name }}
