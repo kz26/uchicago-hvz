@@ -21,6 +21,15 @@ try:
 	from secrets import SECRET_KEY
 except:
 	SECRET_KEY = 'SECRET KEY PLACEHOLDER'
+try:
+	from secrets import RECAPTCHA_PUBLIC_KEY
+except:
+	RECAPTCHA_PUBLIC_KEY = 'PUBLIC KEY PLACEHOLDER'
+try:
+	from secrets import RECAPTCHA_PRIVATE_KEY
+except:
+	RECAPTCHA_PRIVATE_KEY = 'PRIVATE KEY PLACEHOLDER'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -29,8 +38,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-RECAPTCHA_PUBLIC_KEY = 'PUBLIC KEY PLACEHOLDER'
-RECAPTCHA_PRIVATE_KEY = 'PRIVATE KEY PLACEHOLDER'
+
 
 # Application definition
 
