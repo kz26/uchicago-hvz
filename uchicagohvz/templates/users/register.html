@@ -1,5 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if user.is_authenticated %}
+<br><p>Looks like you already have an account. If you're not {{ user.get_full_name }}, please logout and return to this page.</p><br>
+
+<a href='/'>Return to home.</a>
+{% else %}
 <div class="page-header">
 	<h1>Create New User</h1>
 	<small>Not a student or faculty member of UChicago? No problem! Fill out this form and just log in to register for games.</small>
@@ -14,6 +28,22 @@
 {{ field.errors }}<br /><br />
 {% endfor %}
 
+<span class="validation_error">{{ captcha_response }}</span>  
+          
+	<script type="text/javascript" 
+	    src="http://api.recaptcha.net/challenge?k=6LdamfkSAAAAAJ00GnbeE8i-mcXYl47yjmx5yHZs">
+	</script>
+
+	<noscript>
+		<iframe src="http://api.recaptcha.net/noscript?k=6LdamfkSAAAAAJ00GnbeE8i-mcXYl47yjmx5yHZs"  
+	            height="300" width="500" frameborder="0"></iframe><br>  
+	            <textarea name="recaptcha_challenge_field" rows="3" cols="40">  
+	            </textarea>  
+	            <input type="hidden" name="recaptcha_response_field"   
+	            value="manual_challenge">
+	</noscript>
+
 <input class="btn btn-success" type="submit" name="submit" value="Submit"/>
 </form>
+{% endif %}
 {% endblock %}
