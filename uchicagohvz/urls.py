@@ -4,6 +4,8 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView, RedirectView
 from django.contrib import admin
 
+admin.autodiscover()
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'uchicagohvz.views.home', name='home'),
@@ -16,5 +18,4 @@ urlpatterns = patterns('',
     url(r'^faq/$', TemplateView.as_view(template_name='faq.html'), name='faq'),
     url(r'^about/$', TemplateView.as_view(template_name='about.html'), name='about'),
     url(r'^terms/$', TemplateView.as_view(template_name='terms.html'), name='terms'),
-    url(r'^search/', include('haystack.urls')),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

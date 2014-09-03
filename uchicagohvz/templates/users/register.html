@@ -1,14 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
 {% if user.is_authenticated %}
 <br><p>Looks like you already have an account. If you're not {{ user.get_full_name }}, please logout and return to this page.</p><br>
 
@@ -21,6 +13,9 @@
 
 <form class="form-horizontal" method="post">
 {% csrf_token %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
 <br>
 {% for field in form %}
 {{ field }}
