@@ -1,10 +1,13 @@
 from django import forms
 from django.contrib.auth.models import User
+from captcha.fields import ReCaptchaField
 from uchicagohvz.users.models import *
 from uchicagohvz.game.models import Game, Player
 
 
 class UserRegistrationForm(forms.ModelForm):
+	captcha = ReCaptchaField(attrs={'theme' : 'blackglass'})
+
 	class Meta:
 		model = User
 		fields = ('username', 'first_name', 'last_name', 'email', 'password')
@@ -24,6 +27,7 @@ class UserRegistrationForm(forms.ModelForm):
 		last_name = data.get('last_name')
 		email = data.get('email')
 		password = data.get('password')
+
 		if not(username and first_name and last_name and email and password):
 			self.error_class(['Please fill out all of the fields.'])
 		try:

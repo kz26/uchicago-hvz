@@ -6,7 +6,6 @@ from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.shortcuts import render_to_response
 from django.views.generic import *
-from recaptcha.client import captcha
 from uchicagohvz.users.forms import *
 from uchicagohvz.users.models import *
 from uchicagohvz.game.models import *
@@ -26,18 +25,11 @@ class RegisterUser(FormView):
 	template_name = "users/register.html"
 
 	def form_valid(self, form):
-		response = captcha.submit(self.request.POST.get('recaptcha_challenge_field'),
-					  self.request.POST.get('recaptcha_response_field'),
-					  '6LdwwfgSAAAAAJVKBnef8ZhdZ9a93dIUlDFYjKWu ',
-					  self.request.META['REMOTE_ADDR'],)
-		if response.is_valid:		
-			user = form.save(commit=False)
-			user.set_password(user.password)
-			user.save()
-			return HttpResponseRedirect('/')
-		else:
-			messages.error(self.request, 'Please retry the captcha to verify your humanity.')
-			return render_to_response('users/register.html', {}, RequestContext(self.request))
+		user = form.save(commit=False)
+		user.set_password(user.password)
+		user.save()
+		return HttpResponseRedirect('/')
+
 	def get_context_data(self, **kwargs):
 		context = super(RegisterUser, self).get_context_data(**kwargs)
 		return context

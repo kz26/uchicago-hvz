@@ -29,6 +29,8 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+RECAPTCHA_PUBLIC_KEY = 'PUBLIC KEY PLACEHOLDER'
+RECAPTCHA_PRIVATE_KEY = 'PRIVATE KEY PLACEHOLDER'
 
 # Application definition
 
@@ -39,13 +41,13 @@ INSTALLED_APPS = (
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	'mptt', 'localflavor', 'djcelery_email', 'compressor', 'rest_framework', 'south', 'haystack',
+	'mptt', 'localflavor', 'djcelery_email', 'compressor', 'rest_framework', 'south', 'haystack', 'captcha',
 	'uchicagohvz.users', 'uchicagohvz.game',
 )
 
 MIDDLEWARE_CLASSES = (
 	'django.contrib.sessions.middleware.SessionMiddleware',
-	'django.middleware.common.CommonMiddleware',
+	'django.middleware.common.CommonMiddleware','captcha',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
