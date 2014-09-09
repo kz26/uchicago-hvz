@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import *
 from django.utils.safestring import mark_safe
+from django.utils.html import escape
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -104,7 +105,9 @@ class EnterBiteCode(FormView):
 			kill.lng = form.cleaned_data.get('lng')
 			kill.notes = form.cleaned_data.get('notes')
 			kill.save()
+			victim_profile = Profile.objects.get(user=victim.user)
 			messages.success(self.request, mark_safe("Kill logged successfully! <b>%s</b> has joined the ranks of the undead." % (victim.user.get_full_name())))
+			messages.error(self.request, escape("{0}'s last words: {1}".format(victim.user.get_full_name(), victim_profile.last_words)))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
 	def get_form_kwargs(self):
