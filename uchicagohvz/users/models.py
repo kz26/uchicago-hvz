@@ -10,6 +10,7 @@ class Profile(models.Model):
 	user = models.OneToOneField(settings.AUTH_USER_MODEL)
 	phone_number = PhoneNumberField(blank=True)
 	phone_carrier = models.CharField(max_length=32, blank=True, choices=[(k, k) for k in sorted(CARRIERS.keys())])
+	last_words = models.CharField(max_length=255, blank=True)
 	subscribe_death_notifications = models.BooleanField(default=False)
 	subscribe_chatter_listhost = models.BooleanField(default=True)
 	subscribe_zombies_listhost = models.BooleanField(default=True)

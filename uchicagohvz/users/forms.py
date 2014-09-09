@@ -69,6 +69,7 @@ class ProfileForm(forms.ModelForm):
 
 	def clean(self):
 		data = super(ProfileForm, self).clean()
+		last_words = data.get('last_words')
 		phone_number = data.get('phone_number')
 		phone_carrier = data.get('phone_carrier')
 		sdn = data.get('subscribe_death_notifications')
