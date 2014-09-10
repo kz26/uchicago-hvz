@@ -107,7 +107,10 @@ class EnterBiteCode(FormView):
 			kill.save()
 			victim_profile = Profile.objects.get(user=victim.user)
 			messages.success(self.request, mark_safe("Kill logged successfully! <b>%s</b> has joined the ranks of the undead." % (victim.user.get_full_name())))
-			messages.error(self.request, escape("{0}'s last words: {1}".format(victim.user.get_full_name(), victim_profile.last_words)))
+			if victim_profile.last_words:
+				victim.last_words = victim_profile.last_words
+				victim.save()
+				messages.error(self.request, escape("{0}'s last words: {1}".format(victim.user.get_full_name(), victim.last_words)))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
 	def get_form_kwargs(self):

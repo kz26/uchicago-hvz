@@ -30,6 +30,11 @@
 <p>{{ kill.notes }}</p>
 {% endif %}
 
+{% if kill.victim.last_words %}
+<h3>Victim's Last Words</h3>
+<p>{{ kill.victim.last_words }}</p>
+{% endif %}
+
 {% if kill.lat and kill.lng %}
 <h3>Kill Location</h3>
 <div id="killMap" style="height: 500px;"></div>

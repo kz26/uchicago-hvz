@@ -27,7 +27,7 @@
 	<div class="form-group">
 		<label for="id_last_words" class="col-lg-2 control-label">Your last words</label>
 		<div class="col-lg-3">
-			<input id="id_last_words" class="form-control" type="text" name="last_words" value="{{ form.last_words.value|default_if_none:"Blargh. Looks like I'm dead now." }}">
+			<input id="id_last_words" class="form-control" type="text" name="last_words" value="{{ form.last_words.value|default_if_none:"" }}">
 			{{ form.last_words.errors }}
 		</div>
 	</div>

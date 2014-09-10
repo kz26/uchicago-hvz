@@ -181,6 +181,7 @@ class Player(models.Model):
 	gun_requested = models.BooleanField(default=False)
 	renting_gun = models.BooleanField(default=False)
 	gun_returned = models.BooleanField(default=False)
+	last_words = models.CharField(max_length=255, blank=True)
 
 	def save(self, *args, **kwargs):
 		if self.game.status == 'registration' or not self.major: # allow updates to major during registration
