@@ -20,7 +20,7 @@
 	{% if not player.human %}
 	{% if player.kill_object %}
 	<dt>Killed by</dt>
-	<dd><a href="{{ player.kill_object.get_absolute_url }}">{{ player.killed_by.display_name }}</a> on {{ player.time_of_death }}</a></dd>
+	<dd><a href="{{ player.killed_by.get_absolute_url }}">{{ player.killed_by.display_name }}</a> on <a href="{{ player.kill_object.get_absolute_url }}">{{ player.time_of_death }}</a></dd>
 	<dt>Lifespan</dt>
 	<dd>{{ player.lifespan|pp_timedelta }}</dd>
 	{% endif %}
@@ -81,7 +81,7 @@
 <ul>
 	{% recursetree kill_tree %}
 		<li>
-			<a href="{{ node.get_absolute_url }}">{{ node.victim.display_name }} - killed on {{ node.date }}</a>
+			<a href="{{ node.victim.get_absolute_url }}"><b>{{ node.victim.display_name }}</b></a> - killed on <a href="{{ node.get_absolute_url }}">{{ node.date }}</a>
 			{% if node.geotagged %}<span class="glyphicon glyphicon-globe"></span>{% endif %}
 			{% if node.notes %}<span class="glyphicon glyphicon-pencil"></span>{% endif %}
 			{% if not node.is_leaf_node %}
