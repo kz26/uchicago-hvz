@@ -42,7 +42,9 @@
 						<li><a href="{% url 'contact' %}">Contact</a></li>
 						<li><a href="{% url 'faq' %}">FAQ</a></li>
 						<li><a href="{% url 'about' %}">About</a></li>
+						{% if not user.is_authenticated %}
 						<li><a href="{% url 'users|register' %}">No CNetID?</a></li>
+						{% endif %}
 					</ul>
 					{% if user.is_authenticated %}
 					<ul class="nav navbar-nav navbar-right">
