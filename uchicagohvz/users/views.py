@@ -55,7 +55,12 @@ class ShowProfile(DetailView):
 			try:
 				return x+y
 			except TypeError:
-				return x
+				if isinstance( x, datetime.timedelta ):
+					return x
+				elif isinstance( y, datetime.timedelta ):
+					return y
+				else:
+					return 0
 
 		context = super(ShowProfile, self).get_context_data(**kwargs)
 		if self.request.user.is_authenticated():		
