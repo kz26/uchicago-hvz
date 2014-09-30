@@ -63,7 +63,7 @@ class ShowProfile(DetailView):
 					return 0
 
 		def f(t):
-			return isinstance( t, datetime.timedelta ):
+			return isinstance( t, datetime.timedelta )
 
 		context = super(ShowProfile, self).get_context_data(**kwargs)
 		if self.request.user.is_authenticated():		
