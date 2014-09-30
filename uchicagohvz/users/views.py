@@ -51,7 +51,12 @@ class ShowProfile(DetailView):
 	template_name = "users/profile.html"
 
 	def get_context_data(self, **kwargs):
-		def add(x,y): return x+y
+		def add(x,y):
+			try:
+				return x+y
+			except TypeError:
+				return y
+
 		context = super(ShowProfile, self).get_context_data(**kwargs)
 		if self.request.user.is_authenticated():		
 			player_list = Player.objects.filter(user=self.request.user)
