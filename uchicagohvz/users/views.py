@@ -62,6 +62,9 @@ class ShowProfile(DetailView):
 				else:
 					return 0
 
+		def f(t):
+			return isinstance( t, datetime.timedelta ):
+
 		context = super(ShowProfile, self).get_context_data(**kwargs)
 		if self.request.user.is_authenticated():		
 			player_list = Player.objects.filter(user=self.request.user)
@@ -87,7 +90,7 @@ class ShowProfile(DetailView):
 					context['average_lifespan'] = pp_timedelta(reduce(add, lifespans) / len(lifespans))
 				else:
 					context['average_lifespan'] = 0
-				context['longest_life'] = pp_timedelta(max(lifespans))
+				context['longest_life'] = pp_timedelta(max(filter(f, lifespans)))
 				context['participation'] = len(player_list)
 
 		return context
