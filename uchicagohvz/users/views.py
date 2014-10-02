@@ -87,7 +87,11 @@ class ShowProfile(DetailView):
 				context['total_zombie_points'] = total_zombie_points
 				context['total_human_points'] = total_human_points
 				if len(lifespans) > 0:
-					context['average_lifespan'] = pp_timedelta(reduce(add, lifespans) / len(lifespans))
+					sum = reduce(add, lifespans)
+					if sum:
+						context['average_lifespan'] = pp_timedelta(sum / len(lifespans))
+					else:
+						context['average_lifespan'] = 0
 				else:
 					context['average_lifespan'] = 0
 				context['longest_life'] = pp_timedelta(max(filter(f, lifespans)))
