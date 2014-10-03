@@ -90,11 +90,14 @@ class ShowProfile(DetailView):
 					sum = reduce(add, lifespans)
 					if sum:
 						context['average_lifespan'] = pp_timedelta(sum / len(lifespans))
+						context['longest_life'] = pp_timedelta(max(filter(f, lifespans)))
 					else:
 						context['average_lifespan'] = 0
+						context['longest_life'] = 0
 				else:
 					context['average_lifespan'] = 0
-				context['longest_life'] = pp_timedelta(max(filter(f, lifespans)))
+					context['longest_life'] = 0
+
 				context['participation'] = len(player_list)
 
 		return context
