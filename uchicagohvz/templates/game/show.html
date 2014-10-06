@@ -141,8 +141,10 @@
 	<div class="col-lg-4">
 		<h2>My Info</h2>
 		<dl class="dl-horizontal">
+			{% if squad_count %}
 			<dt>Your squad</dt>
 			<dd>{% if player.squad %}<a href="{{ player.squad.get_absolute_url }}">{{ player.squad.name }}</a>{% else %}(None){% endif %}</dd>
+			{% endif %}
 			<dt>Your dorm</dt>
 			<dd>{{ player.get_dorm_display }}</dd>
 			<dt>Your major</dt>
