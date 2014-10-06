@@ -78,7 +78,10 @@ class ShowProfile(DetailView):
 					total_kills += len(player.kills)
 					total_zombie_points += player.zombie_points
 					total_human_points += player.human_points
-					lifespans.append(player.lifespan)
+					try:					
+						lifespans.append(player.lifespan)
+					except:
+						pass
 					if player.human == False:
 						deaths += 1
 			
