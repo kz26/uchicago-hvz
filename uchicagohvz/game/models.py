@@ -228,7 +228,7 @@ class Player(models.Model):
 		elif self.game.status == 'finished':
 			end_time = self.game.end_date
 		else:
-			return None
+			return self.game.start_date
 		if not self.human:
 			end_time = self.time_of_death
 		return end_time - self.game.start_date
