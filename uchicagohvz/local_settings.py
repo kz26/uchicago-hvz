@@ -182,7 +182,7 @@ HVT_KILL_POINTS = 3 # how many points a high-value target is worth (replaces reg
 HVT_AWARD_POINTS = 0 # how many award points a human gets for being an HVT
 HVD_KILL_POINTS = 3 # how many points a target from a high-value dorm is worth (can stack on top of HVT points)
 LEADERBOARD_CACHE_DURATION = 3600 # how many seconds to cache certain DB-intensive leaderboard queries
-NEXMO_NUMBER = '469-795-7560'
+NEXMO_NUMBER = '218-296-7238'
 GAME_SW_BOUND = (41.783985, -87.606053)
 GAME_NE_BOUND = (41.798128, -87.584016)
 
