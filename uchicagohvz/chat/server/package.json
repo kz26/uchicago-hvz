@@ -2,11 +2,11 @@
 	"name": "uchicagohvz-chat-server",
 	"version": "1.0.0",
 	"dependencies": {
-		"coffee-script": "*",
-		"moment": "*",
-		"sockjs": "*",
-		"express": ">=3.4.7",
-		"request": ">=2.33.0"
+		"coffee-script": "1.8.0",
+		"moment": "2.8.3",
+		"sockjs": "0.3.9",
+		"express": "3.17.6",
+		"request": "2.45.0"
 	},
 	"engines": {
 		"node": ">=0.10.0"
