@@ -29,7 +29,7 @@ def kills_by_tod(game, **kwargs):
 
 @cache_func(settings.LEADERBOARD_CACHE_DURATION)
 def kills_in_last_hour(game, **kwargs):
-	delta = timezone.now() - timedelta(days=1)
+	delta = timezone.now() - timedelta(hours=1)
 	kills = Kill.objects.exclude(parent=None).filter(victim__game=game,date__gte=delta)
 	return kills.count()
 
