@@ -178,9 +178,9 @@ SYMPA_TO_EMAIL = 'sympa@lists.uchicago.edu'
 
 # HvZ game configuration
 HUMAN_KILL_POINTS = 1 # how many points killing a human is worth
-HVT_KILL_POINTS = 3 # how many points a high-value target is worth (replaces regular human kill points)
-HVT_AWARD_POINTS = 0 # how many award points a human gets for being an HVT
-HVD_KILL_POINTS = 3 # how many points a target from a high-value dorm is worth (can stack on top of HVT points)
+HVT_KILL_POINTS = 3 # default points a high-value target is worth (replaces regular human kill points)
+HVT_AWARD_POINTS = 0 # default award points a human gets for being an HVT and surviving
+HVD_KILL_POINTS = 3 # default points a target from a high-value dorm is worth (can stack on top of HVT points)
 LEADERBOARD_CACHE_DURATION = 3600 # how many seconds to cache certain DB-intensive leaderboard queries
 NEXMO_NUMBER = '218-296-7238'
 GAME_SW_BOUND = (41.783985, -87.606053)
