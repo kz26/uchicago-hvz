@@ -16,11 +16,6 @@
 	</p>
 </div>
 
-<div>
-	<h2>New Feature: Last Words</h2>
-
-	<p>Taunt your killer one last time before entering the horde. <a href="{% url 'users|update_profile' %}">Enter your last words on your profile page now!</p>
-</div>
 <div class="row">
 	<div class="col-lg-4">
 		<h2>Important Dates</h2>
@@ -102,6 +97,11 @@
 		{% if player.active and  game.status == 'in_progress' %}
 		<h3>My Bite Code</h3>
 		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
+		<h3><b>New Feature: Last Words</b></h3>
+		<p>
+			Taunt your killer one last time before entering the horde.
+			<a href="{% url 'users|update_profile' %}">Go to your profile page</a> and enter your last words now!
+		</p>
 		{% if not player.human %}
 		{% if player.unannotated_kills.count %}
 		<div class="well">
