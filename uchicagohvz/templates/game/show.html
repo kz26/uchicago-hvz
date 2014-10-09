@@ -14,7 +14,7 @@
 		By participating in this game, you certify that you have have read and agree to the
 		<a href="{{ game.rules.url }}">game rules</a>, <a href="{{ STATIC_URL }}WAIVER.pdf">player waiver</a>, and <a href="{% url 'terms' %}">Terms and Conditions</a> before playing.
 	</p>
-	
+
 	<p>The objective of zombies is to tag humans. The objective of humans is to survive. If you are a human and you are tagged by a zombie, give them the bite code on your bandanna. The zombie will then either text your bite code to 218-296-7238 or enter it on the website. You will then be a zombie. If you shoot a zombie or hit them with a sock before they tag you, they are stunned for five minutes. Hitting the zombie again resets the timer. Academic buildings and most dorms are safe. Please email the listhost if you need tactical support or friendship.</p>
 
 </div>
@@ -99,7 +99,10 @@
 		{% endif %}
 		{% if player.active and  game.status == 'in_progress' %}
 		<h3>My Bite Code</h3>
-		<h4 style="font-weight: bold;">{{ player.bite_code }}</h4>
+		<h4 style="font-weight: bold;" id="bite_code">{{ player.bite_code }}</h4>
+		<input type="button" value="Hide Bite Code" class="btn btn-danger" onclick="$('#bite_code').hide()" />
+		<input type="button" value="Show Bite Code" class="btn btn-success" onclick="$('#bite_code').show()" />
+
 		<h3><b>New Feature: Last Words</b></h3>
 		<p>
 			Taunt your killer one last time before entering the horde.
@@ -466,6 +469,9 @@ var PLAYER_NAME = '{{ player.display_name }}';
 {% else %}
 var PLAYER_NAME = null;
 {% endif %}
+$(document).ready(function(){
+	$('#bite_code').hide();
+});
 </script>
 {% compress js %}
 <script type="text/coffeescript">
