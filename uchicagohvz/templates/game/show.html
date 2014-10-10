@@ -102,9 +102,9 @@
 		{% endif %}
 		{% if player.active and  game.status == 'in_progress' %}
 		<h3>My Bite Code</h3>
-		<h4 style="font-weight: bold;" id="bite_code">{{ player.bite_code }}</h4>
-		<input type="button" value="Hide Bite Code" class="btn btn-danger" onclick="$('#bite_code').hide()" />
-		<input type="button" value="Show Bite Code" class="btn btn-success" onclick="$('#bite_code').show()" />
+		<h4 id="bite_code" style="font-weight: bold;">{{ player.bite_code }}</h4>
+		<input type="button" value="Hide Bite Code" class="btn btn-danger" onclick="$('#bite_code').hide()">
+		<input type="button" value="Show Bite Code" class="btn btn-success" onclick="$('#bite_code').show()">
 
 		<h3><b>New Feature: Last Words</b></h3>
 		<p>
