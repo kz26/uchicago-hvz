@@ -32,11 +32,7 @@
 
 {% if kill.victim.last_words %}
 <h3>Victim's Last Words</h3>
-{% if game.status == 'in_progress' %}
-<p><span class="text-danger">CLASSIFIED UNTIL THE APOCALYPSE ENDS TO PRESERVE ZOMBIE ANONYMITY</span></p>
-{% else %}
 <p>{{ kill.victim.last_words }}</p>
-{% endif %}
 {% endif %}
 
 {% if kill.lat and kill.lng %}

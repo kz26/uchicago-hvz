@@ -14,19 +14,12 @@
 		By participating in this game, you certify that you have have read and agree to the
 		<a href="{{ game.rules.url }}">game rules</a>, <a href="{{ STATIC_URL }}WAIVER.pdf">player waiver</a>, and <a href="{% url 'terms' %}">Terms and Conditions</a> before playing.
 	</p>
-<<<<<<< HEAD
-
-	<p>The objective of zombies is to tag humans. The objective of humans is to survive. If you are a human and you are tagged by a zombie, give them the bite code on your bandanna. The zombie will then either text your bite code to 218-296-7238 or enter it on the website. You will then be a zombie. If you shoot a zombie or hit them with a sock before they tag you, they are stunned for five minutes. Hitting the zombie again resets the timer. Academic buildings and most dorms are safe. Please email the listhost if you need tactical support or friendship.</p>
-=======
-	
 	{% if game.status == 'in_progress' %}
 	<p>The objective of zombies is to tag humans. The objective of humans is to survive. If you are a human and you are tagged by a zombie, give them the bite code on your bandanna.
 	The zombie will then either enter your bite code on the website or text it to {{ sms_code_number }}. You will then turn into a zombie. If you shoot a zombie or hit them with a sock before they tag you,
 	they will be stunned for five minutes. Hitting the zombie again resets the timer. Academic buildings and most dorms are safe. Please email the listhost if you need tactical support or friendship.
 	</p>
 	{% endif %}
->>>>>>> f03e2852e78501446da11d3ddeebac3c9ed7d8cd
-
 </div>
 
 <div class="row">
@@ -109,9 +102,9 @@
 		{% endif %}
 		{% if player.active and  game.status == 'in_progress' %}
 		<h3>My Bite Code</h3>
-		<h4 style="font-weight: bold;" id="bite_code">{{ player.bite_code }}</h4>
-		<input type="button" value="Hide Bite Code" class="btn btn-danger" onclick="$('#bite_code').hide()" />
-		<input type="button" value="Show Bite Code" class="btn btn-success" onclick="$('#bite_code').show()" />
+		<h4 id="bite_code" style="font-weight: bold;">{{ player.bite_code }}</h4>
+		<input type="button" value="Hide Bite Code" class="btn btn-danger" onclick="$('#bite_code').hide()">
+		<input type="button" value="Show Bite Code" class="btn btn-success" onclick="$('#bite_code').show()">
 
 		<h3><b>New Feature: Last Words</b></h3>
 		<p>
@@ -582,7 +575,8 @@ $.get("data/humans-per-hour/")
 
 					marker: {
 						enabled: false
-					}							                }
+					}
+				}
 			},
 			xAxis: {
 				tickInterval: null,
