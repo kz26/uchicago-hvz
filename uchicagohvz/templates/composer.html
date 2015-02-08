@@ -7,7 +7,11 @@
 <br/>
 <br/>
 <div id="intro">
-    <div id="intro1">
+    <div id="startpoint">
+        <a href="#" onclick="showHide('#intro1', '#startpoint')">Click here</a>
+    </div>
+
+    <div id="intro1" style="display:none;">
             <a href="#" onclick="$('#intro2').show()">We aren’t quite ready yet.</a>
     </div>
 
@@ -382,8 +386,8 @@
 
         <div id="saieh12" style="display:none;">
             <p>Do you enter the building?</p>
-            <a href="#" onclick="$('#saieh13').show()">Yes</a><br/>
-            <a href="#" onclick="$('#saieh14').show()">No</a>
+            <a id="goin" href="#" onclick="showHide('#saieh13', '#alarm')">Yes</a><br/>
+            <a id="alarm" href="#" onclick="showHide('#saieh14', '#goin')">No</a>
         </div>
 
         <div id="saieh13" style="display:none;">
@@ -451,7 +455,7 @@
         </div>
 
         <div id="saieh24" style="display:none;">
-            <a href="#" onclick="atwater('s')">Return to previous menu.</a>
+            <a href="#" onclick="atwater('s')">Return to the previous menu.</a>
         </div>
 
     </div>
@@ -610,12 +614,12 @@
         <p>You don’t want to move. It wouldn’t help, and you don’t want to look 
         <a id="scared" href="#" onclick="multipleHide('#cslash4', '#cslash5', '#cslash6', '#worried', '#bored', '#angry')">scared</a>
         <a id="cslash4" href="#">/</a>
-        <a id="worried" href="#" onclick="multipleHide('#cslash4', '#cslash5', '#cslash6', '#scared', '#bored', '#angry')">scared</a>
+        <a id="worried" href="#" onclick="multipleHide('#cslash4', '#cslash5', '#cslash6', '#scared', '#bored', '#angry')">worried</a>
         <a id="cslash5" href="#">/</a>
         <a id="angry" href="#" onclick="multipleHide('#cslash4', '#cslash5', '#cslash6', '#worried', '#bored', '#scared')">angry</a>
         <a id="cslash6" href="#">/</a>
-        <a id="angry" href="#" onclick="multipleHide('#cslash4', '#cslash5', '#cslash6', '#worried', '#angry', '#scared')">bored</a>
-         when they <a href="#" onclick="">come.</a></p>
+        <a id="bored" href="#" onclick="multipleHide('#cslash4', '#cslash5', '#cslash6', '#worried', '#angry', '#scared')">bored</a>
+         when they <a href="#" onclick="$('#c29').show()">come.</a></p>
     </div>
 
     <div id="c29" style="display:none;">
@@ -642,11 +646,11 @@
 
     <div id="c34" style="display:none;">
         <p>They are</p>
-        <a href="#" onclick="$('#c35').show()">Shivering and damp from snow</a><br/>
-        <a href="#" onclick="$('#c35').show()">Holding a notebook too tightly to ever be moved</a><br/>
-        <a href="#" onclick="$('#c35').show()">Drunk and grinning, but it is their joke only. Not savage but unknown.</a><br/>
-        <a href="#" onclick="$('#c35').show()">Wearing clothes you don’t recognize, which are incorrect and blind to something you know well</a><br/>
-        <a href="#" onclick="$('#c35').show()">...you can’t remember. But you should.</a>
+        <a id="snow" href="#" onclick="$('#c36').show()">Shivering and damp from snow</a><br/>
+        <a id="notebook" href="#" onclick="showThenHide('#c36', '#forgot', '#drunk', '#clothes', '#snow')">Holding a notebook too tightly to ever be moved</a><br/>
+        <a id="drunk" href="#" onclick="showThenHide('#c36', '#forgot', '#clothes', '#notebook', '#snow')">Drunk and grinning, but it is their joke only. Not savage but unknown.</a><br/>
+        <a id="clothes" href="#" onclick="showThenHide('#c36', '#forgot', '#drunk', '#notebook', '#snow')">Wearing clothes you don’t recognize, which are incorrect and blind to something you know well</a><br/>
+        <a id="forgot" href="#" onclick="showThenHide('#c35', '#clothes', '#drunk', '#notebook', '#snow')">...you can’t remember. But you should.</a>
     </div>
 
     <div id="c35" style="display:none;">
@@ -680,23 +684,12 @@
     </div>
 
     <div id="c42" style="display:none;">
-        <a href="#" onclick="$('#c43').show()">They begin. They are</a>
-    </div>
+        <p>They begin. They are</p>
 
-    <div id="c43" style="display:none;">
-        <a href="#" onclick="$('#c44').show()">Skilled at a game you despise, a game that has never lived inside you</a>
-    </div>
-
-    <div id="c44" style="display:none;">
-        <a href="#" onclick="$('#c45').show()">Uncertain and wobbly and strange, but you recognize them still</a>
-    </div>
-
-    <div id="c45" style="display:none;">
-        <a href="#" onclick="$('#c46').show()">Far away, but you can pick out parts of them as they move, as they speak, explain</a>
-    </div>
-
-    <div id="c46" style="display:none;">
-        <a href="#" onclick="$('#c47').show()">Wild and fast, rushing towards something</a>
+        <a id="option1" href="#" onclick="showThenHide('#c47', '#option4', '#option2', '#option3')">Skilled at a game you despise, a game that has never lived inside you</a><br/>
+        <a id="option2" href="#" onclick="showThenHide('#c47', '#option1', '#option4', '#option3')">Uncertain and wobbly and strange, but you recognize them still</a><br/>
+        <a id="option3" href="#" onclick="showThenHide('#c47', '#option1', '#option2', '#option4')">Far away, but you can pick out parts of them as they move, as they speak, explain</a><br/>
+        <a id="option4" href="#" onclick="showThenHide('#c47', '#option1', '#option2', '#option3')">Wild and fast, rushing towards something</a>
     </div>
 
     <div id="c47" style="display:none;">
@@ -825,6 +818,7 @@ function multipleHide() {
 function checkInput() {
     var input = brickText.value
 
+    $('#saieh8').hide()
     if (input.replace(".", "").toLowerCase() == "atwater steel 1948") {
         $('#saieh10').show()
         completed += 1
@@ -880,6 +874,8 @@ function biography() {
 
     if (!bioVisited)
         completed += 1
+    else
+        $('#b5').show()
 
     bioVisited = true  
 }
@@ -915,6 +911,8 @@ function hinds(hide) {
 
     if (!hindsVisited)
         completed += 1
+    else
+        $('#a4').show()
 
     hindsVisited = true
 }
@@ -947,6 +945,8 @@ function saieh(hide) {
 
     if (!saiehVisited)
         completed += 1
+    else
+        $('#a6').show()
 
     saiehVisited = true
 }
@@ -963,6 +963,9 @@ function done(hide) {
     }
     else if (hide == "c") {
         $('#armchair').hide()
+    }
+    else if (hide == "s") {
+        $('#a6').hide()
     }
 
     if (completed >= 6)
