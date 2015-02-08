@@ -1,0 +1,1018 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<br/>
+<br/>
+<br/>
+<br/>
+<div id="intro">
+    <div id="intro1">
+            <a href="#" onclick="$('#intro2').show()">We aren’t quite ready yet.</a>
+    </div>
+
+    <div id="intro2" style="display:none;">
+        <a href="#" onclick="$('#intro3').show()">We’re really sorry about that--at least one of us is.</a>
+    </div>
+
+    <div id="intro3" style="display:none;">
+        <a href="#" onclick="$('#intro4').show()">The other one would like to say “deal with it.”</a>
+    </div>
+
+    <div id="intro4" style="display:none;">
+        <a href="#" onclick="$('#intro5').show()">But they aren’t the one writing this. Anyway.</a>
+    </div>
+
+    <div id="intro5" style="display:none;">
+        <a href="#" onclick="$('#intro6').show()">We ran into a few problems while we were beginning to get this ready and it’s beginning to seem like this sort of reproduction will be…</a>
+    </div>
+
+    <div id="intro6" style="display:none;">
+        <a href="#" onclick="$('#intro7').show()">inadequate, I guess. That’s the right word.</a>
+    </div>
+
+    <div id="intro7" style="display:none;">
+        <a href="#" onclick="$('#intro8').show()">But we can worry about that later. For now, it works.</a>
+    </div>
+
+    <div id="intro8" style="display:none;">
+        <a href="#" onclick="$('#intro9').show()">Not everything we know is in here.</a>
+    </div>
+
+    <div id="intro9" style="display:none;">
+        <a href="#" onclick="$('#intro10').show()">Putting it all in here is impossible,</a>
+    </div>
+
+    <div id="intro10" style="display:none;">
+        <a href="#" onclick="$('#intro11').show()">and also pretty stupid.</a>
+    </div>
+
+    <div id="intro11" style="display:none;">
+        <a href="#" onclick="$('#intro12').show()">But there is stuff in here that we don’t know about. You should be able to find it.</a>
+    </div>
+
+    <div id="intro12" style="display:none;">
+        <a href="#" onclick="$('#intro13').show()">If you can’t, it might mean you should try playing some other game.</a>
+    </div>
+
+    <div id="intro13" style="display:none;">
+        <a href="#" onclick="$('#intro14').show()">Sincerely,</a>
+    </div>
+
+    <div id="intro14" style="display:none;">
+        <a href="#" onclick="showHide('#firstBranch', '#intro')">The Compiler and the Composer</a>
+    </div>
+</div>
+
+<div id="firstBranch" style="display:none;">
+    <p>We have THREE (3) artifacts for you, though you must go through these two before unlocking the third.</p>
+    <p>Which would you like to choose first?</p>
+    <a href="#" onclick="belleville(false)">"On the Road to Belleville"</a><br/>
+    <a href="#" onclick="atwater()">The Atwater Bricks</a><br/>
+</div>
+
+<div id="belleville">
+    <div id="b1" style="display:none;">
+        <a href="#" onclick="$('#b2').show()">"ON THE ROAD TO BELLEVILLE"</a>
+    </div>
+
+    <div id="b2" style="display:none;">
+        <p>What would you like to do?</p>
+        <a href="#" onclick="history()">Examine history of speech</a><br/>
+        <a href="#" onclick="excerpt()">Examine excerpts</a><br/>
+        <a href="#" onclick="biography()">Examine biography</a><br/>
+        <a href="#" onclick="done('b')">Return to artifact menu</a>
+    </div>
+
+    <div id="b3">            
+        <div id="history0" style="display:none;">
+            <p>HISTORY OF SPEECH</p>
+            <a href="#" onclick="$('#history1').show()">“On The Road To Belleville” is the title of an inspirational speech, given on March 3rd, 2014, by Professor Lawrence Brothwilde.</a>
+        </div>
+
+        <div id="history1" style="display:none;">
+            <a href="#" onclick="$('#history2').show()">The event was organized by a now-defunct RSO called “Students For A More Vivid Campus” (SFAMVC, an acronym specifically written in the bylaws, even though it can’t really be pronounced.)</a>
+        </div>
+
+        <div id="history2" style="display:none;">
+            <a href="#" onclick="$('#history3').show()">It drew an audience of over 300 students, and had a remarkably lasting impact, with students discussing it on public Facebook forums for weeks afterwards. “The Road To Belleville” was even mentioned in a student commencement speech, and the crowd erupted in cheers at the speech’s name.</a>
+        </div>
+
+        <div id="history3" style="display:none;">
+            <a href="#" onclick="$('#history4').show()">However, the speech was never filmed in its entirety. All we have are a few phone camera recordings--which are largely useless-- and a transcription of the speech that is considered to be more or less accurate.</a>
+        </div>
+
+        <div id="history4" style="display:none;">
+            <a href="#" onclick="$('#history5').show()">The speech details a car trip Professor Brothwilde once took from Chicago (specifically Hyde Park) to Belleville, a town in Essex County, New Jersey.</a>
+        </div>
+
+        <div id="history5" style="display:none;">
+            <a href="#" onclick="$('#history6').show()">The speech, at first, appears to be a typical sort of pandering, inspirational thing about appreciating where you come from and where you live, but the meat of the speech points to something more difficult to pin down, and, arguably, far more meaningful.</a>
+        </div>
+
+        <div id="history6" style="display:none;">
+            <a href="#" onclick="$('#history7').show()">Later, we discovered that many of the events in “The Road to Belleville” were likely fabricated, particularly since it appears that it was essentially impossible for Brothwilde to have taken a road trip from Hyde Park to Belleville when he said he did. In the only statement he released commenting on the situation, Brothwilde said, “Those memories came from somewhere, didn’t they?”</a>
+        </div>
+
+        <div id="history7" style="display:none;">
+            <a href="#" onclick="belleville('hist')">Return to previous menu.</a>
+        </div>
+    </div>
+
+    <div id="b4">
+        <div id="excerpt1" style="display:none;">
+            <p>EXAMINE EXCERPTS</p>
+            <a href="#" onclick="$('#excerpt2').show()">A preliminary note: all excerpts are directly quoted from the speech, unless otherwise noted.</a>
+        </div>
+
+        <div id="excerpt2" style="display:none;">
+            <a href="#" onclick="$('#excerpt3').show()">Another note: Some accounts disagree on which form of the speech is the correct one. Discrepancies in the “scholia” are noted; you can choose which options you believe to be correct.</a>
+        </div>
+
+        <div id="excerpt3" style="display:none;">
+            <a href="#" onclick="$('#excerpt4').show()">My Belleville is steeped in Chicago, but it is still the same Belleville as everyone else’s. And when I return to Chicago, a part of that Belleville comes with me, even if it is an older one or a misshapen one, or one that is not immediately recognizable.</a>
+        </div>
+
+        <div id="excerpt4" style="display:none;">
+            <a href="#" onclick="$('#excerpt5').show()">Small pieces of Belleville and Chicago, such as where things are, how to get to them--they stay behind with me no matter how far away the places themselves are from me. A certain window or small island of grass will remind me of somewhere far away. This does not matter to either place, but here these things both are within me. There are always reasons, in layers that have built up over time, for bits of these places to stay with me instead of remaining where they are.</a>
+        </div>
+
+        <div id="excerpt5" style="display:none;">
+            <a href="#" onclick="$('#excerpt6').show()">You might not see Belleville when you see that island of grass, but we’ll still both of us be sharing a place here, in Chicago. And that is what I really mean to talk about today. Nobody really cares about Belleville unless you have a reason to. But this, too, is true of Hyde Park. We all have our own reasons to be here in this place, which is, for all of us, the same place. All of us in a place experience it at the same time. But because of these layers, these strata, we all of us carry, we must also acknowledge the individual meaning we must mine from the place we share.</a>
+        </div>
+
+        <div id="excerpt6" style="display:none;">
+            <a href="#" onclick="$('#excerpt7').show()">The color of the dust, which settled into my clothes, the tires of my car, and never--</a>
+        </div>
+
+        <div id="excerpt7" style="display:none;">
+            <p>--the 
+            <a id="belltower" href="#" onclick="multipleHide('#slash1', '#slash2', '#steeple', '#courtyard')">belltowers</a>
+            <a id="slash1" href="#">/</a>
+            <a id="steeple" href="#" onclick="multipleHide('#slash1', '#slash2', '#belltower', '#courtyard')">steeples</a>
+            <a id="slash2" href="#">/</a>
+            <a id="courtyard" href="#" onclick="multipleHide('#slash1', '#slash2', '#steeple', '#belltower')">courtyards</a>, not 
+
+            <a id="holy" href="#" onclick="multipleHide('#slash3', '#slash4', '#hallowed', '#fraught')">holy</a>
+            <a id="slash3" href="#">/</a>
+            <a id="hallowed" href="#" onclick="multipleHide('#slash3', '#slash4', '#holy', '#fraught')">hallowed</a>
+            <a id="slash4" href="#">/</a>
+            <a id="fraught" href="#" onclick="multipleHide('#slash3', '#slash4', '#holy', '#hallowed')">fraught with some quiet tension</a>
+
+             on their own, <a href="#" onclick="$('#excerpt8').show()">but--</a></p>
+        </div>
+
+        <div id="excerpt8" style="display:none;">
+            <a href="#" onclick="$('#excerpt9').show()">“‘ ...there are no miracles in the dream other than life; the only way out of the dream is to awaken into death.’” --Danilo Kiš, “Legend of the Sleepers”</a>
+        </div>
+
+        <div id="excerpt9" style="display:none;">
+            <p>I stopped to eat my packed lunch 
+            
+            <a id="tuna" href="#" onclick="multipleHide('#slash5', '#slash6', '#slash7', '#slash8', '#beef', '#salad', '#pizza', '#chicken')"> of tuna fish</a>
+            <a id="slash5" href="#">/</a>
+            <a id="beef" href="#" onclick="multipleHide('#slash5', '#slash6', '#slash7', '#slash8', '#tuna', '#salad', '#pizza', '#chicken')">of roast beef</a>
+            <a id="slash6" href="#">/</a>
+            <a id="salad" href="#" onclick="multipleHide('#slash5', '#slash6', '#slash7', '#slash8', '#beef', '#tuna', '#pizza', '#chicken')">of Caesar salad</a>
+            <a id="slash7" href="#">/</a>
+            <a id="pizza" href="#" onclick="multipleHide('#slash5', '#slash6', '#slash7', '#slash8', '#beef', '#salad', '#tuna', '#chicken')">of leftover pizza</a>
+            <a id="slash8" href="#">/</a>
+            <a id="chicken" href="#" onclick="multipleHide('#slash5', '#slash6', '#slash7', '#slash8', '#beef', '#salad', '#pizza', '#tuna')">of leftover Kung Pao chicken</a> 
+
+            at a rest stop at some place in between where I was going and where I had started. 
+
+            <a id="uncertain" href="#" onclick="multipleHide('#slash9', '#slash10', '#WV', '#NJ')">I never learned what state it was in, although if I tried to find it, I’m sure I could.</a>
+            <a id="slash9" href="#">/</a>
+            <a id="WV" href="#" onclick="multipleHide('#slash9', '#slash10', '#uncertain', '#NJ')">It was in West Virgina, but I’m not sure where.</a>
+            <a id="slash10" href="#">/</a>
+            <a id="NJ" href="#" onclick="multipleHide('#slash9', '#slash10', '#WV', '#uncertain')">It was, to be precise, the Grover Cleveland rest stop on the New Jersey Turnpike.</a> 
+
+            But this space in between Hyde Park and Belleville is perhaps more real, even, than either of those places when I am away from both of them. But it was in a place with 
+
+            <a id="mountain" href="#" onclick="multipleHide('#slash11', '#slash12', '#slash13', '#slash14', '#stream', '#highway', '#smokestack', '#view')">mountains</a>
+            <a id="slash11" href="#">/</a>
+            <a id="stream" href="#" onclick="multipleHide('#slash11', '#slash12', '#slash13', '#slash14', '#mountain', '#highway', '#smokestack', '#view')">streams</a>
+            <a id="slash12" href="#">/</a>
+            <a id="highway" href="#" onclick="multipleHide('#slash11', '#slash12', '#slash13', '#slash14', '#stream', '#mountain', '#smokestack', '#view')">tangled highways</a>
+            <a id="slash13" href="#">/</a>
+            <a id="smokestack" href="#" onclick="multipleHide('#slash11', '#slash12', '#slash13', '#slash14', '#stream', '#highway', '#mountain', '#view')">smokestacks</a>
+            <a id="slash14" href="#">/</a>
+            <a id="view" href="#" onclick="multipleHide('#slash11', '#slash12', '#slash13', '#slash14', '#stream', '#highway', '#smokestack', '#mountain')"> a grand view</a>
+
+            , and the road opened up and I stopped for far longer than I needed to, even though 
+
+            <a id="home" href="#" onclick="multipleHide('#slash15', '#slash16', '#slash17', '#gas', '#lost', '#none')">I was almost home</a>
+            <a id="slash15" href="#">/</a>
+            <a id="gas" href="#" onclick="multipleHide('#slash15', '#slash16', '#slash17', '#home', '#lost', '#none')">I was low on gas</a>
+            <a id="slash16" href="#">/</a>
+            <a id="lost" href="#" onclick="multipleHide('#slash15', '#slash16', '#slash17', '#gas', '#home', '#none')">I was lost</a>
+            <a id="slash17" href="#">/</a>
+            <a id="none" href="#" onclick="multipleHide('#slash15', '#slash16', '#slash17', '#gas', '#lost', '#home')">none of these</a>
+
+            . Standing there, I was struck with a happiness so simple and so complete that I have yet to find a fair way of putting it into <a href="#" onclick="$('#excerpt10').show()">words.</a> </p>
+        </div>
+
+        <div id="excerpt10" style="display:none;">
+            <a href="#" onclick="belleville('ex')">Return to previous menu.</a>
+        </div>
+
+    </div>
+
+
+    <div id="b5">
+        <div id="biography1" style="display:none;">
+            <a href="#" onclick="$('#biography2').show()">Dr. Lawrence Brothwilde is Professor Emeritus in the Slavic Languages and Literatures department.</a>
+        </div>
+
+        <div id="biography2" style="display:none;">
+            <a href="#" onclick="$('#biography3').show()">Much of his work has focused on the mythic and the unreal in 20th-century literature, primarily in eastern Europe but also in the Soviet Union. His most famous works are books on Danilo Kiš and Andrey Platonov, but both books are notoriously difficult to find.</a>
+        </div>
+
+        <div id="biography3" style="display:none;">
+            <a href="#" onclick="$('#biography4').show()">He has delivered a number of stirring lectures over his 37 years as a professor at the University.</a>
+        </div>
+
+        <div id="biography4" style="display:none;">
+            <a href="#" onclick="$('#biography5').show()">He famously prohibits recordings or copies of his speeches.</a>
+        </div>
+
+        <div id="biography5" style="display:none;">
+            <a href="#" onclick="$('#biography6').show()">Brothwilde was born in Belleville, NJ, in 1938, and lived there until he graduated from high school. He then received his BA in Slavic Languages and Literature and his SB in Mathematics from Princeton. Brothwilde then moved to UChicago for graduate school, and, has in his own words, “essentially never left Hyde Park after that.”</a>
+        </div>
+
+        <div id="biography6" style="display:none;">
+            <a href="#" onclick="$('#biography7').show()">He still holds an office in the Harper West tower; secondhand reports say that the office has many miniature mobiles hanging from the ceiling, and is papered with various posters (many of which involve boxing matches and Clint Eastwood movies.) He also has an autographed picture of the band My Chemical Romance, whose members also hail from Belleville.</a>
+        </div>
+
+        <div id="biography7" style="display:none;">
+            <a href="#" onclick="$('#biography8').show()">Dr. Brothwilde also has a substantial desktop computer in his office, that many say looks suspiciously like a gaming rig.</a>
+        </div>
+
+        <div id="biography8" style="display:none;">
+            <a href="#" onclick="belleville('bio')">Return to previous menu.</a>
+        </div>
+    </div>
+
+</div>
+
+<div id="atwater">
+    <div id="a1" style="display:none;">
+        <a href="#">THE ATWATER BRICKS</a><br/>
+        <a href="#" onclick="$('#a2').show()">You vaguely remember a strange brick on the side of Hinds. It drew your eye because it was slightly darker than the others.</a>
+    </div>
+
+    <div id="a2" style="display:none;">
+        <a href="#" onclick="$('#a3').show()">As you pass the bookstore, you see another brick similarly out of place.</a>
+    </div>
+
+    <div id="a3" style="display:none;">
+        <p>Which interests you?</p>
+
+        <a href="#" onclick="hinds()">Check out the Hinds brick</a><br/>
+        <a href="#" onclick="bookstore()">Check out the Bookstore brick</a><br/>
+        <a href="#" onclick="saieh()">See if there is a similar brick on Saieh</a><br/>
+        <a href="#" onclick="done('a')">Return to artifact menu</a>
+    </div>
+
+    <div id="a4">     
+        <div id="hinds1" style="display:none;">
+            <a href="#" onclick="showHide('#hinds2', '#hinds1')">You return to Hinds Laboratory and looking up the side of the building notice the brick about three quarters of the way up. It’s darker than you remember, almost black.</a>
+        </div>
+
+        <div id="hinds2" style="display:none;">
+            <p>You notice that the bricks on the side of the building almost act like handholds.</p>
+            <p>Climb the side of the building?</p>
+            <a href="#" onclick="showHide('#hinds4', '#hinds2')">Yes</a><br/>
+            <a href="#" onclick="showHide('#hinds3', '#hinds2')">No</a>
+        </div>
+
+        <div id="hinds3" style="display:none;">
+            <p>Try somewhere else?</p>
+            <a href="#" onclick="bookstore('h')">Bookstore</a><br/>
+            <a href="#" onclick="saieh('h')">Saieh</a>
+        </div>
+
+        <div id="hinds4" style="display:none;">
+            <a href="#" onclick="$('#hinds5').show()">You begin climbing the building and, after ten terrifying, tiring minutes, you make it up to the brick.</a>
+        </div>
+
+        <div id="hinds5" style="display:none;">
+            <a href="#" onclick="$('#hinds6').show()">You decide not to look down.</a>
+        </div>
+
+        <div id="hinds6" style="display:none;">
+            <a href="#" onclick="$('#hinds7').show()">You wipe at the brick and a layer of soot comes off. Interested, you keep brushing at it until you can make out the impression of a phrase.</a>
+        </div>
+
+        <div id="hinds7" style="display:none;">
+            <a href="#" onclick="$('#hinds8').show()">The brick reads: “Aim High ... Fly-Fight-Win Atwater Steel. 1948”</a>
+        </div>
+
+        <div id="hinds8" style="display:none;">
+            <a href="#" onclick="$('#hinds9').show()">Your hands are dirty so climbing back down is more difficult. Terrified, you reach the bottom twenty minutes later and are very glad to be on solid ground again.</a>
+        </div>
+
+        <div id="hinds9" style="display:none;">
+            <a href="#" onclick="atwater('h')">Return to previous menu.</a>
+        </div>
+    </div>
+
+    <div id="a5">
+        <div id="book1" style="display:none;">
+            <a href="#" onclick="$('#book2').show()">You cannot find the brick. You are certain you saw it here earlier standing out because of its unnaturally black color.</a>
+        </div>
+
+        <div id="book2" style="display:none;">
+            <a href="#" onclick="$('#book3').show()">You circle the bookstore and still find no sign of the brick. Confused - but confusion seems to be a large part of this process - you return to the front of the bookstore and decide to look somewhere else.</a>
+        </div>
+
+        <div id="book3" style="display:none;">
+            <p>Try somewhere else?</p>
+            <a href="#" onclick="hinds('b')">Hinds</a><br/>
+            <a href="#" onclick="saieh('b')">Saieh</a>
+        </div>
+    </div>
+
+    <div id="a6">
+        <div id="saieh1" style="display:none;">
+            <a href="#" onclick="$('#saieh2').show()">You come to Saieh Hall and find that one of the bricks on the east side of the building is strangely dark. You walk up to it and find that the darkness of the brick is created by a thick layer of soot. None of the other bricks have any trace of soot on them. You brush away the soot and can faintly make out the words emblazoned on it.</a>
+        </div>
+
+        <div id="saieh2" style="display:none;">
+            <a href="#" onclick="$('#saieh3').show()">it says "Aim High ... Fly-Fight-Win</a>
+        </div>
+
+        <div id="saieh3" style="display:none;">
+            <a href="#" onclick="$('#saieh4').show()">------------------</a>
+        </div>
+
+        <div id="saieh4" style="display:none;">
+            <a href="#" onclick="$('#saieh5').show()">hmm</a>
+        </div>
+
+        <div id="saieh5" style="display:none;">
+            <a href="#" onclick="$('#saieh6').show()">I cannot seem to write out that last part.</a>
+        </div>
+
+        <div id="saieh6" style="display:none;">
+            <a href="#" onclick="$('#saieh7').show()">A brief search on Wikipedia reveals this quote to be the official motto of the United States Air Force.</a>
+        </div>
+
+        <div id="saieh7" style="display:none;">
+            <a href="#" onclick="$('#saieh8').show()">You wonder as to the original location of this brick - certainly there has never been an Air Force base in Hyde Park.</a>
+        </div>
+
+        <div id="saieh8" style="display:none;">
+            <p>What else was inscribed on the brick?</p>
+            <input id="brickText" type="text" class="form-control">
+            <button onclick="checkInput()" class="btn btn-danger">Check answer</button>
+        </div>
+
+        <div id="saieh9" style="display:none;">
+            <a href="#" onclick="atwater('sw')">You decide to continue exploring and perhaps come back to this later for more rumination.</a>
+        </div>
+
+        <div id="saieh10" style="display:none;">
+            <a href="#" onclick="$('#saieh11').show()">Things go hazy for a moment and when they re-crystallize, the brick is no longer sooty.</a>
+        </div>
+
+        <div id="saieh11" style="display:none;">
+            <a href="#" onclick="$('#saieh12').show()">You look up from the brick and see that Saieh is no longer there and has been replaced by an immense, squat building sporting many smokestacks.</a>
+        </div>
+
+        <div id="saieh12" style="display:none;">
+            <p>Do you enter the building?</p>
+            <a href="#" onclick="$('#saieh13').show()">Yes</a><br/>
+            <a href="#" onclick="$('#saieh14').show()">No</a>
+        </div>
+
+        <div id="saieh13" style="display:none;">
+            <a href="#" onclick="$('#saieh25').show()">You enter through a gateway and a uniformed man salutes, yelling “Mr. Atwater, Sir.”</a>
+        </div>
+
+        <div id="saieh25" style="display:none;">
+            <a href="#" onclick="$('#saieh26').show()">You enter the foundry proper and smile grimly as you see the process of industrial creation. Metal is being melted and poured. Steel is being carbonized and the efficiency is beautiful.</a>
+        </div>
+
+        <div id="saieh26" style="display:none;">
+            <a href="#" onclick="$('#saieh27').show()">Another uniformed guard salutes you as you approach.</a>
+        </div>
+
+        <div id="saieh27" style="display:none;">
+            <a href="#" onclick="$('#saieh28').show()">You show him your identification card, although he certainly knows who you are, and after he examines it thoroughly, he allows you to pass.</a>
+        </div>
+
+        <div id="saieh28" style="display:none;">
+            <a href="#" onclick="$('#saieh29').show()">You enter a new room, massive in proportion. There are fewer workers here and they are producing something which looks suspiciously like missile weapons.</a>
+        </div>
+
+        <div id="saieh29" style="display:none;">
+            <a href="#" onclick="$('#saieh14').show()">It seems that the steel foundry is a front for a more secretive military factory specializing in what, to your horror appears to be nuclear missiles.</a>
+        </div>
+
+        <div id="saieh14" style="display:none;">
+            <a href="#" onclick="$('#saieh15').show()">Sirens begin to ring and flashing red beacons activate.</a>
+        </div>
+
+        <div id="saieh15" style="display:none;">
+            <a href="#" onclick="$('#saieh16').show()">Something is horribly wrong, but you don’t know what. You are running and you don’t know where. You reach a street and you can hear airplanes flying overhead.</a>
+        </div>
+
+        <div id="saieh16" style="display:none;">
+            <a href="#" onclick="$('#saieh17').show()">A cloud of smoke rises ominously in the distance and then one closer. You remember the shape of these specific clouds. It is the shape of death.</a>
+        </div>
+
+        <div id="saieh17" style="display:none;">
+            <a href="#" onclick="$('#saieh18').show()">You fall to the ground in prayer, “Oh God,” is all you can mutter before everything is flame.</a>
+        </div>
+
+        <div id="saieh18" style="display:none;">
+            <a href="#" onclick="$('#saieh19').show()">Everything is ash and soot.</a>
+        </div>
+
+        <div id="saieh19" style="display:none;">
+            <a href="#" onclick="$('#saieh20').show()">The haze returns and you find yourself once more outside of Saieh.</a>
+        </div>
+
+        <div id="saieh20" style="display:none;">
+            <a href="#" onclick="$('#saieh21').show()">In a daze, you stumble home and search wikipedia for “Atwater Steel.”</a>
+        </div>
+
+        <div id="saieh21" style="display:none;">
+            <a href="#" onclick="$('#saieh22').show()">The Wikipedia article mentions that Atwater Steel was a munitions factory planned to be based in Hyde Park, but Mr. Atwood lost his funding with the end of WWII and so the factory was never produced.</a>
+        </div>
+
+        <div id="saieh22" style="display:none;">
+            <a href="#" onclick="$('#saieh23').show()">You shiver and log off the internet.</a>
+        </div>
+
+        <div id="saieh23" style="display:none;">
+            <a href="#" onclick="$('#saieh24').show()">You crawl into bed attempting to forget what you saw.</a>
+        </div>
+
+        <div id="saieh24" style="display:none;">
+            <a href="#" onclick="atwater('s')">Return to previous menu.</a>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="secondBranch" style="display:none;">
+    <p>Congratulations on unlocking the final artifact. You may also look back on the others if you wish.</p>
+    <p>Which would you like to choose?</p>
+    <a href="#" onclick="belleville(false)">"On the Road to Belleville"</a><br/>
+    <a href="#" onclick="atwater()">The Atwater Bricks</a><br/>
+    <a href="#" onclick="armchair()">The Armchair</a>
+</div>
+
+<div id="armchair">
+    <div id="c1" style="display:none;">
+        <a href="#" onclick="$('#c2').show()">You’re going to need something to remember me by.</a>
+    </div>
+
+    <div id="c2" style="display:none;">
+        <p>Do you have something to write with?</p>
+        <a href="#" onclick="$('#c4').show()">Yes</a><br/>
+        <a href="#" onclick="$('#c3').show()">No</a>
+    </div>
+
+    <div id="c3" style="display:none;">
+        <a href="#" onclick="showThenHide('#c1', '#c2', '#c3')">Well, you'd better fix that</a>
+    </div>
+
+    <div id="c4" style="display:none;">
+        <a href="#" onclick="$('#c5').show()">Congrats.</a>
+    </div>
+
+    <div id="c5" style="display:none;">
+        <a href="#" onclick="$('#c6').show()">If there is a choice that seems to matter, write it down.</a>
+    </div>
+
+    <div id="c6" style="display:none;">
+        <a href="#" onclick="$('#c7').show()">...</a>
+    </div>
+
+    <div id="c7" style="display:none;">
+        <a href="#" onclick="$('#c8').show()">You’re in the cafe, although you should be somewhere else, probably, somewhere that’s harsher and colder and better at keeping you miserably awake. But for now, you’re here. You’re too tired to think much more about it.</a>
+    </div>
+
+    <div id="c8" style="display:none;">
+        <p>Why didn't you get sleep?</p>
+        <a href="#" onclick="$('#c9').show()">By choice</a><br/>
+        <a href="#" onclick="$('#c9').show()">By accident</a><br/>
+        <a href="#" onclick="$('#c9').show()">By some other kind of force</a>
+    </div>
+
+    <div id="c9" style="display:none;">
+        <p>You 
+        <a id="are" href="#" onclick="multipleHide('#cslash1', '#arent')">are</a>
+        <a id="cslash1" href="#" onclick="">/</a>
+        <a id="arent" href="#" onclick="multipleHide('#cslash1', '#are')">aren't</a>
+         guilty about <a href="#" onclick="$('#c10').show()">it</a>.
+        </p>
+    </div>
+
+    <div id="c10" style="display:none;">
+        <a href="#" onclick="$('#c11').show()">There’s a line at the counter, but it’s bearable. </a>
+    </div>
+
+    <div id="c11" style="display:none;">
+        <p>Would you like to buy anything?</p>
+        <a href="#" onclick="cafe('coffee')">Coffee</a><br/>
+        <a href="#" onclick="cafe('tea')">Tea</a><br/>
+        <a href="#" onclick="cafe('cookie')">A cookie</a><br/>
+        <a href="#" onclick="cafe('nothing')">Not really</a><br/>
+    </div>
+
+    <div id="c12" style="display:none;">
+        <a href="#" onclick="$('#c13').show()">There’s still one chair open.</a>
+    </div>
+
+    <div id="c13" style="display:none;">
+        <a id="sitting" href="#" onclick="$('#c14').show()"></a>
+    </div>
+
+    <div id="c14" style="display:none;">
+        <a href="#" onclick="$('#c15').show()">The chair’s in the back of the cafe, in the middle of a ring of them. It’s on the left side of the radiator as you’re facing it.</a>
+    </div>
+
+    <div id="c15" style="display:none;">
+        <a href="#" onclick="$('#c16').show()">You sit down, and arrange your feet in a sufficiently agreeable position.</a>
+    </div>
+
+    <div id="c16" style="display:none;">
+        <a href="#" onclick="$('#c17').show()">Something twists.</a>
+    </div>
+
+    <div id="c17" style="display:none;">
+        <p>You recognize this hallway. It’s dim, but you know the smell. It is 
+        <a id="day" href="#" onclick="time('d')">day</a>
+        <a id="cslash2">/</a>
+        <a id="night" href="#" onclick="time('n')">night</a>
+        <a id="cslash3">/</a>
+        <a id="unclear" href="#" onclick="time('u')">unclear, because there are no windows</a>
+        .
+        </p>
+    </div>
+
+    <div id="c18" style="display:none;">
+        <a href="#" onclick="$('#c19').show()">You’re feeling something. It takes you a moment to realize what it is. 
+</a>
+    </div>
+
+    <div id="c19" style="display:none;">
+        <p>There’s somebody else who’s part of this place.</p>
+        <a href="#" onclick="$('#c20').show()">They asked me here</a><br/>
+        <a href="#" onclick="$('#c20').show()">I asked them here</a>
+    </div>
+
+    <div id="c20" style="display:none;">
+        <p>Are they here yet?</p>
+        <a href="#" onclick="$('#c21').show()">Yes</a><br/>
+        <a href="#" onclick="$('#c21').show()">No</a>
+    </div>    
+
+    <div id="c21" style="display:none;">
+        <p>Where do you go?</p>
+        <a href="#" onclick="clearScreen('#c22', 21)">Up the hallway</a><br/>
+        <a href="#" onclick="clearScreen('#c25', 21)">Down the hallway</a><br/>
+        <a href="#" onclick="clearScreen('#c28', 21)">Stay still</a>
+    </div>
+
+    <div id="c22" style="display:none;">
+        <a href="#" onclick="$('#c23').show()">You examine the posters on the walls because it gives you something to do.</a>
+    </div>
+
+    <div id="c23" style="display:none;">
+        <a href="#" onclick="$('#c24').show()">These posters have never before been appreciated like this.</a>
+    </div>
+
+    <div id="c24" style="display:none;">
+        <a href="#" onclick="$('#c30').show()">Your stomach starts to hurt.</a>
+    </div>
+
+    <div id="c25" style="display:none;">
+        <a href="#" onclick="$('#c26').show()">You came this way. It’s a route that lots of people know, but none of them showed it to you.</a>
+    </div>
+
+    <div id="c26" style="display:none;">
+        <a id="timedependent" href="#" onclick="$('#c27').show()"></a>
+    </div>
+
+    <div id="c27" style="display:none;">
+        <p>You hear a noise you think you recognize.</p>
+        <a href="#" onclick="$('#c31').show()">Look up</a><br/>
+        <a href="#" onclick="$('#c31').show()">Don't move</a>
+    </div>    
+
+    <div id="c28" style="display:none;">
+        <p>You don’t want to move. It wouldn’t help, and you don’t want to look 
+        <a id="scared" href="#" onclick="multipleHide('#cslash4', '#cslash5', '#cslash6', '#worried', '#bored', '#angry')">scared</a>
+        <a id="cslash4" href="#">/</a>
+        <a id="worried" href="#" onclick="multipleHide('#cslash4', '#cslash5', '#cslash6', '#scared', '#bored', '#angry')">scared</a>
+        <a id="cslash5" href="#">/</a>
+        <a id="angry" href="#" onclick="multipleHide('#cslash4', '#cslash5', '#cslash6', '#worried', '#bored', '#scared')">angry</a>
+        <a id="cslash6" href="#">/</a>
+        <a id="angry" href="#" onclick="multipleHide('#cslash4', '#cslash5', '#cslash6', '#worried', '#angry', '#scared')">bored</a>
+         when they <a href="#" onclick="">come.</a></p>
+    </div>
+
+    <div id="c29" style="display:none;">
+        <a href="#" onclick="$('#c30').show()">How do you remember that?</a>
+    </div>
+
+    <div id="c30" style="display:none;">
+        <p>You hear a noise.</p>
+        <a href="#" onclick="$('#c31').show()">Look up</a><br/>
+        <a href="#" onclick="$('#c31').show()">Don't move</a>
+    </div>
+
+    <div id="c31" style="display:none;">
+        <a href="#" onclick="$('#c32').show()">You’d forgotten what they looked like, right then. But there they are in front of you. It is impossible to look away. You try again and again, but it doesn’t work. You don’t want it to, but you wish you could choose. Something inside of you is unpeeling, and you are shaking with the effort of standing still, keeping it safe while it sheds. You remember this.</a>
+    </div>
+
+    <div id="c32" style="display:none;">
+        <a href="#" onclick="$('#c33').show()">But then back to them, because that is why you came.</a>
+    </div>
+
+    <div id="c33" style="display:none;">
+        <a href="#" onclick="$('#c34').show()">You look at them. When this happened, you didn’t have this long.</a>
+    </div>
+
+    <div id="c34" style="display:none;">
+        <p>They are</p>
+        <a href="#" onclick="$('#c35').show()">Shivering and damp from snow</a><br/>
+        <a href="#" onclick="$('#c35').show()">Holding a notebook too tightly to ever be moved</a><br/>
+        <a href="#" onclick="$('#c35').show()">Drunk and grinning, but it is their joke only. Not savage but unknown.</a><br/>
+        <a href="#" onclick="$('#c35').show()">Wearing clothes you don’t recognize, which are incorrect and blind to something you know well</a><br/>
+        <a href="#" onclick="$('#c35').show()">...you can’t remember. But you should.</a>
+    </div>
+
+    <div id="c35" style="display:none;">
+        <a href="#" onclick="$('#c36').show()">You only have room for so much.</a>
+    </div>
+
+    <div id="c36" style="display:none;">
+        <p>When you saw them, what did you do?</p>
+        <a id="ispoke" href="#" onclick="showHide('#c37', iwaited)">I spoke</a><br/>
+        <a id="iwaited" href="#" onclick="showHide('#c42', 'ispoke')">I waited</a>
+    </div>
+
+    <div id="c37" style="display:none;">
+        <a href="#" onclick="$('#c38').show()">You don’t remember the words, but you remember the way your voice sounded.</a>
+    </div>
+
+    <div id="c38" style="display:none;">
+        <a href="#" onclick="$('#c39').show()">Like another person, far off and thinking of something else, something smaller</a>
+    </div>
+
+    <div id="c39" style="display:none;">
+        <a href="#" onclick="$('#c40').show()">Like nothing true</a>
+    </div>
+
+    <div id="c40" style="display:none;">
+        <a href="#" onclick="$('#c41').show()">Like gesturing at an indescribable thing too obvious to miss, like turning your back on some goliath or tower, like flying over your own house</a>
+    </div>
+
+    <div id="c41" style="display:none;">
+        <a href="#" onclick="$('#c47').show()">Like whispering the truth so you can have an extra chance to see if you want to let it out</a>
+    </div>
+
+    <div id="c42" style="display:none;">
+        <a href="#" onclick="$('#c43').show()">They begin. They are</a>
+    </div>
+
+    <div id="c43" style="display:none;">
+        <a href="#" onclick="$('#c44').show()">Skilled at a game you despise, a game that has never lived inside you</a>
+    </div>
+
+    <div id="c44" style="display:none;">
+        <a href="#" onclick="$('#c45').show()">Uncertain and wobbly and strange, but you recognize them still</a>
+    </div>
+
+    <div id="c45" style="display:none;">
+        <a href="#" onclick="$('#c46').show()">Far away, but you can pick out parts of them as they move, as they speak, explain</a>
+    </div>
+
+    <div id="c46" style="display:none;">
+        <a href="#" onclick="$('#c47').show()">Wild and fast, rushing towards something</a>
+    </div>
+
+    <div id="c47" style="display:none;">
+        <a href="#" onclick="$('#c48').show()">You continue talking, somehow.</a>
+    </div>
+
+    <div id="c48" style="display:none;">
+        <a href="#" onclick="$('#c49').show()">And then one of you leads the other somewhere else.</a>
+    </div>
+
+    <div id="c49" style="display:none;">
+        <a href="#" onclick="$('#c50').show()">You always have trouble remembering this part.</a>
+    </div>
+
+    <div id="c50" style="display:none;">
+        <a href="#" onclick="$('#c51').show()">This is because it is the part you spend the most time with.</a>
+    </div>
+
+    <div id="c51" style="display:none;">
+        <a href="#" onclick="$('#c52').show()">It is different now, because when it happened, you weren’t sitting somewhere else</a>
+    </div>
+
+    <div id="c52" style="display:none;">
+        <a href="#" onclick="$('#c53').show()">But you cannot stop being here and they are here with you</a>
+    </div>
+
+    <div id="c53" style="display:none;">
+        <a href="#" onclick="$('#c54').show()">And you see something that is not yours but that you must defend</a>
+    </div>
+
+    <div id="c54" style="display:none;">
+        <a href="#" onclick="clearScreen('#c55', 54)">And things are difficult to grasp but that is what you remember</a>
+    </div>
+
+    <div id="c55" style="display:none;">
+        <a href="#" onclick="$('#c56').show()">And then someone kicks the armchair.</a>
+    </div>
+
+    <div id="c56" style="display:none;">
+        <a href="#" onclick="$('#c57').show()">...</a>
+    </div>
+
+    <div id="c57" style="display:none;">
+        <a href="#" onclick="$('#c58').show()">You want to leave.</a>
+    </div>
+
+    <div id="c58" style="display:none;">
+        <a href="#" onclick="$('#c59').show()">But you should write this down before you go.</a>
+    </div>
+
+    <div id="c59" style="display:none;">
+        <a href="#" onclick="$('#c60').show()">The chair you’re sitting in is in Harper Cafe. It’s next to the radiator, on the left side facing it. That’s the north side of the radiator, no matter where you’re facing.</a>
+    </div>
+
+    <div id="c60" style="display:none;">
+        <a href="#" onclick="$('#c61').show()">There’s an envelope under the seat cushion. Write your memory on a slip of paper, and put your CNet ID on it, too.</a>
+    </div>
+
+    <div id="c61" style="display:none;">
+        <a href="#" onclick="$('#c62').show()">One of us will come collect it, and then contact you.</a>
+    </div>
+
+    <div id="c62" style="display:none;">
+        <a href="#" onclick="$('#c63').show()">If you have any questions, you’d better email us now.</a>
+    </div>    
+
+    <div id="c63" style="display:none;">
+        <a href="#" onclick="$('#c64').show()">Because when you stand up, the memory will be gone.</a>
+    </div>
+
+    <div id="c64" style="display:none;">
+        <a href="#" onclick="done('c')">Return to main artifacts menu.</a>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+var completed = 0
+
+var histVisited = false
+var exVisited = false
+var bioVisited = false
+
+var hindsVisited = false
+var bookVisited = false
+var saiehVisited = false
+
+armchairVisited = false
+
+var cafeItem = ""
+
+function showHide(s, h) {
+    $(s).show()
+    $(h).hide()
+}
+
+function showThenHide() {
+    var show = true
+    for(var i = 0; i < arguments.length; i++) {
+        if (show) {
+            show = false
+            $(arguments[i]).show()
+        }
+        else
+            $(arguments[i]).hide()
+    }
+}
+
+function clearScreen(view, element) {
+    $(view).show()
+
+    for(var i = 1; i <= element; i++) {
+        $("#c" + i).hide()
+    }
+}
+
+function multipleHide() {
+    for(var i = 0; i < arguments.length; i++) {
+        $(arguments[i]).hide()
+    }
+}
+
+function checkInput() {
+    var input = brickText.value
+
+    if (input.replace(".", "").toLowerCase() == "atwater steel 1948") {
+        $('#saieh10').show()
+        completed += 1
+    }
+    else
+        $('#saieh9').show()
+}
+
+function belleville(returning) {
+    $('#firstBranch').hide()
+    $('#secondBranch').hide()
+    $('#b1').show()
+    $('#b2').show()
+
+    if (returning == "hist")
+        $('#b3').hide()
+    else if (returning == "ex")
+        $('#b4').hide()
+    else if (returning == "bio")
+        $('#b5').hide()
+}
+
+function history() {
+    $('#b2').hide()
+    $('#b1').hide()
+    $('#history0').show()
+
+    if (histVisited)
+        $('#b3').show()
+    else
+        completed += 1
+
+    histVisited = true
+}
+
+function excerpt() {
+    $('#b2').hide()
+    $('#b1').hide()
+    $('#excerpt1').show()
+
+    if (exVisited)
+        $('#b4').show()
+    else
+        completed += 1
+
+    exVisited = true
+}
+
+function biography() {
+    $('#b2').hide()
+    $('#b1').hide()
+    $('#biography1').show()
+
+    if (!bioVisited)
+        completed += 1
+
+    bioVisited = true  
+}
+
+function atwater(returning) {
+    $('#firstBranch').hide()
+    $('#secondBranch').hide()
+    $('#a1').show()
+
+    if (returning == "h")
+        $('#a4').hide()
+    else if (returning == "b")
+        $('#a5').hide()
+    else if (returning == "s")
+        $('#a6').hide()       
+    else if (returning == "sw") {
+        multipleHide('#saieh1', '#saieh2', '#saieh3', '#saieh4', '#saieh5', '#saieh6', '#saieh7', '#saieh8', '#saieh9') 
+    }
+    
+}
+
+function hinds(hide) {
+    $('#a1').hide()
+    $('#a2').hide()
+    $('#a3').hide()
+    $('#hinds1').show()
+
+    if (hide == "b") {
+        $('#book1').hide()
+        $('#book2').hide()
+        $('#book3').hide()
+    }
+
+    if (!hindsVisited)
+        completed += 1
+
+    hindsVisited = true
+}
+
+function bookstore(hide) {
+    $('#a1').hide()
+    $('#a2').hide()
+    $('#a3').hide()
+    if (hide == "h")
+        $('#hinds3').hide()
+
+    $('#book1').show()
+
+    bookVisited = true
+}
+
+function saieh(hide) {
+    $('#a1').hide()
+    $('#a2').hide()
+    $('#a3').hide()
+    if (hide == "h")
+        $('#hinds3').hide()
+    else if (hide == "b") {
+        $('#book1').hide()
+        $('#book2').hide()
+        $('#book3').hide()
+    }
+
+    $('#saieh1').show()
+
+    if (!saiehVisited)
+        completed += 1
+
+    saiehVisited = true
+}
+
+function done(hide) {
+    if (hide == "b") {
+        $('#b2').hide()
+        $('#b1').hide()
+    }
+    else if (hide == "a") {
+        $('#a1').hide()
+        $('#a2').hide()
+        $('#a3').hide()
+    }
+    else if (hide == "c") {
+        $('#armchair').hide()
+    }
+
+    if (completed >= 6)
+        $('#secondBranch').show()
+    else
+        $('#firstBranch').show()
+}
+
+function cafe(item) {
+    if (!cafeItem) {
+        cafeItem = item
+        if (item == "nothing")
+           document.getElementById("sitting").innerHTML = "You manage to make it to the chair without knocking anyone over. It’s a crowded cafe. It isn’t that easy to do."
+        else
+            document.getElementById("sitting").innerHTML = "You take your " + item + " with you to the chair."
+
+        $('#c12').show()
+    }
+}
+
+function time(period) {
+    $('#cslash2').hide()
+    $('#cslash3').hide()
+    $('#c18').show()
+
+    if (period == 'd') {
+        multipleHide('#night', '#unclear')
+        document.getElementById("timedependent").innerHTML = "No one comes through here now, even though it’s right in the middle of things."
+    }
+    else {
+        document.getElementById("timedependent").innerHTML = "The building’s closed. But other people could get in if they wanted to, and you know that, sometimes, you do. When you go back down the hallway, every noise makes you stop. There’s nowhere you’d be able to hide, anywhere along here. If they find you, you’re stuck."
+    }
+
+    if (period == 'n')
+        multipleHide('#day', '#unclear')        
+    
+    if (period == 'u') 
+        multipleHide('#night', '#day')
+}
+
+function armchair() {
+    if (armchairVisited)
+        $('#armchair').show()
+    else
+        $('#c1').show()
+
+    $('#secondBranch').hide()
+
+    armchairVisited = true
+}
+
+</script>
+{% endblock %}
