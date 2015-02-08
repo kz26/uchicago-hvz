@@ -819,7 +819,7 @@ function checkInput() {
     var input = brickText.value
 
     $('#saieh8').hide()
-    if (input.replace(".", "").toLowerCase() == "atwater steel 1948") {
+    if (input.replace(".", "").replace(/\s+/g, ' ').toLowerCase() == "atwater steel 1948") {
         $('#saieh10').show()
         completed += 1
     }
