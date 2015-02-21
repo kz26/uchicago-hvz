@@ -101,7 +101,7 @@ class ChooseSquad(FormView):
 
 	def form_valid(self, form):	
 		try:
-			player = Player.objects.get(game=self.game, active=True, user=self.request.user)
+			player = Player.objects.get(game=self.game, user=self.request.user)
 		except:
 			return HttpResponseRedirect(self.game.get_absolute_url())
 
