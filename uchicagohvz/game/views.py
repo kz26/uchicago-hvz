@@ -100,7 +100,11 @@ class ChooseSquad(FormView):
 		return super(ChooseSquad, self).dispatch(request, *args, **kwargs)
 
 	def form_valid(self, form):	
-		player = get_object_or_404(Player, game=self.game, active=True, user=self.request.user)
+		try:
+			player = Player.objects.get(game=self.game, active=True, user=self.request.user)
+		except:
+			return HttpResponseRedirect(self.game.get_absolute_url())
+
 
 		if form.squad_name:
 			try:
