@@ -34,6 +34,11 @@ class ShowGame(DetailView):
 	template_name = 'game/show.html'
 
 	def get_context_data(self, **kwargs):
+
+		for squad in New_Squad.objects.all():
+			if squad.players.count() == 0:
+				squad.delete()
+
 		context = super(ShowGame, self).get_context_data(**kwargs)
 		if self.object.status in ('in_progress', 'finished'):
 			if self.object.get_active_players().count() > 0:
@@ -99,7 +104,8 @@ class ChooseSquad(FormView):
 		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
 		return super(ChooseSquad, self).dispatch(request, *args, **kwargs)
 
-	def form_valid(self, form):	
+	def form_valid(self, form):
+
 		try:
 			player = Player.objects.get(game=self.game, user=self.request.user)
 		except:
