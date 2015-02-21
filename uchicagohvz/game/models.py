@@ -96,6 +96,18 @@ ADJECTIVES = open(os.path.join(settings.BASE_DIR, "game/word-lists/adjs.txt")).r
 def gen_bite_code():
 	return random.choice(ADJECTIVES) + ' ' + random.choice(NOUNS)
 
+class New_Squad(models.Model):
+	class Meta:
+		unique_together = (('game', 'name'))
+
+	game = models.ForeignKey(Game, related_name='new_squads')
+	name = models.CharField(max_length=128)
+
+	def __unicode__(self):
+		return "%s" % (self.name)
+
+
+
 class Squad(models.Model):
 	class Meta:
 		unique_together = (('game', 'name'))
@@ -173,6 +185,7 @@ class Player(models.Model):
 	game = models.ForeignKey(Game, related_name='players')
 	active = models.BooleanField(default=False)
 	squad = models.ForeignKey(Squad, null=True, blank=True, related_name='players')
+	new_squad = models.ForeignKey(New_Squad, null=True, blank=True, related_name='players')
 	bite_code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
 	dorm = models.CharField(max_length=4, choices=DORMS)
 	major = models.CharField(max_length=255, blank=True, editable=settings.DEBUG, help_text='autopopulates from LDAP')
@@ -280,6 +293,8 @@ class Player(models.Model):
 			name = self.user.get_full_name()
 		if self.squad:
 			name = "%s [%s]" % (name, self.squad.name)
+		elif self.new_squad:
+			name = "%s [%s]" % (name, self.new_squad.name)
 		return name
 
 	@property

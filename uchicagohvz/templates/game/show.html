@@ -65,7 +65,7 @@
 			<dt>Registered players</dt>
 			<dd>{{ game.get_registered_players.count }}</dd>
 			<dt>Registered squads</dt>
-			<dd>{{ game.squads.count }}</dd>
+			<dd>{{ game.squads.count|add:game.new_squads.count }}</dd>
 			{% else %}
 			<dt>Total players</dt>
 			<dd>{{ game.get_active_players.count }}</dd>
@@ -74,7 +74,7 @@
 			<dt>Zombies</dt>
 			<dd>{{ game.get_zombies.count }} ({{ zombies_percent }}%)</dd>
 			<dt>Squads</dt>
-			<dd>{{ game.squads.count }}</dd>
+			<dd>{{ game.squads.count|add:game.new_squads.count }}</dd>
 			{% endif %}
 		</dl>
 	</div>
@@ -106,11 +106,6 @@
 		<input type="button" value="Hide Bite Code" class="btn btn-danger" onclick="$('#bite_code').hide()">
 		<input type="button" value="Show Bite Code" class="btn btn-success" onclick="$('#bite_code').show()">
 
-		<h3><b>New Feature: Last Words</b></h3>
-		<p>
-			Taunt your killer one last time before entering the horde.
-			<a href="{% url 'users|update_profile' %}">Go to your profile page</a> and enter your last words now!
-		</p>
 		{% if not player.human %}
 		{% if player.unannotated_kills.count %}
 		<div class="well">
@@ -159,6 +154,10 @@
 			<dt>Your squad</dt>
 			<dd>{% if player.squad %}<a href="{{ player.squad.get_absolute_url }}">{{ player.squad.name }}</a>{% else %}(None){% endif %}</dd>
 			{% endif %}
+			{% if player.new_squad %}
+			<dt>Your squad</dt>
+			<dd>{{ player.new_squad.name }}
+			{% endif %}
 			<dt>Your dorm</dt>
 			<dd>{{ player.get_dorm_display }}</dd>
 			<dt>Your major</dt>
@@ -197,6 +196,12 @@
 		{% endif %}
 		{% endif %}
 	</div>
+	{% if game.status == 'registration' or game.status == 'in_progress' %}
+	<div class="col-lg-4">
+	<h2>Squads are back!</h2>
+	<a href="{% url 'game|choose_squad' pk=game.id %}">Register a new squad or join an existing one here.</a>
+	</div>
+	{% endif %}
 	<div class="col-lg-4">
 		<h2>My Score</h2>
 		{% if game.status == 'in_progress' or game.status == 'finished' %}
@@ -204,7 +209,7 @@
 		<h4 class="point-marker"><span class="text-success">{{ player.human_points }} human points</span></h4>
 		{% if not player.human %}<h4 class="point-marker"><span class="text-danger">{{ player.zombie_points }} zombie points</span></h4>{% endif %}
 		<p>You are ranked <b>#{{ player_rank.0 }}</b> of {{ player_rank.1 }} {% if player.human %}humans{% else %}zombies{% endif %}.
-		Visit your player and/or squad pages for more details and point breakdowns.</p>
+		Visit your player page for more details and point breakdowns.</p>
 		</p>
 		<a class="btn btn-primary" href="{{ player.get_absolute_url }}">My Player Page</a>
 		{% if player.squad %}<a class="btn btn-primary" href="{{ player.squad.get_absolute_url }}">My Squad Page</a>{% endif %}

@@ -90,6 +90,39 @@ class RegisterForGame(FormView):
 		context['game'] = self.game
 		return context
 
+class ChooseSquad(FormView):
+	form_class = SquadForm
+	template_name = 'game/choose_squad.html'
+
+	@method_decorator(login_required)
+	def dispatch(self, request, *args, **kwargs):
+		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
+		return super(ChooseSquad, self).dispatch(request, *args, **kwargs)
+
+	def form_valid(self, form):	
+		player = get_object_or_404(Player, game=self.game, active=True, user=self.request.user)
+
+		if form.squad_name:
+			try:
+				new_squad = New_Squad.objects.create(game=form.game, name=form.squad_name)
+				player.new_squad = new_squad
+			except:
+				messages.error(self.request, "There is already a squad named %s. Please join %s or use a different squad name." % (form.squad_name, form.squad_name))
+				return HttpResponseRedirect(self.request.get_full_path())
+
+		elif form.squad:
+			player.new_squad = form.squad
+
+		player.save()
+
+		return HttpResponseRedirect(self.game.get_absolute_url())
+
+	def get_form_kwargs(self):
+		kwargs = super(ChooseSquad, self).get_form_kwargs()
+		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
+		kwargs['game'] = self.game
+		return kwargs
+
 class EnterBiteCode(FormView):
 	form_class = BiteCodeForm
 	template_name = 'game/enter-bite-code.html'

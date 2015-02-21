@@ -19,7 +19,7 @@ class PlayerAdminForm(forms.ModelForm):
 
 class PlayerAdmin(admin.ModelAdmin):
 	form = PlayerAdminForm
-	list_filter = ('game', 'active', 'human', 'dorm', 'squad', 'renting_gun', 'gun_requested', 'gun_returned', 'major')
+	list_filter = ('game', 'active', 'human', 'dorm', 'squad', 'new_squad', 'renting_gun', 'gun_requested', 'gun_returned', 'major')
 	if not settings.DEBUG:
 		readonly_fields = ('major',)
 	search_fields = ('user__username', 'user__first_name', 'user__last_name', 'bite_code')
@@ -109,7 +109,10 @@ class HVTAdminForm(forms.ModelForm):
 class HVTAdmin(admin.ModelAdmin):
 	form = HVTAdminForm
 
+
+
 admin.site.register(Squad)
+admin.site.register(New_Squad)
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(Kill, KillAdmin)
 admin.site.register(Award, AwardAdmin)

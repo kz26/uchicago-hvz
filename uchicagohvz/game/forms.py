@@ -1,7 +1,26 @@
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 from uchicagohvz.game.models import *
+
+class SquadForm(forms.Form):
+	create_squad = forms.CharField(required=False)
+	choose_squad = forms.ModelChoiceField(required=False, queryset=New_Squad.objects.all())
+
+	def __init__(self, *args, **kwargs):
+		self.game = kwargs.pop('game')
+		super(SquadForm, self).__init__(*args, **kwargs)
+		self.fields['choose_squad'].widget.attrs['class'] = 'form-control' # for Bootstrap 3
+		
+	def clean(self):
+		self.squad_name = self.cleaned_data['create_squad']
+		self.squad = self.cleaned_data['choose_squad']
+		
+		data = super(SquadForm, self).clean()
+
+		return data
+
 
 class GameRegistrationForm(forms.ModelForm):
 	class Meta:
@@ -9,6 +28,7 @@ class GameRegistrationForm(forms.ModelForm):
 		fields = ('dorm', 'gun_requested', 'opt_out_hvt', 'agree')
 
 	agree = forms.BooleanField()
+	
 
 	def __init__(self, *args, **kwargs):
 		super(GameRegistrationForm, self).__init__(*args, **kwargs)
