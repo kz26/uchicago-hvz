@@ -32,6 +32,7 @@ class Game(models.Model):
 	end_date = models.DateTimeField()
 	rules = models.FileField(upload_to=gen_rules_filename, storage=OverwriteFileSystemStorage())
 	color = models.CharField(max_length=64, default="#FFFFFF")	
+	flavor = models.CharField(max_length=4096, default="")
 
 	objects = GameManager()
 

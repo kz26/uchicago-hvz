@@ -236,7 +236,8 @@
 <ul class="nav nav-tabs nav-justified">
 	<li class="active"><a href="#analytics" data-toggle="tab"><span class="glyphicon glyphicon-stats"></span> Analytics</a></li>
 	<li><a href="#leaderboards-individual" data-toggle="tab"><span class="glyphicon glyphicon-list"></span> Individual Leaderboards</a></li>
-	{% if game.squads.count %}<li><a href="#leaderboards-squad" data-toggle="tab"><span class="glyphicon glyphicon-th-list"></span> Squad Leaderboards</a></li></li>{% endif %}
+	{% if game.squads.count %}<li><a href="#leaderboards-squad" data-toggle="tab"><span class="glyphicon glyphicon-th-list"></span> Squad Leaderboards</a></li>{% endif %}
+	{% if game.flavor %}<li><a href="#flavor" data-toggle="tab"><span class="glyphicon glyphicon-pencil"></span> Flavor</a></li>{% endif %}
 </ul>
 <div class="tab-content">
 	<div id="analytics" class="tab-pane active">
@@ -441,8 +442,18 @@
 			</div>
 	</div>
 	{% endif %}
+	{% if game.flavor %}
+		<div id="flavor" class="tab-pane">
+			<div class="row">
+				<p class="center" style="margin-top: 1em;">{{ game.flavor }}</p>
+			</div>
+		</div>
+	{% endif %}
+
 </div>
 {% endif %}
+		
+		
 
 {% if game.status == 'finished' %}
 <hr>
