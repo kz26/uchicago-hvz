@@ -20,5 +20,6 @@ class Feb262015Middleware(object):
 				return HttpResponseRedirect('/feb-26-2015/')
 			elif timezone.now() < start_dt:
 				messages.error(request, self.msg_content)
+				return None
 		else:
 			return None
