@@ -1,10 +1,6 @@
 {% extends 'base.html' %}{% load compress %}
 {% block content %}
 
-{% for message in messages %}
-<div class="alert alert-{{ message.tags }}">{{ message }}</div>
-{% endfor %}
-
 <div class="page-header">
     <h1>Create or Join a Squad <small>{{ view.game.name }}</small></h1>
 </div>

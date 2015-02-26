@@ -4,10 +4,6 @@
 	<h1>My Profile</h1>
 </div>
 
-{% for message in messages %}
-<div class="alert alert-{{ message.tags }}">{{ message }}</div>
-{% endfor %}
-
 <form class="form-horizontal" method="post">
 	{% csrf_token %}
 	<div class="form-group">
