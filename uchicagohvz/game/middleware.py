@@ -4,7 +4,8 @@ from django.utils import timezone
 from datetime import datetime
 
 class Feb262015Middleware(object):
-	self.target_url = 'feb-26-2015-charlie-hebdo'
+	target_url = 'feb-26-2015-charlie-hebdo'
+	
 	def process_request(self, request):
 		try:
 			rm = resolve(request.path)
