@@ -40,7 +40,6 @@ Thumbs.db
 ######################
 node_modules/
 media/
-settings.py
 uchicagohvz/static/CACHE/
 secrets.py
 db.sqlite3
