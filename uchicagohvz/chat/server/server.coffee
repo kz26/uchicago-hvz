@@ -29,7 +29,7 @@ class ChatServer
 		data = JSON.parse(data)
 		if data.type?
 			conn.emit data.type, data
-		
+
 	broadcast: (data) ->
 		if data.room?
 			for conn in @lobby
@@ -39,10 +39,10 @@ class ChatServer
 	auth: (conn, authData) ->
 		# authData object needs to contain gameID and sessionid
 		request.get {
-			uri: "http://127.0.0.1:8000/game/#{ authData.gameID }/chat/auth/",
+			uri: "http://127.0.0.1:8080/game/#{ authData.gameID }/chat/auth/",
 			headers: {
 				'User-Agent': "#{ pkg.name }/#{ pkg.version }",
-				Host: 'www.uchicagohvz.org',
+				Host: 'hvz.rucus.me',
 				Cookie: "sessionid=#{ authData.sessionid }"
 			},
 			json: true
@@ -74,14 +74,14 @@ class ChatServer
 			return v.id != conn.id
 
 	log: (conn, data) ->
-		console.log "[#{ moment().format('MM/DD/YYYY hh:mm:ss A') }] #{ conn.userObject.name }: #{ JSON.stringify(data) }"
+		console.log "[#{ moment().format('DD/MM/YYYY hh:mm:ss A') }] #{ conn.userObject.name }: #{ JSON.stringify(data) }"
 
 app = express()
 app.use express.json()
 
 
 httpServer = http.createServer app
-httpServer.listen 36452, '127.0.0.1'
+httpServer.listen 36452, '0.0.0.0'
 chatServer = new ChatServer(httpServer)
 
 app.post '/admin/updateUserRooms', (req, res) ->

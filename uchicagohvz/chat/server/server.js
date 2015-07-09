@@ -121,7 +121,7 @@ ChatServer = (function() {
   };
 
   ChatServer.prototype.log = function(conn, data) {
-    return console.log("[" + (moment().format('MM/DD/YYYY hh:mm:ss A')) + "] " + conn.userObject.name + ": " + (JSON.stringify(data)));
+    return console.log("[" + (moment().format('DD/MM/YYYY hh:mm:ss A')) + "] " + conn.userObject.name + ": " + (JSON.stringify(data)));
   };
 
   return ChatServer;
@@ -134,7 +134,7 @@ app.use(express.json());
 
 httpServer = http.createServer(app);
 
-httpServer.listen(36452, '127.0.0.1');
+httpServer.listen(36452, '0.0.0.0');
 
 chatServer = new ChatServer(httpServer);
 
