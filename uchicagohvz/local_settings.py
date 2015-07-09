@@ -183,8 +183,8 @@ HVT_AWARD_POINTS = 0 # default award points a human gets for being an HVT and su
 HVD_KILL_POINTS = 3 # default points a target from a high-value dorm is worth (can stack on top of HVT points)
 LEADERBOARD_CACHE_DURATION = 3600 # how many seconds to cache certain DB-intensive leaderboard queries
 NEXMO_NUMBER = '218-296-7238'
-GAME_SW_BOUND = (-33.319207, 26.509529)
-GAME_NE_BOUND = (-33.309388, 26.524334)
+GAME_SW_BOUND = (-33.320192, 26.508758)
+GAME_NE_BOUND = (-33.308830, 26.524041)
 
 # Dealer settings
 TEMPLATE_CONTEXT_PROCESSORS += 'dealer.contrib.django.staff.context_processor',
