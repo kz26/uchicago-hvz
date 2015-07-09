@@ -86,9 +86,9 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-gb'
 
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Africa/Johannesburg'
 
 USE_I18N = False
 
@@ -124,7 +124,7 @@ COMPRESS_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Datetime settings
 DATETIME_FORMAT = 'N j, Y g:i A'
-SHORT_DATETIME_FORMAT = 'm/d/Y g:i A'
+SHORT_DATETIME_FORMAT = 'd/m/Y g:i A'
 
 # User-uploaded media
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -132,7 +132,7 @@ MEDIA_URL = "/media/"
 
 # Authentication
 AUTHENTICATION_BACKENDS = (
-	'uchicagohvz.users.backend.UChicagoLDAPBackend',
+	'uchicagohvz.users.backend.RhodesUniLDAPBackend',
 	'django.contrib.auth.backends.ModelBackend',
 )
 LOGIN_URL = "/users/login/?required=true"
@@ -184,13 +184,13 @@ HVT_AWARD_POINTS = 0 # default award points a human gets for being an HVT and su
 HVD_KILL_POINTS = 3 # default points a target from a high-value dorm is worth (can stack on top of HVT points)
 LEADERBOARD_CACHE_DURATION = 3600 # how many seconds to cache certain DB-intensive leaderboard queries
 NEXMO_NUMBER = '218-296-7238'
-GAME_SW_BOUND = (41.783985, -87.606053)
-GAME_NE_BOUND = (41.798128, -87.584016)
+GAME_SW_BOUND = (-33.319207, 26.509529)
+GAME_NE_BOUND = (-33.309388, 26.524334)
 
 # Dealer settings
 TEMPLATE_CONTEXT_PROCESSORS += 'dealer.contrib.django.staff.context_processor',
 DEALER_PATH = os.path.dirname(BASE_DIR)
 
 # Chat settings
-CHAT_SERVER_URL = 'http://192.168.1.20:36452/chat'
-CHAT_ADMIN_URL = 'http://localhost:36452/admin/'
+CHAT_SERVER_URL = 'http://g12l4025.lukest.ru.ac.za:36452/chat'
+CHAT_ADMIN_URL = 'http://g12l4025.lukest.ru.ac.za:36452/admin/'
