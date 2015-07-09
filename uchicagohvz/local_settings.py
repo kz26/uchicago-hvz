@@ -132,7 +132,6 @@ MEDIA_URL = "/media/"
 
 # Authentication
 AUTHENTICATION_BACKENDS = (
-	'uchicagohvz.users.backend.RhodesUniLDAPBackend',
 	'django.contrib.auth.backends.ModelBackend',
 )
 LOGIN_URL = "/users/login/?required=true"
@@ -173,8 +172,8 @@ BROKER_URL = 'redis://localhost:6379/3'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'UChicago HvZ <noreply@uchicagohvz.org>'
-SYMPA_FROM_EMAIL = 'admin@uchicagohvz.org'
+DEFAULT_FROM_EMAIL = 'RU HvZ <noreply@hvz.rucus.me>'
+SYMPA_FROM_EMAIL = 'g12l4025@campus.ru.ac.za'
 SYMPA_TO_EMAIL = 'sympa@lists.uchicago.edu'
 
 # HvZ game configuration
@@ -192,5 +191,5 @@ TEMPLATE_CONTEXT_PROCESSORS += 'dealer.contrib.django.staff.context_processor',
 DEALER_PATH = os.path.dirname(BASE_DIR)
 
 # Chat settings
-CHAT_SERVER_URL = 'http://g12l4025.lukest.ru.ac.za:36452/chat'
-CHAT_ADMIN_URL = 'http://g12l4025.lukest.ru.ac.za:36452/admin/'
+CHAT_SERVER_URL = 'http://hvz.rucus.me:36452/chat'
+CHAT_ADMIN_URL = 'http://hvz.rucus.me:36452/admin/'

@@ -2,12 +2,12 @@ from local_settings import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['uchicagohvz.org', 'www.uchicagohvz.org']
+ALLOWED_HOSTS = ['hvz.rucus.me']
 
 ADMINS = (
-    ('Administrator', 'admin@uchicagohvz.org'),
+    ('Administrator', 'g12l4025@campus.ru.ac.za'),
 )
-SERVER_EMAIL = 'noreply@uchicagohvz.org'
+SERVER_EMAIL = 'noreply@hvz.rucus.me'
 
 # Database
 DATABASES = {
@@ -33,13 +33,13 @@ EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 CELERY_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 ## Uncomment for Mandrill
-from secrets import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
-EMAIL_HOST = 'smtp.mandrillapp.com'
-EMAIL_PORT = '587'
-EMAIL_USE_TLS = True
+#from secrets import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+#EMAIL_HOST = 'smtp.mandrillapp.com'
+#EMAIL_PORT = '587'
+#EMAIL_USE_TLS = True
 
-## Uncomment for localhost email
-#EMAIL_HOST = 'localhost'
+# Uncomment for localhost email
+EMAIL_HOST = 'localhost'
 
 # Chat settings
-CHAT_SERVER_URL = '//www.uchicagohvz.org/chat'
+CHAT_SERVER_URL = '//hvz.rucus.me/chat'
