@@ -65,7 +65,7 @@ ChatServer = (function() {
   ChatServer.prototype.auth = function(conn, authData) {
     var _this = this;
     return request.get({
-      uri: "http://127.0.0.1:8000/game/" + authData.gameID + "/chat/auth/",
+      uri: "http://127.0.0.1:8080/game/" + authData.gameID + "/chat/auth/",
       headers: {
         Host: 'www.uchicagohvz.org',
         Cookie: "sessionid=" + authData.sessionid
