@@ -19,4 +19,4 @@ urlpatterns = patterns('',
     url(r'^about/$', TemplateView.as_view(template_name='about.html'), name='about'),
     url(r'^terms/$', TemplateView.as_view(template_name='terms.html'), name='terms'),
     url(r'^composer/$', TemplateView.as_view(template_name='composer.html'), name='composer'),
-) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)
