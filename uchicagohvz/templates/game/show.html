@@ -13,7 +13,7 @@
 	{% if game.status == 'in_progress' %}
 	<p>The objective of zombies is to tag humans. The objective of humans is to survive. If you are a human and you are tagged by a zombie, give them the bite code on your bandanna.
 	The zombie will then either enter your bite code on the website or text it to {{ sms_code_number }}. You will then turn into a zombie. If you shoot a zombie or hit them with a sock before they tag you,
-	they will be stunned for five minutes. Hitting the zombie again resets the timer. Academic buildings and most dorms are safe. Please email the listhost if you need tactical support or friendship.
+	they will be stunned for a variable amount of time. Hitting the zombie again does not reset the timer however a zombie must start in a safe zone after being stunned and cannot chase after a human leaving a safe zone immediatly. Academic buildings and most dorms are safe. Please email the listhost if you need tactical support or friendship.
 	</p>
 	{% endif %}
 </div>
@@ -98,9 +98,13 @@
 		{% endif %}
 		{% if player.active and  game.status == 'in_progress' %}
 		<h3>My Bite Code</h3>
-		<h4 id="bite_code" style="font-weight: bold;">{{ player.bite_code }}</h4>
-		<input type="button" value="Hide Bite Code" class="btn btn-danger" onclick="$('#bite_code').hide()">
-		<input type="button" value="Show Bite Code" class="btn btn-success" onclick="$('#bite_code').show()">
+		<div class="col-md-12">
+			<div id="bite_code" class="row"><h4 style="font-weight: bold;">{{ player.bite_code }}</h4></div>
+			<div class="row">
+				<div class="col-md-6"><input type="button" value="Hide Bite Code" class="btn btn-danger" onclick="$('#bite_code').hide()"></div>
+				<div class="col-md-6"><input type="button" value="Show Bite Code" class="btn btn-success" onclick="$('#bite_code').show()"></div>
+			</div>
+		</div>
 
 		{% if not player.human %}
 		{% if player.unannotated_kills.count %}
@@ -129,18 +133,6 @@
 				<button class="btn btn-{% if player.human %}success{% else %}danger{% endif %}" type="submit">Submit</button>
 			</div>
 		</form>
-		<p class="text-warning" style="margin-top: 1em;">
-		{% if player.user.profile.phone_number %}
-			You can also text {% if not player.human %}bite codes and {% endif %}mission codes (one code per message)!*
-			Simply send a text message containing a code to <b>{{ sms_code_number }}</b>. If you have multiple codes,
-			send them one at a time.{% if not player.human %} Kills submitted via text will not be geotagged, but you can
-			come back here and geotag them later.{% endif %}
-		{% else %}
-			Add your phone number to your <a href="{% url 'users|update_profile' %}">profile</a> so you can submit
-			{% if not player.human %}bite codes and {% endif %}mission codes via text message!
-		{% endif %}
-		</p>
-		<p class="text-default">* Standard text messaging rates apply.</p>
 		{% endif %}
 	</div>
 	<div class="col-lg-4">
@@ -154,13 +146,12 @@
 			<dt>Your squad</dt>
 			<dd>{{ player.new_squad.name }}
 			{% endif %}
-			<dt>Your dorm</dt>
+			<dt>Your residence</dt>
 			<dd>{{ player.get_dorm_display }}</dd>
 		</dl>
 		{% if player.active and not player.user.profile.phone_number %}
 		<p class="text-warning">We don't have a phone number on file for you in case we need to contact you! Add it to your <a href="{% url 'users|update_profile' %}">profile</a>.*
 		</p>
-		{% endif %}
 		{% endif %}
 	</div>
 	{% if game.status == 'registration' or game.status == 'in_progress' %}
@@ -210,48 +201,11 @@
 	<div id="analytics" class="tab-pane active">
 		<div class="row">
 			<div class="col-md-6">
-				<h2>Survival by Dorm</h2>
-				<table class="table table-bordered table-striped">
-					<thead>
-						<tr>
-							<th>Dorm</th>
-							<th>Humans Alive</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for e in survival_by_dorm %}
-						<tr>
-							<td>{{ e.dorm }}</td>
-							<td>{{ e.alive }}/{{ e.original }} ({{e.percent|floatformat}}%)</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
 				<h2>Human Survival</h2>
 				<div id="hphChart"></div>
 				<button class="btn btn-success" id="hphcheckAll">Show All</button>
 				<button class="btn btn-success" id="hphuncheckAll">Hide All</button>
-				<h2>Most Courageous Dorms</h2>
-				<p>Where courageousness = (total human points earned by dorm / # players in dorm) * 100</p>
-				<table class="table table-bordered table-striped">
-					<thead>
-						<tr>
-							<th>Dorm</th>
-							<th>Courageousness</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for e in most_courageous_dorms %}
-						<tr>
-							<td>{{ e.dorm }}</td>
-							<td>{{ e.points|floatformat }}</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			<h2>Humans by Major</h2>
-			<div id="hMajorsChart"></div>
-			</div>
+			</div>		
 			<div class="col-md-6">
 				<h2>Kills by Location <small>geotagged kills only</small></h2>
 				<div id="killMap" style="height: 350px;"></div>
@@ -279,6 +233,32 @@
 						</label>
 					</div>
 				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">				
+				<h2>Most Courageous Dorms</h2>
+				<p>Where courageousness = (total human points earned by dorm / # players in dorm) * 100</p>
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Dorm</th>
+							<th>Courageousness</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for e in most_courageous_dorms %}
+						<tr>
+							<td>{{ e.dorm }}</td>
+							<td>{{ e.points|floatformat }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<h2>Kills by Time of Day</h2>
+				<div id="todChart"></div>
+			</div>
+			<div class="col-md-6">
 				<h2>Most Infectious Dorms</h2>
 				<p>Where infectivity = (total zombie points earned by dorm / # players in dorm) * 100</p>
 				<table class="table table-bordered table-striped">
@@ -297,10 +277,12 @@
 						{% endfor %}
 					</tbody>
 				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8 col-md-offset-8"
 				<h2>Kills by Time of Day</h2>
 				<div id="todChart"></div>
-				<h2>Zombies by Major</h2>
-				<div id="zMajorsChart"></div>
 			</div>
 		</div>
 	</div>
