@@ -1,3 +1,12 @@
+body {
+	padding-bottom: 20px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14;
+	line-height: 1.42857143;
+	color: #c8c8c8;
+	background-color: #272b30;
+}
+
 .errorlist {
 	color: rgb(238, 95, 91);
 }
