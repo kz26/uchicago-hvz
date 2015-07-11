@@ -87,22 +87,27 @@
 	{% endif %}
 
 	<div class="col-lg-4">
-		<h2>I am a...</h2>
-		{% if player.human %}
-		<h3 class="bold text-success">HUMAN</h3>
-		{% else %}
-		<h3 class="bold text-danger">ZOMBIE</h3>
-		{% if player.kill_object %}
-		<p><a href="{{ player.kill_object.get_absolute_url }}">Killed by {{ player.kill_object.killer.user.get_full_name }} on {{ player.kill_object.date }}</a></p>
-		{% endif %}
-		{% endif %}
+		<div class="row">
+			<h2>I am a...</h2>
+			{% if player.human %}
+			<h3 class="bold text-success">HUMAN</h3>
+			{% else %}
+			<h3 class="bold text-danger">ZOMBIE</h3>
+			{% if player.kill_object %}
+			<p><a href="{{ player.kill_object.get_absolute_url }}">Killed by {{ player.kill_object.killer.user.get_full_name }} on {{ player.kill_object.date }}</a></p>
+			{% endif %}
+			{% endif %}
+		</div>
 		{% if player.active and  game.status == 'in_progress' %}
-		<h3>My Bite Code</h3>
-		<div class="col-md-12">
-			<div class="row"><h4 id="bite_code" style="font-weight: bold;">{{ player.bite_code }}</h4></div>
-			<div class="row">
-				<div class="col-md-6"><button type="button" class="btn btn-danger" onclick="$('#bite_code').hide()">Hide Bite Code</button></div>
-				<div class="col-md-6"><button type="button" class="btn btn-success" onclick="$('#bite_code').show()">Show Bite Code</button></div>
+		
+		<div class="row">
+			<h3>My Bite Code</h3>
+			<div class="col-lg-12">
+				<div class="row"><h4 id="bite_code" style="font-weight: bold;">{{ player.bite_code }}</h4></div>
+				<div class="row">
+					<div class="col-md-6"><button type="button" class="btn btn-danger" onclick="$('#bite_code').hide()">Hide Bite Code</button></div>
+					<div class="col-md-6"><button type="button" class="btn btn-success" onclick="$('#bite_code').show()">Show Bite Code</button></div>
+				</div>
 			</div>
 		</div>
 
