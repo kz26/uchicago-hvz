@@ -3,47 +3,67 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-		<head>
-				<meta charset="utf-8">
-				<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-				<title>RU GamesSoc Humans vs. Zombies</title>
-				<meta name="description" content="Humans vs. Zombies at Rhodes University.">
-				<meta name="viewport" content="width=device-width">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="description" content="Humans vs. Zombies at Rhodes University.">
+    	<meta name="author" content="Rhodes University GameSoc">
+		<meta name="viewport" content="width=device-width">
 
-				<link rel="icon" type="image/png" href="{{ STATIC_URL }}favicon.ico">
+		<title>RU GamesSoc Humans vs. Zombies</title>
 
-				<link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css">
-				<style>
-						body {
-								padding-top: 50px;
-								padding-bottom: 20px;
-						}
-				</style>
-				<link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
+		<!-- Site Favicon -->
+		<link href="{{ STATIC_URL }}favicon.ico" rel="icon" type="image/png">
+		
+		<!-- Bootstrap Core CSS -->
+	    <link href="{{ STATIC_URL }}bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
-				<!--[if lt IE 9]>
-						<script src="{{ STATIC_URL }}js/vendor/html5-3.6-respond-1.1.0.min.js"></script>
-				<![endif]-->
-		</head>
-		<body>
-		<div class="navbar navbar-fixed-top">
+	    <!-- MetisMenu CSS -->
+	    <link href="{{ STATIC_URL }}bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+
+	    <!-- Custom CSS -->
+	    <link href="{{ STATIC_URL }}css/sb-admin-2.css" rel="stylesheet">
+	    <link href="{{ STATIC_URL }}css/main.css" rel="stylesheet">
+
+	    <!-- Custom Fonts -->
+	    <link href="{{ STATIC_URL }}bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	    <!--[if lt IE 9]>
+	        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+	        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+	    <![endif]-->
+		
+		<style>
+			body {
+					padding-top: 50px;
+					padding-bottom: 20px;
+			}
+		</style>
+		
+	</head>
+	<body>
+		<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
 			<div class="container">
 				<div class="navbar-header">
-					<button type="button" class="navbar-toggle btn" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="glyphicon glyphicon-chevron-down white"></span>
-
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					    <span class="sr-only">Toggle navigation</span>
+					    <span class="icon-bar"></span>
+					    <span class="icon-bar"></span>
+					    <span class="icon-bar"></span>
 					</button>
 					<a class="navbar-brand" href="/">RU GameSoc HvZ</a>
 				</div>
 				<div class="navbar-collapse collapse">
-					<ul class="nav navbar-nav">
+					<ul class="nav navbar-top-links navbar-nav">
 						<li class="active"><a href="/">Home</a></li>
 						{% if user.is_staff %}<li><a href="{% url "admin:index" %}">Admin Panel</a></li>{% endif %}
 						<li><a href="{% url 'contact' %}">Contact</a></li>
 						<li><a href="{% url 'faq' %}">FAQ</a></li>
 						<li><a href="{% url 'about' %}">About</a></li>
 						{% if not user.is_authenticated %}
-						<li><a href="{% url 'users|register' %}">No CNetID?</a></li>
+						<li><a href="{% url 'users|register' %}">Register (RU ID Required)</a></li>
 						{% endif %}
 					</ul>
 					{% if user.is_authenticated %}
@@ -61,17 +81,17 @@
 					<form class="navbar-form navbar-right" action="{% url 'users|login' %}?next={{ request.path }}" method="post">
 						{% csrf_token %}
 						<div class="form-group">
-							<input type="text" name="username" placeholder="CNetID" class="form-control" required>
+							<input type="text" name="username" placeholder="Student Number" class="form-control" required>
 						</div>
 						<div class="form-group">
 							<input type="password" name="password" placeholder="Password" class="form-control" required>
 						</div>
-						<button type="submit" class="btn btn-success">Sign in</button>
+						<button type="submit" class="btn btn-success" style="min-width: 100px;">Sign in</button>
 					</form>
 					{% endif %}
 				</div><!--/.navbar-collapse -->
 			</div>
-		</div>
+		</nav>
 
 		<div class="container">
 			{% for message in messages %}
@@ -79,31 +99,48 @@
 			{% endfor %}
 			{% block content %}{% endblock %}
 
+			<!-- Divider Line -->
 			<hr>
 
 			<footer>
 				<ul class="list-unstyled">
-					<li>&copy; 2013-{% now "Y" %} Greg Linklater and Craig Marais on behalf of RU GameSoc Humans vs. Zombies</li>
-					<li>Version 15W-<a href="https://github.com/kz26/uchicago-hvz/commits/{{ REVISION }}">{{ REVISION }}</a></li>
+					<li>&copy; {% now "Y" %} Greg Linklater and Craig Marais on behalf of RU GameSoc Humans vs. Zombies. All rights reserved.</li>
+					<li>Version RU15-<a href="https://github.com/EternalDeiwos/uchicago-hvz/commits/{{ REVISION }}">{{ REVISION }}</a></li>
 					<li><a href="{% url 'terms' %}">Terms and Conditions</a></li>
 				</ul>
 			</footer>
 		</div> <!-- /container -->
-			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-			<script src="{{ STATIC_URL }}js/vendor/bootstrap.min.js"></script>
-			<script>
-			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-			  ga('create', 'UA-64968784-1', 'auto');
-			  ga('send', 'pageview');
-			</script>
-			<script>
-				$('form').submit(function() {
-					$(this).find('button:submit').html('Processing...').attr('disabled', true);
-				});
-			</script>
-			{% block script %}{% endblock %}
-		</body>
+
+		<!-- jQuery -->
+	    <script src="{{ STATIC_URL }}bower_components/jquery/dist/jquery.min.js"></script>
+
+	    <!-- Bootstrap Core JavaScript -->
+	    <script src="{{ STATIC_URL }}bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+	    <!-- Metis Menu Plugin JavaScript -->
+	    <script src="{{ STATIC_URL }}bower_components/metisMenu/dist/metisMenu.min.js"></script>
+
+	    <!-- Custom Theme JavaScript -->
+	    <script src="{{ STATIC_URL }}js/sb-admin-2.js"></script>
+
+	    <!-- Coffee Script Compiler -->
+	    <script src="{{ STATIC_URL }}js/coffee-script.js"></script>
+		
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		  ga('create', 'UA-64968784-1', 'auto');
+		  ga('send', 'pageview');
+		</script>
+
+		<script>
+			$('form').submit(function() {
+				$(this).find('button:submit').html('Processing...').attr('disabled', true);
+			});
+		</script>
+
+		{% block script %}{% endblock %}
+	</body>
 </html>

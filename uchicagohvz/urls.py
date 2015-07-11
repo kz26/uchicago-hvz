@@ -18,5 +18,4 @@ urlpatterns = patterns('',
     url(r'^faq/$', TemplateView.as_view(template_name='faq.html'), name='faq'),
     url(r'^about/$', TemplateView.as_view(template_name='about.html'), name='about'),
     url(r'^terms/$', TemplateView.as_view(template_name='terms.html'), name='terms'),
-    url(r'^composer/$', TemplateView.as_view(template_name='composer.html'), name='composer'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

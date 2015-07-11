@@ -5,7 +5,7 @@ from django.db import transaction
 from django.conf import settings
 from django.utils import timezone
 from uchicagohvz.overwrite_fs import OverwriteFileSystemStorage
-from uchicagohvz.users.backend import UChicagoLDAPBackend
+from uchicagohvz.users.backend import RhodesUniLDAPBackend as UChicagoLDAPBackend
 from mptt.models import MPTTModel, TreeForeignKey
 from ranking import Ranking
 import hashlib
