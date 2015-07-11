@@ -6,9 +6,9 @@ class KillSerializer(serializers.ModelSerializer):
 		model = Kill
 		fields = ('id', 'killer', 'victim', 'location', 'date', 'points')
 
-	killer = serializers.SerializerMethodField('get_killer')
-	victim = serializers.SerializerMethodField('get_victim')
-	location = serializers.SerializerMethodField('get_location')
+	killer = serializers.SerializerMethodField()
+	victim = serializers.SerializerMethodField()
+	location = serializers.SerializerMethodField()
 
 	def get_killer(self, obj):
 		return obj.killer.display_name
