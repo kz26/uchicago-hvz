@@ -99,10 +99,10 @@
 		{% if player.active and  game.status == 'in_progress' %}
 		<h3>My Bite Code</h3>
 		<div class="col-md-12">
-			<div id="bite_code" class="row"><h4 style="font-weight: bold;">{{ player.bite_code }}</h4></div>
+			<div class="row"><h4 id="bite_code" style="font-weight: bold;">{{ player.bite_code }}</h4></div>
 			<div class="row">
-				<div class="col-md-6"><input type="button" value="Hide Bite Code" class="btn btn-danger" onclick="$('#bite_code').hide()"></div>
-				<div class="col-md-6"><input type="button" value="Show Bite Code" class="btn btn-success" onclick="$('#bite_code').show()"></div>
+				<div class="col-md-6"><button type="button" class="btn btn-danger" onclick="$('#bite_code').hide()">Hide Bite Code</button></div>
+				<div class="col-md-6"><button type="button" class="btn btn-success" onclick="$('#bite_code').show()">Show Bite Code</button></div>
 			</div>
 		</div>
 
