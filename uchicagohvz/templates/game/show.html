@@ -107,32 +107,36 @@
 		</div>
 
 		{% if not player.human %}
-		{% if player.unannotated_kills.count %}
-		<div class="well">
-			<p class="text-warning">You still need to add geotags and/or notes to the kills below:</p>
-			<ul class="list-unstyled">
-			{% for kill in player.unannotated_kills %}
-				<li><a href="{% url 'kill|annotate' pk=kill.id %}">{{ kill.victim.user.get_full_name}} ({{ kill.victim.bite_code }})</a></li>
-			{% endfor %}
-			</ul>
+		<div class="row">
+			{% if player.unannotated_kills.count %}
+			<div class="well">
+				<p class="text-warning">You still need to add geotags and/or notes to the kills below:</p>
+				<ul class="list-unstyled">
+				{% for kill in player.unannotated_kills %}
+					<li><a href="{% url 'kill|annotate' pk=kill.id %}">{{ kill.victim.user.get_full_name}} ({{ kill.victim.bite_code }})</a></li>
+				{% endfor %}
+				</ul>
+			</div>
+			{% endif %}
+			<a class="btn btn-danger btn-block" href="{% url 'game|bite' pk=game.pk %}">Log a kill...</a>
+			<p class="bold text-info">
+				***Kills are timestamped at the time of submission, so enter your bite codes while they're still fresh!***
+			</p>
 		</div>
 		{% endif %}
-		<a class="btn btn-danger btn-block" href="{% url 'game|bite' pk=game.pk %}">Log a kill...</a>
-		<p class="bold text-info">
-			***Kills are timestamped at the time of submission, so enter your bite codes while they're still fresh!***
-		</p>
-		{% endif %}
 
-		<h2>Enter Mission Code</h2>
-		<form class="form-inline" role="form" action="{% url 'game|code' pk=game.pk %}" method="post">
-			{% csrf_token %}
-			<div class="form-group">
-				<input type="text" class="form-control" name="code" placeholder="two words" required>
-			</div>
-			<div class="form-group">
-				<button class="btn btn-{% if player.human %}success{% else %}danger{% endif %}" type="submit">Submit</button>
-			</div>
-		</form>
+		<div class="row">
+			<h2>Enter Mission Code</h2>
+			<form class="form-inline" role="form" action="{% url 'game|code' pk=game.pk %}" method="post">
+				{% csrf_token %}
+				<div class="form-group">
+					<input type="text" class="form-control" name="code" placeholder="two words" required>
+				</div>
+				<div class="form-group">
+					<button class="btn btn-{% if player.human %}success{% else %}danger{% endif %}" type="submit">Submit</button>
+				</div>
+			</form>
+		</div>	
 		{% endif %}
 	</div>
 	<div class="col-lg-4">
