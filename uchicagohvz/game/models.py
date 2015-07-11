@@ -253,8 +253,9 @@ class Player(models.Model):
 
 	def save(self, *args, **kwargs):
 		if self.game.status == 'registration' or not self.major: # allow updates to major during registration
-			backend = UChicagoLDAPBackend()
-			self.major = backend.get_user_major(self.user.username)
+			# backend = UChicagoLDAPBackend()
+			# self.major = backend.get_user_major(self.user.username)
+			self.major = 'N/A'
 		if not self.bite_code:
 			# (re-)generate unique bite code
 			while True:
