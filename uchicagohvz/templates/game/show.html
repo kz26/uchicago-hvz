@@ -156,45 +156,16 @@
 			{% endif %}
 			<dt>Your dorm</dt>
 			<dd>{{ player.get_dorm_display }}</dd>
-			<dt>Your major</dt>
-			<dd>{{ player.major }}</dd>
-			{% if game.status == 'registration' %}
-			<dt>Gun rental requested</dt>
-			<dd>{{ player.gun_requested|yesno:"Yes,No,N/A" }}</dd>
-			{% else %}
-			<dt>Renting gun</dt>
-			<dd>{{ player.renting_gun|yesno:"Yes,No,N/A" }}</dd>
-			{% if game.status == 'finished' and player.renting_gun %}
-			<dt>Gun returned</dt>
-			<dd>{{ player.gun_returned|yesno:"Yes,No,N/A" }}</dd>
-			{% endif %}
-			{% endif %}
 		</dl>
-		{% if game.status == "finished" and player.renting_gun and not player.gun_returned %}
-		<p class="text-danger">Please return your gun as soon as possible!</p>
-		{% endif %}
-		{% if player.active and game.status == 'in_progress' %}
-		{% if player.user.profile.phone_number %}
-		{% if player.user.profile.subscribe_death_notifications %}
-		<p class="text-success">We'll send death notifications to you via text message.
-			You can disable these in your <a href="{% url 'users|update_profile' %}">profile</a>.
+		{% if player.active and not player.user.profile.phone_number %}
+		<p class="text-warning">We don't have a phone number on file for you in case we need to contact you! Add it to your <a href="{% url 'users|update_profile' %}">profile</a>.*
 		</p>
-		{% else %}
-		<p class="text-danger">
-			You have elected not to received death notifications.
-		</p>
-		{% endif %}
-		{% else %}
-		<p class="text-warning">We don't have a phone number on file for you! Add it to your <a href="{% url 'users|update_profile' %}">profile</a>
-			and check the appropriate box if you want to receive death notifications via text message.*
-		</p>
-		<p class="text-default">* Standard text messaging rates apply.</p>
 		{% endif %}
 		{% endif %}
 	</div>
 	{% if game.status == 'registration' or game.status == 'in_progress' %}
 	<div class="col-lg-4">
-	<h2>Squads are back!</h2>
+	<h2>Squads</h2>
 	<a href="{% url 'game|choose_squad' pk=game.id %}">Register a new squad or join an existing one here.</a>
 	</div>
 	{% endif %}

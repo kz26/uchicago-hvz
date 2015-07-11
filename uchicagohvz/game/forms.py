@@ -25,7 +25,7 @@ class SquadForm(forms.Form):
 class GameRegistrationForm(forms.ModelForm):
 	class Meta:
 		model = Player
-		fields = ('dorm', 'opt_out_hvt', 'agree')
+		fields = ('dorm', 'gun_requested', 'opt_out_hvt', 'agree')
 
 	agree = forms.BooleanField()
 	
