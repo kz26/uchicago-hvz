@@ -132,7 +132,7 @@ RES = sorted((
 	("OPP" , "Oppidan")
 ), key=getKey)
 
-DORMS = sorted(
+DORMS = sorted((
 	('ALL', 'Allan Webb'),
 	('COU', 'Courtenay-Latimer'),
 	('DES', 'Desmond Tutu'),
