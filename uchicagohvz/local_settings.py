@@ -39,11 +39,10 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
-
 # Application definition
 
 INSTALLED_APPS = (
+    'suit',
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
@@ -67,11 +66,42 @@ MIDDLEWARE_CLASSES = (
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 TEMPLATE_CONTEXT_PROCESSORS += 'django.core.context_processors.request',
 
-
 ROOT_URLCONF = 'uchicagohvz.urls'
 
 WSGI_APPLICATION = 'uchicagohvz.wsgi.application'
 
+
+# Django-Suit Admin Portal
+SUIT_CONFIG = {
+    #header
+    'ADMIN_NAME': 'Hivemind',
+    'HEADER_DATE_FORMAT': 'l, j. F Y',
+    'HEADER_TIME_FORMAT': 'H:i',
+
+    #forms
+    'SHOW_REQUIRED_ASTERISK': True,
+    'CONFIRM_UNSAVED_CHANGES': True,
+
+    #menu
+    'SEARCH_URL': '', #disable admin search
+    'MENU_ICONS': {
+        'sites': 'icon-leaf',
+        'auth': 'icon-lock',
+        'game': 'icon-star',
+        'users': 'icon-user',
+    },
+    'MENU_OPEN_FIRST_CHILD': True,
+    'MENU_EXPAND': ('auth.group'),
+    'MENU': (
+        {'label': 'Home', 'icon-home', 'url': '/'},
+        'sites',
+        {'app': 'auth', 'icon': 'icon-lock', 'models': ('user', 'group')},
+        {'label': 'Settings', 'icon': 'icon-cog', 'models': ('auth.user', 'auth.group')},
+    ),
+
+    #misc
+    'LIST_PER_PAGE': 30
+}
 
 # Database
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
