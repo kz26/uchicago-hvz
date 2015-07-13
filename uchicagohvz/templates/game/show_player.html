@@ -105,7 +105,8 @@ nePoint = new google.maps.LatLng(GAME_NE_BOUND[0], GAME_NE_BOUND[1])
 bounds = new google.maps.LatLngBounds(swPoint, nePoint)
 mapOptions = {
 	center: new google.maps.LatLng(GAME_CENTER[0], GAME_CENTER[1]),
-	zoom: 15
+	zoom: 15,
+	styles: STYLE
 }
 map = new google.maps.Map($('#killMap').get(0), mapOptions)
 lvc = map.getCenter()
