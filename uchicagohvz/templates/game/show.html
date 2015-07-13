@@ -6,7 +6,7 @@
 
 <div>
 	<h2>Rules</h2>
-	<p class="text-primary">
+	<p>
 		By participating in this game, you certify that you have have read and agree to the
 		<a href="{{ game.rules.url }}">game rules</a>, <a href="{{ STATIC_URL }}WAIVER.pdf">player waiver</a>, and <a href="{% url 'terms' %}">Terms and Conditions</a> before playing.
 	</p>
@@ -105,8 +105,8 @@
 			<div class="col-lg-12">
 				<div class="row"><h4 id="bite_code" style="font-weight: bold;">{{ player.bite_code }}</h4></div>
 				<div class="row">
-					<div class="col-md-6"><button type="button" class="btn btn-danger" onclick="$('#bite_code').hide()">Hide Bite Code</button></div>
-					<div class="col-md-6"><button type="button" class="btn btn-success" onclick="$('#bite_code').show()">Show Bite Code</button></div>
+					<div class="col-md-6"><button type="button" class="btn btn-danger" onclick="$('#bite_code').hide()"><div class="bold">Hide Bite Code</div></button></div>
+					<div class="col-md-6"><button type="button" class="btn btn-success" onclick="$('#bite_code').show()"><div class="bold">Show Bite Code</div></button></div>
 				</div>
 			</div>
 		</div>
@@ -125,8 +125,8 @@
 					</ul>
 				</div>
 				{% endif %}
-				<a class="btn btn-danger btn-block" href="{% url 'game|bite' pk=game.pk %}">Log a kill...</a>
-				<p class="bold text-info">
+				<a class="btn btn-danger btn-block" href="{% url 'game|bite' pk=game.pk %}"><div class="bold">Log a kill...</div></a>
+				<p class="bold">
 					***Kills are timestamped at the time of submission, so enter your bite codes while they're still fresh!***
 				</p>
 			</div>
@@ -141,7 +141,7 @@
 					<input type="text" class="form-control" name="code" placeholder="two words" required>
 				</div>
 				<div class="form-group">
-					<button class="btn btn-{% if player.human %}success{% else %}danger{% endif %}" type="submit">Submit</button>
+					<button class="btn btn-{% if player.human %}success{% else %}danger{% endif %}" type="submit"><div class="bold">Submit</div></button>
 				</div>
 			</form>
 		</div>	
@@ -207,7 +207,7 @@
 	<li class="active"><a href="#analytics" data-toggle="tab"><span class="glyphicon glyphicon-stats"></span> Analytics</a></li>
 	<li><a href="#leaderboards-individual" data-toggle="tab"><span class="glyphicon glyphicon-list"></span> Individual Leaderboards</a></li>
 	{% if game.squads.count %}<li><a href="#leaderboards-squad" data-toggle="tab"><span class="glyphicon glyphicon-th-list"></span> Squad Leaderboards</a></li>{% endif %}
-	{% if game.flavor %}<li><a href="#flavor" data-toggle="tab"><span class="glyphicon glyphicon-pencil"></span> Flavor</a></li>{% endif %}
+	{% if game.flavor %}<li><a href="#flavor" data-toggle="tab"><span class="glyphicon glyphicon-pencil"></span> Flavour</a></li>{% endif %}
 </ul>
 <div class="tab-content">
 	<div id="analytics" class="tab-pane active">
@@ -458,7 +458,8 @@ nePoint = new google.maps.LatLng(GAME_NE_BOUND[0], GAME_NE_BOUND[1])
 bounds = new google.maps.LatLngBounds(swPoint, nePoint)
 mapOptions = {
 	center: new google.maps.LatLng(GAME_CENTER[0], GAME_CENTER[1]),
-	zoom: 15
+	zoom: 15,
+	style: STYLE
 }
 map = new google.maps.Map($('#killMap').get(0), mapOptions)
 lvc = map.getCenter()

@@ -127,7 +127,7 @@ DORMS = (
 	("OLI" , "Olive Schreiner"),
 	("PHE" , "Phelps"),
 	("OPP" , "Oppidan")
-)
+).sort()
 
 HALLS = (
 	('Allan Webb', ['CAN', 'CAN+', 'SAL', 'TRU', 'WIN']),
