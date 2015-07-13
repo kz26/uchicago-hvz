@@ -93,10 +93,11 @@ SUIT_CONFIG = {
     'MENU_OPEN_FIRST_CHILD': True,
     'MENU_EXPAND': ('auth.group'),
     'MENU': (
-        {'label': 'Home', 'icon': 'icon-home', 'url': '/'},
         'sites',
         {'app': 'auth', 'icon': 'icon-lock', 'models': ('user', 'group')},
-        {'label': 'Settings', 'icon': 'icon-cog', 'models': ('auth.user', 'auth.group')},
+        {'app': 'users', 'icon': 'icon-user', 'models': ('Profiles', )},
+        {'app': 'game', 'icon': 'icon-envelope', 'models': ('Awards', 'Games', 'High value dorms', 'High value targets', 'Kills', 'New_ squads', 'Players', 'Squads')},
+        {'label': 'Back to Site', 'icon': 'icon-leaf', 'url': '/'},
     ),
 
     #misc
@@ -138,7 +139,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
 	os.path.join(BASE_DIR, "static"),
 )
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
 # Django Compressor
 STATICFILES_FINDERS = (
