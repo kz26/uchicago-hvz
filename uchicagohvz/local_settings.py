@@ -93,7 +93,7 @@ SUIT_CONFIG = {
     'MENU_OPEN_FIRST_CHILD': True,
     'MENU_EXPAND': ('auth.group'),
     'MENU': (
-        {'label': 'Home', 'icon-home', 'url': '/'},
+        {'label': 'Home', 'icon': 'icon-home', 'url': '/'},
         'sites',
         {'app': 'auth', 'icon': 'icon-lock', 'models': ('user', 'group')},
         {'label': 'Settings', 'icon': 'icon-cog', 'models': ('auth.user', 'auth.group')},
