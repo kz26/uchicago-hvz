@@ -79,7 +79,7 @@ class Game(models.Model):
 def getKey(item):
 	return item[0]
 
-DORMS = sorted((
+RES = sorted((
 	("CAN" , "Canterbury"),
 	("CAN+", "Canterbury Annexe"),
 	("SAL" , "Salisbury"),
@@ -130,6 +130,21 @@ DORMS = sorted((
 	("OLI" , "Olive Schreiner"),
 	("PHE" , "Phelps"),
 	("OPP" , "Oppidan")
+), key=getKey)
+
+DORMS = sorted(
+	('ALL', 'Allan Webb'),
+	('COU', 'Courtenay-Latimer'),
+	('DES', 'Desmond Tutu'),
+	('FOU', 'Founders'),
+	('HOB', 'Hobson'),
+	('JAN', 'Jan Smuts'),
+	('MIR', 'Miriam Makeba'),
+	('KIM', 'Kimberley'),
+	('LIL', 'Lilian Ngoyi'),
+	('NEL', 'Nelson Mandela'),
+	('STM', 'St Mary'),
+	('OPP', 'Oppidan')
 ), key=getKey)
 
 HALLS = (

@@ -7,8 +7,8 @@
 <div>
 	<h2>Rules</h2>
 	<p>
-		By participating in this game, you certify that you have have read and agree to the
-		<a href="{{ game.rules.url }}">game rules</a>, <a href="{{ STATIC_URL }}WAIVER.pdf">player waiver</a>, and <a href="{% url 'terms' %}">Terms and Conditions</a> before playing.
+		<i>By participating in this game, you certify that you have have read and agree to the
+		<a href="{{ game.rules.url }}">game rules</a>, <a href="{{ STATIC_URL }}WAIVER.pdf">player waiver</a>, and <a href="{% url 'terms' %}">Terms and Conditions</a> before playing.</i>
 	</p>
 	{% if game.status == 'in_progress' %}
 	<p>The objective of zombies is to tag humans. The objective of humans is to survive. If you are a human and you are tagged by a zombie, give them the bite code on your bandanna.
@@ -158,20 +158,19 @@
 			<dt>Your squad</dt>
 			<dd>{{ player.new_squad.name }}
 			{% endif %}
-			<dt>Your residence</dt>
+			<dt>Your Hall</dt>
 			<dd>{{ player.get_dorm_display }}</dd>
 		</dl>
 		{% if player.active and not player.user.profile.phone_number %}
 		<p class="text-warning">We don't have a phone number on file for you in case we need to contact you! Add it to your <a href="{% url 'users|update_profile' %}">profile</a>.*
 		</p>
 		{% endif %}
+		{% if game.status == 'registration' or game.status == 'in_progress' %}
+		<h2>Squads</h2>
+		<a href="{% url 'game|choose_squad' pk=game.id %}">Register a new squad or join an existing one here.</a>
+		{% endif %}
 	</div>
-	{% if game.status == 'registration' or game.status == 'in_progress' %}
-	<div class="col-lg-4">
-	<h2>Squads</h2>
-	<a href="{% url 'game|choose_squad' pk=game.id %}">Register a new squad or join an existing one here.</a>
-	</div>
-	{% endif %}
+	
 	<div class="col-lg-4">
 		<h2>My Score</h2>
 		{% if game.status == 'in_progress' or game.status == 'finished' %}
@@ -249,12 +248,12 @@
 		</div>
 		<div class="row">
 			<div class="col-md-6">				
-				<h2>Most Courageous Residences</h2>
-				<p>Where courage = (total human points earned by res / # players in res) * 100</p>
+				<h2>Most Courageous Halls</h2>
+				<p>Where courage = (total human points earned by hall / # players in res) * 100</p>
 				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
-							<th>Res</th>
+							<th>Hall</th>
 							<th>Courageousness</th>
 						</tr>
 					</thead>
@@ -269,12 +268,12 @@
 				</table>
 			</div>
 			<div class="col-md-6">
-				<h2>Most Infectious Residences</h2>
-				<p>Where infectivity = (total zombie points earned by res / # players in res) * 100</p>
+				<h2>Most Infectious Halls</h2>
+				<p>Where infectivity = (total zombie points earned by hall / # players in res) * 100</p>
 				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
-							<th>Res</th>
+							<th>Hall</th>
 							<th>Infectivity</th>
 						</tr>
 					</thead>
@@ -457,9 +456,9 @@ swPoint = new google.maps.LatLng(GAME_SW_BOUND[0], GAME_SW_BOUND[1])
 nePoint = new google.maps.LatLng(GAME_NE_BOUND[0], GAME_NE_BOUND[1])
 bounds = new google.maps.LatLngBounds(swPoint, nePoint)
 mapOptions = {
+	styles: STYLE,
 	center: new google.maps.LatLng(GAME_CENTER[0], GAME_CENTER[1]),
-	zoom: 15,
-	styles: STYLE
+	zoom: 15
 }
 map = new google.maps.Map($('#killMap').get(0), mapOptions)
 lvc = map.getCenter()
