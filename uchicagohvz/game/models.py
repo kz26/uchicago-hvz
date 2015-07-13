@@ -76,7 +76,10 @@ class Game(models.Model):
 	def get_absolute_url(self):
 		return ('game|show', [self.pk])
 
-DORMS = (
+def getKey(item):
+	return item[0]
+
+DORMS = sorted((
 	("CAN" , "Canterbury"),
 	("CAN+", "Canterbury Annexe"),
 	("SAL" , "Salisbury"),
@@ -127,7 +130,7 @@ DORMS = (
 	("OLI" , "Olive Schreiner"),
 	("PHE" , "Phelps"),
 	("OPP" , "Oppidan")
-).sort()
+), key=getKey)
 
 HALLS = (
 	('Allan Webb', ['CAN', 'CAN+', 'SAL', 'TRU', 'WIN']),
