@@ -5,18 +5,12 @@
     - Tags on google map
     - Random value of drop
     - Mod managed
+# Different flavour for zombies and humans
 
 ## Design Stuff
-# Shift squads to centre column
-# My Score on its own in the right column
-# rename "Bite Code" to "HvZID"
 # Logo need to be replaced. Brendan to provide by email.
-# Map Skin
 
 ## Content
-# Update waiver
 # update Rules (to be provided by Brendan 14th)
-# Contact - Admins and Roles
-# FAQ - Brendan to check and update.
 # "Rules" on game main page - Brendan
 # Flavour - Mike (Brendan to kick)
