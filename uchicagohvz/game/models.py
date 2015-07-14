@@ -478,10 +478,11 @@ REDEEM_TYPES = (
 
 class Award(models.Model):
 	class Meta:
-		unique_together = (('game', 'name'), ('game', 'code'))
+		unique_together = (('game', 'name'), ('game', 'code'), ('game', 'group'))
 	
 	game = models.ForeignKey(Game, related_name='+')
 	name = models.CharField(max_length=255)
+	group = models.CharField(max_length=255, help_text="i.e. Supply Drop Day 1 or Side Mission 2 Day 2")
 	points = models.IntegerField(help_text='Can be negative, e.g. to penalize players')
 	players = models.ManyToManyField(Player, related_name='awards', null=True, blank=True, help_text='Players that should receive this award.')
 	code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
