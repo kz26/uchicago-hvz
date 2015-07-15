@@ -1,4 +1,4 @@
-from production_settings import *
+from local_settings import *
 
 try:
     from secrets import DATABASES

@@ -109,8 +109,6 @@ class HVTAdminForm(forms.ModelForm):
 class HVTAdmin(admin.ModelAdmin):
 	form = HVTAdminForm
 
-
-
 admin.site.register(Squad)
 admin.site.register(New_Squad)
 admin.site.register(Player, PlayerAdmin)
@@ -118,3 +116,4 @@ admin.site.register(Kill, KillAdmin)
 admin.site.register(Award, AwardAdmin)
 admin.site.register(HighValueTarget, HVTAdmin)
 admin.site.register(HighValueDorm)
+admin.site.register(Mission)

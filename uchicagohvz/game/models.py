@@ -5,7 +5,7 @@ from django.db import transaction
 from django.conf import settings
 from django.utils import timezone
 from uchicagohvz.overwrite_fs import OverwriteFileSystemStorage
-from uchicagohvz.users.backend import RhodesUniLDAPBackend as UChicagoLDAPBackend
+#from uchicagohvz.users.backend import RhodesUniLDAPBackend as UChicagoLDAPBackend
 from mptt.models import MPTTModel, TreeForeignKey
 from ranking import Ranking
 import hashlib
@@ -32,7 +32,9 @@ class Game(models.Model):
 	end_date = models.DateTimeField()
 	rules = models.FileField(upload_to=gen_rules_filename, storage=OverwriteFileSystemStorage())
 	color = models.CharField(max_length=64, default="#FFFFFF")	
-	flavor = models.TextField(max_length=6000, default="")
+	flavor_h = models.TextField(max_length=6000, default="")
+	flavor_z = models.TextField(max_length=6000, default="")
+	flavor_n = models.TextField(max_length=6000, default="")
 
 	objects = GameManager()
 
@@ -476,13 +478,36 @@ REDEEM_TYPES = (
 	('A', 'All players'),
 )
 
+class Mission(models.Model):
+	class Meta:
+		unique_together = (('game', 'name'), )
+
+	game = models.ForeignKey(Game, related_name='+')
+	name = models.CharField(max_length=255)
+	lat = models.FloatField(null=True, blank=True, verbose_name='latitude')
+	lng = models.FloatField(null=True, blank=True, verbose_name='longitude')
+	start_date = models.DateTimeField()
+	end_date = models.DateTimeField()
+	def_points = models.IntegerField(help_text='Can be negative, e.g. to penalize players')
+	def_redeem_limit = models.IntegerField(
+		help_text='Maximum number of players that can redeem award via code entry (set to 0 for awards to be added by moderators only)'
+	)
+	def_redeem_type = models.CharField(max_length=1, choices=REDEEM_TYPES)
+
+	def __unicode__(self):
+		return "%s" % (self.name)
+
+	def active(self):
+		now = timezone.now()
+		return now < self.end_date and self.start_date < now
+
 class Award(models.Model):
 	class Meta:
 		unique_together = (('game', 'name'), ('game', 'code'), ('game', 'group'))
 	
 	game = models.ForeignKey(Game, related_name='+')
 	name = models.CharField(max_length=255)
-	group = models.CharField(max_length=255, help_text="i.e. Supply Drop Day 1 or Side Mission 2 Day 2")
+	group = models.ForeignKey(Mission, related_name='mission', null=True, blank=True)
 	points = models.IntegerField(help_text='Can be negative, e.g. to penalize players')
 	players = models.ManyToManyField(Player, related_name='awards', null=True, blank=True, help_text='Players that should receive this award.')
 	code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
