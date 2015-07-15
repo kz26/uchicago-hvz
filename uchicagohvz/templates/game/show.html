@@ -541,10 +541,14 @@ $.get("data/missions/")
 			if k.location != null
 				marker = new google.maps.Marker {
 						map: map,
-						icon: k.img,
-						position: new google.maps.LatLng(k.location[0], k.location[1]),
-						size: new google.maps.Size(64, 64),
-						scaledSize: new google.maps.Size(32,32)
+						icon: {
+							url: k.img,
+							scaledSize: new google.maps.Size(32, 32),
+							origin: new google.maps.Point(0, 0),
+							anchor: new google.maps.Point(0, 0)
+						},
+						position: new google.maps.LatLng(k.location[0], k.location[1])
+						
 					}
 				endDT = moment(k.end_date).format('D/M/YY h:mm:ss A')
 				content = $(
