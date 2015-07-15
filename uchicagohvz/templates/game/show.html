@@ -543,7 +543,7 @@ $.get("data/missions/")
 						map: map,
 						icon: k.img,
 						position: new google.maps.LatLng(k.location[0], k.location[1]),
-						size: new google.maps.Size(32,32)
+						scaledSize: new google.maps.Size(32,32)
 					}
 				endDT = moment(k.end_date).format('D/M/YY h:mm:ss A')
 				content = $(
