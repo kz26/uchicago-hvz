@@ -478,6 +478,20 @@ REDEEM_TYPES = (
 	('A', 'All players'),
 )
 
+STATIC = '/static/img/mission_markers/'
+MISSION_IMAGE_TYPES = (
+	(STATIC + 'bag.png', 		'Bag'),
+	(STATIC + 'bottle.png', 	'Bottle'),
+	(STATIC + 'food.png', 		'Food'),
+	(STATIC + 'hospital.png', 	'Hospital'),
+	(STATIC + 'medical.png', 	'Medical'),
+	(STATIC + 'petrol.png', 	'Petrol'),
+	(STATIC + 'pills.png', 		'Pills'),
+	(STATIC + 'plane.png', 		'Plane'),
+	(STATIC + 'tools.png', 		'Tools'),
+	(STATIC + 'tooth.png', 		'Tooth'),
+)
+
 class Mission(models.Model):
 	class Meta:
 		unique_together = (('game', 'name'), )
@@ -486,6 +500,7 @@ class Mission(models.Model):
 	name = models.CharField(max_length=255)
 	lat = models.FloatField(null=True, blank=True, verbose_name='latitude')
 	lng = models.FloatField(null=True, blank=True, verbose_name='longitude')
+	img = models.CharField(max_length=100, choices=MISSION_IMAGE_TYPES) # Path to map image
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
 	def_points = models.IntegerField(help_text='Can be negative, e.g. to penalize players')
@@ -500,6 +515,10 @@ class Mission(models.Model):
 	def active(self):
 		now = timezone.now()
 		return now < self.end_date and self.start_date < now
+
+	def admin_img(self):
+		return '<img src="%s"/>' % self.img
+
 
 class Award(models.Model):
 	class Meta:

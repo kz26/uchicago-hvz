@@ -109,6 +109,9 @@ class HVTAdminForm(forms.ModelForm):
 class HVTAdmin(admin.ModelAdmin):
 	form = HVTAdminForm
 
+class MissionAdmin(admin.ModelAdmin):
+	list_display = ('game', 'name', 'lat', 'lng', 'admin_img', 'start_date', 'end_date', 'def_points', 'def_redeem_limit', 'def_redeem_type')
+
 admin.site.register(Squad)
 admin.site.register(New_Squad)
 admin.site.register(Player, PlayerAdmin)
@@ -116,4 +119,4 @@ admin.site.register(Kill, KillAdmin)
 admin.site.register(Award, AwardAdmin)
 admin.site.register(HighValueTarget, HVTAdmin)
 admin.site.register(HighValueDorm)
-admin.site.register(Mission)
+admin.site.register(Mission, MissionAdmin)
