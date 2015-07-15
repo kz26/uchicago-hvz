@@ -518,6 +518,7 @@ class Mission(models.Model):
 
 	def admin_img(self):
 		return '<img src="%s"/>' % self.img
+	admin_img.allow_tags = True
 
 
 class Award(models.Model):
