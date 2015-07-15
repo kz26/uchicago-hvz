@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.db import transaction
 from django.conf import settings
 from django.utils import timezone
+from geoposition.fields import GeopositionField
 from uchicagohvz.overwrite_fs import OverwriteFileSystemStorage
 #from uchicagohvz.users.backend import RhodesUniLDAPBackend as UChicagoLDAPBackend
 from mptt.models import MPTTModel, TreeForeignKey
@@ -433,8 +434,9 @@ class Kill(MPTTModel):
 	hvd = models.ForeignKey('game.HighValueDorm', verbose_name='High-value Dorm', null=True, blank=True, related_name='kills', on_delete=models.SET_NULL)
 	hvt = models.OneToOneField('game.HighValueTarget', verbose_name='High-value target', null=True, blank=True, related_name='kill', on_delete=models.SET_NULL)
 	notes = models.TextField(blank=True)
-	lat = models.FloatField(null=True, blank=True, verbose_name='latitude')
-	lng = models.FloatField(null=True, blank=True, verbose_name='longitude')
+	pos = GeopositionField(null=True, blank=True, verbose_name='position')
+	# lat = models.FloatField(null=True, blank=True, verbose_name='latitude')
+	# lng = models.FloatField(null=True, blank=True, verbose_name='longitude')
 
 	def __unicode__(self):
 		return "%s (%s) --> %s (%s) [%s]" % (self.killer.user.get_full_name(), self.killer.user.username, self.victim.user.get_full_name(), self.victim.user.username, self.killer.game.name)
@@ -498,8 +500,9 @@ class Mission(models.Model):
 
 	game = models.ForeignKey(Game, related_name='+')
 	name = models.CharField(max_length=255)
-	lat = models.FloatField(null=True, blank=True, verbose_name='latitude')
-	lng = models.FloatField(null=True, blank=True, verbose_name='longitude')
+	pos = GeopositionField(null=True, blank=True, verbose_name='position')
+	# lat = models.FloatField(null=True, blank=True, verbose_name='latitude')
+	# lng = models.FloatField(null=True, blank=True, verbose_name='longitude')
 	img = models.CharField(max_length=100, choices=MISSION_IMAGE_TYPES) # Path to map image
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()

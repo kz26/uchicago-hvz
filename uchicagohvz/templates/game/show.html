@@ -206,7 +206,7 @@
 	<li class="active"><a href="#analytics" data-toggle="tab"><span class="glyphicon glyphicon-stats"></span> Analytics</a></li>
 	<li><a href="#leaderboards-individual" data-toggle="tab"><span class="glyphicon glyphicon-list"></span> Individual Leaderboards</a></li>
 	{% if game.squads.count %}<li><a href="#leaderboards-squad" data-toggle="tab"><span class="glyphicon glyphicon-th-list"></span> Squad Leaderboards</a></li>{% endif %}
-	{% if game.flavor %}<li><a href="#flavor" data-toggle="tab"><span class="glyphicon glyphicon-pencil"></span> Flavour</a></li>{% endif %}
+	{% if game.flavor_h or game.flavor_z or game.flavor_n %}<li><a href="#flavor" data-toggle="tab"><span class="glyphicon glyphicon-pencil"></span> Flavour</a></li>{% endif %}
 </ul>
 <div class="tab-content">
 	<div id="analytics" class="tab-pane active">
@@ -400,10 +400,20 @@
 			</div>
 	</div>
 	{% endif %}
-	{% if game.flavor %}
+	{% if game.flavor_h or game.flavor_z or game.flavor_n %}
 		<div id="flavor" class="tab-pane">
 			<div class="row">
-				<p class="center" style="margin-top: 1em;">{{ game.flavor }}</p>
+				<p class="center" style="margin-top: 1em;">
+					{% if player and player.active %}
+						{% if player.human %}
+							{{ game.flavor_h }}
+						{% else %}
+							{{ game.flavor_z }}
+						{% endif %}
+					{% else %}
+						{{ game.flavor_n }}
+					{% endif %}
+				</p>
 			</div>
 		</div>
 	{% endif %}
@@ -522,6 +532,32 @@ $.get("data/kills/")
 					else
 						m.setVisible false
 
+$.get("data/missions/")
+	.done (data) ->
+		infoWin = new google.maps.InfoWindow()
+		markers = []
+		for k in data
+			k.date = new Date(k.date)
+			if k.location != null
+				marker = new google.maps.Marker {
+						map: map,
+						icon: k.img,
+						position: new google.maps.LatLng(k.location[0], k.location[1])
+					}
+				endDT = moment(k.end_date).format('M/D/YY h:mm:ss A')
+				content = $(
+					"<ul style='color:black'>
+						<li><b>Mission:</b> #{k.name}</li>
+						<li><b>End Date:</b> #{endDT}</li>
+					</ul>"
+				)
+				content.css('width', '200px')
+				markers.push([marker, k])
+				google.maps.event.addListener marker, 'click', ((marker, content) ->
+					return ->
+						infoWin.setContent(content)
+						infoWin.open(map, marker)
+				)(marker, content.get(0))
 
 
 
@@ -631,94 +667,6 @@ $.get("data/kills-by-tod/")
 					name: 'Kills'
 				}
 			]
-		}
-
-$.get("data/humans-by-major/")
-	.done (data) ->
-		$("#hMajorsChart").highcharts {
-			chart: {
-				type: 'scatter',
-				backgroundColor: '#333',
-				zoomType: 'xy',
-			},
-			credits: {
-				enabled: false
-			},
-			colors: ['#7cb5ec', '#4369FF', '#90ed7d', '#f7a35c', '#8085e9',
-   '#f15c80', '#e4d354', '#FF85e8', '#8d4653', '#91e8e1', '#2397fe', '#FF115a', '#102bBF'],
-			title: {
-				text: null,
-			},
-			legend: {
-				enabled: false
-			},
-			xAxis: {
-				title: {
-					text: 'Average lifespan (hours)',
-					style: whiteStyle
-				},
-				labels: {
-					style: whiteStyle
-				}
-			},
-			yAxis: {
-				title: {
-					text: 'Average human points/player',
-					style: whiteStyle
-				},
-				labels: {
-					style: whiteStyle
-				}
-			},
-			series: data,
-			tooltip: {
-				formatter: ->
-					return "#{this.series.name}<br><b>Players:</b> #{this.point.name}<br><b>Hours:</b> #{this.point.x}<br><b>Points:</b> #{this.point.y}"
-			}
-		}
-
-$.get("data/zombies-by-major/")
-	.done (data) ->
-		$("#zMajorsChart").highcharts {
-			chart: {
-				type: 'scatter',
-				backgroundColor: '#333',
-				zoomType: 'xy',
-			},
-			credits: {
-				enabled: false
-			},
-			colors: ['#7cb5ec', '#4369FF', '#90ed7d', '#f7a35c', '#8085e9',
-   '#f15c80', '#e4d354', '#FF85e8', '#8d4653', '#91e8e1', '#2397fe', '#FF115a', '#102bBF'],
-			title: {
-				text: null,
-			},
-			legend: {
-				enabled: false
-			},
-			xAxis: {
-				title: {
-					text: 'Average time spent as zombie (hours)',
-					style: whiteStyle
-				},
-				labels: {
-					style: whiteStyle
-				}
-			},
-			yAxis: {
-				title: {
-					text: 'Average zombie points/player',
-					style: whiteStyle
-				},
-				labels: {
-					style: whiteStyle
-				}
-			},
-			series: data,
-			tooltip: {
-				formatter: ->
-					return "#{this.series.name}<br><b>Players:</b> #{this.point.name}<br><b>Hours:</b> #{this.point.x}<br><b>Points:</b> #{this.point.y}"
-			}
 		}
 </script>
 {% endcompress %}

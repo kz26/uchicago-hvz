@@ -243,3 +243,4 @@ def zombies_by_major(game, **kwargs):
 			'data': [point]
 		})
 	return data
+

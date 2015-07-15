@@ -17,7 +17,19 @@ class KillSerializer(serializers.ModelSerializer):
 		return obj.victim.display_name
 
 	def get_location(self, obj):
-		if not (obj.lat and obj.lng):
+		if not obj.pos:
 			return None
-		return (obj.lat, obj.lng)
+		return (obj.pos.latitude, obj.pos.longitude)
+
+class MissionSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Mission
+		fields = ('id', 'name', 'end_date', 'img', 'location')
+
+	location = serializers.SerializerMethodField()
+
+	def get_location(self, obj):
+		if not obj.pos:
+			return None
+		return (obj.pos.latitude, obj.pos.longitude)
 

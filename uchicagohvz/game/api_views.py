@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from uchicagohvz.game.models import *
 from uchicagohvz.game.data_apis import *
 from uchicagohvz.game.serializers import *
+from django.utils import timezone
 
 class KillFeed(ListAPIView):
 	serializer_class = KillSerializer
@@ -48,3 +49,11 @@ class ZombiesByMajor(APIView):
 		game = get_object_or_404(Game, id=kwargs['pk'])
 		data = zombies_by_major(game)
 		return Response(data)
+
+class MissionFeed(ListAPIView):
+	serializer_class = MissionSerializer
+
+	def get_queryset(self):
+		game = get_object_or_404(Game, id=kwargs['pk'])
+		now = timezone.now()
+		return Mission.objects.exclude(start_date__gte=now).filter(end_date__lte=now).order_by('end_date')
