@@ -491,7 +491,7 @@ $.get("data/kills/")
 						icon: '{{ STATIC_URL }}img/skull.png',
 						position: new google.maps.LatLng(k.location[0], k.location[1])
 					}
-				killDT = moment(k.date).format('M/D/YY h:mm:ss A')
+				killDT = moment(k.date).format('D/M/YY h:mm:ss A')
 				content = $(
 					"<ul style='color:black'>
 						<li><b>Killer:</b> #{k.killer}</li>
@@ -542,9 +542,10 @@ $.get("data/missions/")
 				marker = new google.maps.Marker {
 						map: map,
 						icon: k.img,
-						position: new google.maps.LatLng(k.location[0], k.location[1])
+						position: new google.maps.LatLng(k.location[0], k.location[1]),
+						size: new google.maps.Size(32,32)
 					}
-				endDT = moment(k.end_date).format('M/D/YY h:mm:ss A')
+				endDT = moment(k.end_date).format('D/M/YY h:mm:ss A')
 				content = $(
 					"<ul style='color:black'>
 						<li><b>Mission:</b> #{k.name}</li>
