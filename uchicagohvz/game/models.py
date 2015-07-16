@@ -544,26 +544,25 @@ class Award(models.Model):
 	redeem_type = models.CharField(max_length=1, choices=REDEEM_TYPES)
 
 	def __unicode__(self):
-		return "%s (%s)" % (self.name, self.game.name)
+		return "%s (%s) - %s" % (self.name, self.game.name, self.code)
 
 	def save(self, *args, **kwargs):
-		if not self.code:
-			while True:
-				code = gen_bite_code()
-				if not (Award.objects.filter(game=self.game, code=code).exists() or Player.objects.filter(game=self.game, bite_code=code).exists()):
-					self.code = code
-					break
 		if self.group:
+			self.game = self.group.game
 			if not self.name:
 				self.name = self.group.name
-			if not self.game:
-				self.game = self.group.game
 			if not self.points:
 				self.points = self.group.def_points
 			if not self.redeem_limit:
 				self.redeem_limit = self.group.def_redeem_limit
 			if not self.redeem_type:
 				self.redeem_type = self.group.def_redeem_type
+		if not self.code:
+			while True:
+				code = gen_bite_code()
+				if not (Award.objects.filter(game=self.game, code=code).exists() or Player.objects.filter(game=self.game, bite_code=code).exists()):
+					self.code = code
+					break
 		super(Award, self).save(*args, **kwargs)
 
 class HighValueTarget(models.Model):
