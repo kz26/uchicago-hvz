@@ -29,7 +29,7 @@ def send_activation_email(student_number):
 	dest = student_number + '@campus.ru.ac.za'
 	src = settings.DEFAULT_FROM_EMAIL
 	salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
-	activation_key = hashlib.sha1(salt+email).hexdigest()
+	activation_key = hashlib.sha1(salt+dest).hexdigest()
 	key_expires = datetime.datetime.today() + datetime.timedelta(days=2)
 	msg = msg % (activation_key)
 	send_mail(subject, msg, src, [dest], fail_silently=settings.DEBUG)
@@ -54,11 +54,12 @@ class RegisterUser(FormView):
 		user.is_active = False
 		user.save()
 		(act_key, exp) = send_activation_email(user.username)
-		profile = Profile(
-			user=user,
-			activation_key=act_key,
-			activation_key_expires=exp,
-		)
+		try:
+			profile = Profile.objects.get(user=user)
+		except:
+			profile = Profile(user=user)
+		profile.activation_key=act_key
+		profile.activation_key_expires=exp
 		profile.save()
 		return HttpResponseRedirect('/users/register/success')
 
