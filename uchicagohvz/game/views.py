@@ -147,8 +147,7 @@ class EnterBiteCode(FormView):
 		kill = victim.kill_me(self.killer)
 		if kill:
 			send_death_notification.delay(kill)
-			kill.pos.latitude = form.cleaned_data.get('lat')
-			kill.pos.longitude = form.cleaned_data.get('lng')
+			kill.pos = Geoposition(form.cleaned_data.get('lat'), form.cleaned_data.get('lng'))
 			kill.notes = form.cleaned_data.get('notes')
 			kill.save()
 			victim_profile = Profile.objects.get(user=victim.user)
