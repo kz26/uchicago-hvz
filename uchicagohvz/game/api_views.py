@@ -56,4 +56,4 @@ class MissionFeed(ListAPIView):
 	def get_queryset(self):
 		game = get_object_or_404(Game, id=self.kwargs['pk'])
 		now = timezone.now()
-		return Mission.objects.exclude(start_date__gte=now).filter(end_date__lte=now).order_by('end_date')
+		return Mission.objects.filter(end_date__lte=now, start_date__gte=now).order_by('end_date')

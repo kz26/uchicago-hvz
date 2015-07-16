@@ -218,7 +218,7 @@
 				<button class="btn btn-success" id="hphuncheckAll">Hide All</button>
 			</div>		
 			<div class="col-md-6">
-				<h2>Kills by Location <small>geotagged kills only</small></h2>
+				<h2>Game Map <small>geotagged kills and missions only</small></h2>
 				<div id="killMap" style="height: 350px;"></div>
 				<div class="center">
 					<div id="mapTimeFilters" class="btn-group" data-toggle="buttons">
@@ -539,14 +539,12 @@ $.get("data/missions/")
 		for k in data
 			k.date = new Date(k.date)
 			if k.location != null
+				var missionIcon = {
+					url: k.img,
+					scaledSize: new google.maps.Size(32, 32) };
 				marker = new google.maps.Marker {
 						map: map,
-						icon: {
-							url: k.img,
-							scaledSize: new google.maps.Size(32, 32),
-							origin: new google.maps.Point(0, 0),
-							anchor: new google.maps.Point(0, 0)
-						},
+						icon: missionIcon,
 						position: new google.maps.LatLng(k.location[0], k.location[1])
 						
 					}
