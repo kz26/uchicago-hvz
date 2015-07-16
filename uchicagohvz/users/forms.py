@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from captcha.fields import ReCaptchaField
 from uchicagohvz.users.models import *
 from uchicagohvz.game.models import Game, Player
+import re
 
 def student_id_regex(student_id):
     return re.match('(g|G)?([0-9]{2})[a-zA-Z]([0-9]{4})', student_id) is not None

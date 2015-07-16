@@ -1,4 +1,5 @@
 from django.shortcuts import *
+from django.http import Http404
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import views as auth_views
@@ -17,6 +18,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 from rest_framework import status
+import django.utils.timezone as timezone
 import datetime
 import random
 import hashlib
@@ -42,7 +44,21 @@ def logout(request):
 	return auth_views.logout(request, "/")
 
 class Activate(APIView):
-	pass
+	success_url = '/users/activate/success'
+	@method_decorator(csrf_exempt)
+	def get(self, *args, **kwargs):
+		key = kwargs.get('key', None)
+		if key:
+			profile = Profile.objects.get(activation_key=key)
+			if profile:
+				user = profile.user
+				user.is_active = True
+				user.save()
+				profile.activation_key_expires = timezone.now()
+				profile.save()
+				return HttpResponseRedirect(self.success_url)
+		raise Http404("Key does not exist. Please contact the site administrator.")
+
 
 class RegisterUser(FormView):
 	form_class = UserRegistrationForm
