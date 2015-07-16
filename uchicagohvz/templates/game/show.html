@@ -539,12 +539,12 @@ $.get("data/missions/")
 		for k in data
 			k.date = new Date(k.date)
 			if k.location != null
-				var missionIcon = {
-					url: k.img,
-					scaledSize: new google.maps.Size(32, 32) };
 				marker = new google.maps.Marker {
 						map: map,
-						icon: missionIcon,
+						icon: {
+							url: k.img,
+							scale: 0.5
+						},
 						position: new google.maps.LatLng(k.location[0], k.location[1])
 						
 					}
