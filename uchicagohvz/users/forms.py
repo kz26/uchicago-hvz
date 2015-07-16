@@ -44,6 +44,7 @@ class UserRegistrationForm(forms.ModelForm):
 
 class ResendActivationEmailForm(forms.Form):
 	username = forms.CharField()
+	username.help_text = "Enter your student number here to resend the activation email."
 
 	def clean(self):
 		data = super(ResendActivationEmailForm, self).clean()
