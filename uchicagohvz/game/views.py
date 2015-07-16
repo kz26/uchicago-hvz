@@ -22,6 +22,7 @@ from uchicagohvz.game.forms import *
 from uchicagohvz.game.data_apis import *
 from uchicagohvz.game.tasks import *
 from uchicagohvz.users.models import *
+from geoposition import Geoposition
 import re
 
 # Create your views here.
