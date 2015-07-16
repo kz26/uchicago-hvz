@@ -13,6 +13,10 @@ from uchicagohvz.users.forms import *
 from uchicagohvz.users.models import *
 from uchicagohvz.game.models import *
 from uchicagohvz.game.templatetags.game_extras import pp_timedelta
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
+from rest_framework import status
 import datetime
 import random
 import hashlib
