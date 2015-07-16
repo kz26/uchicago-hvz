@@ -1,3 +1,4 @@
+import django.utils.timezone
 from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -6,8 +7,13 @@ from uchicagohvz.users.phone import CARRIERS
 
 # Create your models here.
 
+def one_day_hence():
+	timezone.now() + timezone.timedelta(days=2)
+
 class Profile(models.Model):
 	user = models.OneToOneField(settings.AUTH_USER_MODEL)
+	activation_key = models.CharField(max_length=40, blank=True, unique=True)
+	activation_key_expires = models.DateTimeField(default=one_day_hence)
 	phone_number = PhoneNumberField(blank=True)
 	phone_carrier = models.CharField(max_length=32, blank=True, choices=[(k, k) for k in sorted(CARRIERS.keys())])
 	last_words = models.CharField(max_length=255, blank=True)

@@ -4,6 +4,8 @@ from captcha.fields import ReCaptchaField
 from uchicagohvz.users.models import *
 from uchicagohvz.game.models import Game, Player
 
+def student_id_regex(student_id):
+    return re.match('(g|G)?([0-9]{2})[a-zA-Z]([0-9]{4})', student_id) is not None
 
 class UserRegistrationForm(forms.ModelForm):
 	captcha = ReCaptchaField(attrs={'theme' : 'blackglass'})
@@ -14,7 +16,7 @@ class UserRegistrationForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(UserRegistrationForm, self).__init__(*args, **kwargs)
-		self.fields['username'].help_text = "Enter a username."
+		self.fields['username'].help_text = "Enter your student number."
 		self.fields['first_name'].help_text = "Enter your first name."
 		self.fields['last_name'].help_text = "Enter your last name."
 		self.fields['email'].help_text = "Enter your email address."
@@ -34,7 +36,27 @@ class UserRegistrationForm(forms.ModelForm):
 			User.objects.get(username=username)
 			self.error_class(['Someone already has that username.'])
 		except User.DoesNotExist:
-			pass		
+			pass
+		if not student_id_regex(user):
+			self.error_class(['Invalid student number'])
+		return data
+
+class ResendActivationEmailForm(forms.Form):
+	username = forms.CharField()
+
+	def clean(self):
+		data = super(ResendActivationEmailForm, self).clean()
+		username = data.get('username')
+		if not username:
+			self.error_class(['Please enter your student number'])
+		else:
+			try:
+				User.objects.get(username=username)
+				self.error_class(['User is already active'])
+			except User.DoesNotExist:
+				pass
+			if not student_id_regex(username):
+				self.error_class(['Invalid student number'])
 		return data
 
 class ProfileForm(forms.ModelForm):

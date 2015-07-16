@@ -32,14 +32,19 @@ REST_FRAMEWORK = {
 EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 CELERY_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-## Uncomment for Mandrill
-#from secrets import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
-#EMAIL_HOST = 'smtp.mandrillapp.com'
-#EMAIL_PORT = '587'
-#EMAIL_USE_TLS = True
+try:
+    from secrets import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+except:
+    EMAIL_HOST_USER = 'placeholder'
+    EMAIL_HOST_PASSWORD = 'placeholder'
+EMAIL_HOST = 'mail.google.com'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True
 
 # Uncomment for localhost email
-EMAIL_HOST = 'localhost'
+# EMAIL_HOST = 'localhost'
+
+
 
 # Chat settings
 CHAT_SERVER_URL = 'https://hvz.rucus.me/chat'

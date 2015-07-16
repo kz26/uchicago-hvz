@@ -1,5 +1,8 @@
 from django.shortcuts import *
+from django.core.mail import send_mail
+from django.conf import settings
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import *
 from django.contrib.auth.forms import PasswordResetForm
 from django.utils.decorators import method_decorator
@@ -11,14 +14,31 @@ from uchicagohvz.users.models import *
 from uchicagohvz.game.models import *
 from uchicagohvz.game.templatetags.game_extras import pp_timedelta
 import datetime
+import random
+import hashlib
 
 # Create your views here.
+
+def send_activation_email(student_number):
+	subject = settings.ACTIVATION_MAIL_SUBJECT
+	msg = settings.ACTIVATION_MAIL_MSG
+	dest = student_number + '@campus.ru.ac.za'
+	src = settings.DEFAULT_FROM_EMAIL
+	salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+	activation_key = hashlib.sha1(salt+email).hexdigest()
+	key_expires = datetime.datetime.today() + datetime.timedelta(days=2)
+	msg = msg % (activation_key)
+	send_mail(subject, msg, src, [dest], fail_silently=settings.DEBUG)
+	return (activation_key, key_expires)
 
 def login(request):
 	return auth_views.login(request, "users/login.html")
 
 def logout(request):
 	return auth_views.logout(request, "/")
+
+class Activate(APIView):
+	pass
 
 class RegisterUser(FormView):
 	form_class = UserRegistrationForm
@@ -27,12 +47,26 @@ class RegisterUser(FormView):
 	def form_valid(self, form):
 		user = form.save(commit=False)
 		user.set_password(user.password)
+		user.is_active = False
 		user.save()
-		return HttpResponseRedirect('/')
+		(act_key, exp) = send_activation_email(user.username)
+		profile = Profile(
+			user=user,
+			activation_key=act_key,
+			activation_key_expires=exp,
+		)
+		profile.save()
+		return HttpResponseRedirect('/users/register/success')
 
 	def get_context_data(self, **kwargs):
 		context = super(RegisterUser, self).get_context_data(**kwargs)
 		return context
+
+class UserRegisterSuccess(DetailView):
+	template_name = "registration/register_success.html"
+
+class ActivateSuccess(DetailView):
+	template_name = "registration/activation_success.html"
 
 class ResetPassword(FormView):
 	form_class = PasswordResetForm
@@ -45,6 +79,25 @@ class ResetPassword(FormView):
 	def get_context_data(self, **kwargs):
 		context = super(ResetPassword, self).get_context_data(**kwargs)
 		return context
+
+class ResendActivationEmail(FormView):
+	form_class = ResendActivationEmailForm
+	template_name = "registration/resend_activation.html"
+	success_url = '/users/register/success/'
+	
+	def form_valid(self, form):
+		form.save(request=self.request)
+		user = get_object_or_404(User, username=form.cleaned_data['username'])
+		profile = None
+		try:
+			profile = Profile.get(user=user)
+		except Profile.DoesNotExist:
+			profile = Profile(user=user)
+		act, exp = send_activation_email(user.username)
+		profile.activation_key = act
+		profile.activation_key_expires = exp
+		profile.save()
+		return HttpResponseRedirect(self.success_url)
 
 class ShowProfile(DetailView):
 	model = Profile

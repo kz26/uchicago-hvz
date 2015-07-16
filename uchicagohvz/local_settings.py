@@ -225,3 +225,6 @@ DEALER_PATH = os.path.dirname(BASE_DIR)
 # Chat settings
 CHAT_SERVER_URL = 'http://hvz.rucus.me:36452/chat'
 CHAT_ADMIN_URL = 'http://hvz.rucus.me:36452/admin/'
+
+ACTIVATION_MAIL_SUBJECT = 'Subject'
+ACTIVATION_MAIL_MSG = '%s'
