@@ -37,7 +37,7 @@ class UserRegistrationForm(forms.ModelForm):
 			self.error_class(['Someone already has that username.'])
 		except User.DoesNotExist:
 			pass
-		if not student_id_regex(user):
+		if not student_id_regex(username):
 			self.error_class(['Invalid student number'])
 		return data
 

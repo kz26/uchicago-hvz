@@ -66,10 +66,10 @@ class RegisterUser(FormView):
 		context = super(RegisterUser, self).get_context_data(**kwargs)
 		return context
 
-class UserRegisterSuccess(DetailView):
+class UserRegisterSuccess(TemplateView):
 	template_name = "registration/register_success.html"
 
-class ActivateSuccess(DetailView):
+class ActivateSuccess(TemplateView):
 	template_name = "registration/activation_success.html"
 
 class ResetPassword(FormView):
