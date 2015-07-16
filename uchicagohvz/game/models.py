@@ -329,7 +329,7 @@ class Player(models.Model):
 
 	@property
 	def unannotated_kills(self):
-		return Kill.objects.exclude(killer=self, victim=self).filter(killer=self).filter(Q(lat__isnull=True) | Q(lng__isnull=True) | Q(notes=u''))
+		return Kill.objects.exclude(killer=self, victim=self).filter(killer=self).filter(Q(pos__isnull=True) | Q(notes=u''))
 
 	@transaction.atomic
 	def kill_me(self, killer):
