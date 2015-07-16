@@ -6,7 +6,7 @@ from uchicagohvz.game.models import Game, Player
 import re
 
 def student_id_regex(student_id):
-    return re.match('(g|G)?([0-9]{2})[a-zA-Z]([0-9]{4})', student_id) is not None
+    return re.match('(g|G)([0-9]{2})[a-zA-Z]([0-9]{4})', student_id) is not None
 
 class UserRegistrationForm(forms.ModelForm):
 	captcha = ReCaptchaField(attrs={'theme' : 'blackglass'})
@@ -17,7 +17,7 @@ class UserRegistrationForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(UserRegistrationForm, self).__init__(*args, **kwargs)
-		self.fields['username'].help_text = "Enter your student number."
+		self.fields['username'].help_text = "Enter your student number. e.g. g15z9001"
 		self.fields['first_name'].help_text = "Enter your first name."
 		self.fields['last_name'].help_text = "Enter your last name."
 		self.fields['email'].help_text = "Enter your email address."
