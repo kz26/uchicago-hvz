@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.shortcuts import render_to_response
 from django.views.generic import *
+from django.views.decorators.csrf import csrf_exempt
 from uchicagohvz.users.forms import *
 from uchicagohvz.users.models import *
 from uchicagohvz.game.models import *
@@ -47,7 +48,7 @@ class Activate(APIView):
 	success_url = '/users/activate/success'
 	@method_decorator(csrf_exempt)
 	def get(self, *args, **kwargs):
-		key = kwargs.get('key', None)
+		key = self.request.query_params.get('key', None)
 		if key:
 			profile = Profile.objects.get(activation_key=key)
 			if profile:

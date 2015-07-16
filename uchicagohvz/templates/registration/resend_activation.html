@@ -3,6 +3,26 @@
 {% block title %}Resend Activation Email{% endblock %}
 
 {% block content %}
-<br><p>Your password has been set.  You may log in now.</p>
-<p><a href="{{ login_url }}">Log in</a></p>
+
+{% if user.is_authenticated %}
+<br><p>Looks like you already have an account. If you're not {{ user.get_full_name }}, please logout.</p><br>
+
+<a href='/'>Return to home.</a>
+{% else %}
+<div class="page-header">
+    <h1>Resend Activation Email</h1>
+    <small>Email not reaching you for some reason? If this doesn't work then please make sure that you have access to your email account and it is set up correctly before contacting an administrator.</small>
+</div>
+
+<form class="form-horizontal" method="post">
+{% csrf_token %}
+<br>
+{% for field in form %}
+{{ field }}
+{{ field.help_text }}
+{{ field.errors }}<br /><br />
+{% endfor %}
+<input class="btn btn-success" type="submit" name="submit" value="Submit"/>
+</form>
+{% endif %}
 {% endblock %}
