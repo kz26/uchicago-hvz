@@ -1,4 +1,4 @@
-import django.utils.timezone
+import django.utils.timezone as timezone
 from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -12,7 +12,7 @@ def one_day_hence():
 
 class Profile(models.Model):
 	user = models.OneToOneField(settings.AUTH_USER_MODEL)
-	activation_key = models.CharField(max_length=40, blank=True, unique=True)
+	activation_key = models.CharField(max_length=40, blank=True, default='')
 	activation_key_expires = models.DateTimeField(default=one_day_hence)
 	phone_number = PhoneNumberField(blank=True)
 	phone_carrier = models.CharField(max_length=32, blank=True, choices=[(k, k) for k in sorted(CARRIERS.keys())])
