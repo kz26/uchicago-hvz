@@ -222,6 +222,15 @@ GAME_NE_BOUND = (-33.308830, 26.524041)
 TEMPLATE_CONTEXT_PROCESSORS += 'dealer.contrib.django.staff.context_processor',
 DEALER_PATH = os.path.dirname(BASE_DIR)
 
+try:
+    from secrets import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+except:
+    EMAIL_HOST_USER = 'placeholder'
+    EMAIL_HOST_PASSWORD = 'placeholder'
+EMAIL_HOST = 'mail.rucus.me'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True
+
 # Chat settings
 CHAT_SERVER_URL = 'http://hvz.rucus.me:36452/chat'
 CHAT_ADMIN_URL = 'http://hvz.rucus.me:36452/admin/'

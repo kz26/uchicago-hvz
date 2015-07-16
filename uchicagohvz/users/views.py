@@ -32,7 +32,7 @@ def send_activation_email(student_number):
 	src = settings.DEFAULT_FROM_EMAIL
 	salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
 	activation_key = hashlib.sha1(salt+dest).hexdigest()
-	key_expires = timezone.today() + timezone.timedelta(days=2)
+	key_expires = timezone.now().today() + timezone.timedelta(days=2)
 	msg = msg % (activation_key)
 	send_mail(subject, msg, src, [dest], fail_silently=settings.DEBUG)
 	return (activation_key, key_expires)
@@ -104,7 +104,7 @@ class ResetPassword(FormView):
 class ResendActivationEmail(FormView):
 	form_class = ResendActivationEmailForm
 	template_name = "registration/resend_activation.html"
-	success_url = '/users/activate/success/'
+	success_url = '/users/register/success/'
 	
 	def form_valid(self, form):
 		user = get_object_or_404(User, username=form.cleaned_data['username'])
