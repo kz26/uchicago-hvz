@@ -15,6 +15,7 @@ from django.utils.html import escape
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
 from rest_framework import status
 from uchicagohvz.game.models import *
 from uchicagohvz.game.forms import *
@@ -199,6 +200,16 @@ class SubmitCodeSMS(APIView):
 		if all([f in request.DATA for f in ('msisdn', 'text')]):
 			process_sms_code.delay(request.DATA['msisdn'], request.DATA['text'])
 		return Response()
+
+class RequestAwardCode(APIView):
+	permission_classes = (IsAdminUser, )
+
+	def get(self, request, format=None):
+		mission = get_object_or_404(Mission, id=self.kwargs['mk'])
+		award = Award.objects.create(group=mission)
+		award.save()
+		return Response(award.code)
+
 
 class SubmitAwardCode(BaseFormView):
 	form_class = AwardCodeForm

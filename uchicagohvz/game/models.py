@@ -523,10 +523,14 @@ class Mission(models.Model):
 		return '<img src="%s"/>' % self.img
 	admin_img.allow_tags = True
 
+	def generate(self):
+		return '<a href="/game/%s/mission/%s/generate">Generate Award Code</a>' % (self.game.id, self.id)
+	generate.allow_tags = True
+
 
 class Award(models.Model):
 	class Meta:
-		unique_together = (('game', 'name'), ('game', 'code'))
+		unique_together = (('game', 'code'))
 	
 	game = models.ForeignKey(Game, related_name='+')
 	name = models.CharField(max_length=255)
@@ -549,6 +553,17 @@ class Award(models.Model):
 				if not (Award.objects.filter(game=self.game, code=code).exists() or Player.objects.filter(game=self.game, bite_code=code).exists()):
 					self.code = code
 					break
+		if self.group:
+			if not self.name:
+				self.name = self.group.name
+			if not self.game:
+				self.game = self.group.game
+			if not self.points:
+				self.points = self.group.def_points
+			if not self.redeem_limit:
+				self.redeem_limit = self.group.def_redeem_limit
+			if not self.redeem_type:
+				self.redeem_type = self.group.def_redeem_type
 		super(Award, self).save(*args, **kwargs)
 
 class HighValueTarget(models.Model):
