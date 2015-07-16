@@ -526,7 +526,7 @@ class Mission(models.Model):
 
 class Award(models.Model):
 	class Meta:
-		unique_together = (('game', 'name'), ('game', 'code'), ('game', 'group'))
+		unique_together = (('game', 'name'), ('game', 'code'))
 	
 	game = models.ForeignKey(Game, related_name='+')
 	name = models.CharField(max_length=255)
