@@ -1,12 +1,5 @@
 ###TODO
 
-## New stuff
-# Random Drops
-    - Tags on google map
-    - Random value of drop
-    - Mod managed
-# Different flavour for zombies and humans
-
 ## Design Stuff
 # Logo need to be replaced. Brendan to provide by email.
 

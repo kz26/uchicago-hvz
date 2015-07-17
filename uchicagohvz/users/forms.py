@@ -20,7 +20,7 @@ class UserRegistrationForm(forms.ModelForm):
 		self.fields['username'].help_text = "Enter your student number. e.g. g15z9001"
 		self.fields['first_name'].help_text = "Enter your first name."
 		self.fields['last_name'].help_text = "Enter your last name."
-		self.fields['email'].help_text = "Enter your email address."
+		self.fields['email'].help_text = "Enter your email address. Please note that activation emails are still sent to your student email address; NOT this one. This email address will be used for subsequent communication."
 		self.fields['password'].help_text = "Enter a password."
 		self.fields['password'].widget = forms.PasswordInput()
 	def clean(self):

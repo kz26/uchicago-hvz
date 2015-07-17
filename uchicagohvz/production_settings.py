@@ -35,8 +35,6 @@ CELERY_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # Uncomment for localhost email
 # EMAIL_HOST = 'localhost'
 
-
-
 # Chat settings
 CHAT_SERVER_URL = 'https://hvz.rucus.me/chat'
 CHAT_ADMIN_URL = 'https://hvz.rucus.me/admin'

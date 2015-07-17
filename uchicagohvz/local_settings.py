@@ -227,9 +227,10 @@ try:
 except:
     EMAIL_HOST_USER = 'placeholder'
     EMAIL_HOST_PASSWORD = 'placeholder'
-EMAIL_HOST = 'mail.rucus.me'
-EMAIL_PORT = '587'
-EMAIL_USE_TLS = True
+EMAIL_HOST = 'mail.privateemail.com'
+EMAIL_PORT = '465'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
 
 # Chat settings
 CHAT_SERVER_URL = 'http://hvz.rucus.me:36452/chat'
