@@ -534,7 +534,7 @@ $.get("data/kills/")
 
 $.get("data/missions/")
 	.done (data) ->
-		infoWin = new google.maps.InfoWindow()
+		mInfoWin = new google.maps.InfoWindow()
 		markers = []
 		for k in data
 			k.date = new Date(k.date)
@@ -561,8 +561,8 @@ $.get("data/missions/")
 				markers.push([marker, k])
 				google.maps.event.addListener marker, 'click', ((marker, content) ->
 					return ->
-						infoWin.setContent(content)
-						infoWin.open(map, marker)
+						mInfoWin.setContent(content)
+						mInfoWin.open(map, marker)
 				)(marker, content.get(0))
 
 
