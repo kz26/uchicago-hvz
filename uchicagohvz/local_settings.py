@@ -227,5 +227,5 @@ DEALER_PATH = os.path.dirname(BASE_DIR)
 CHAT_SERVER_URL = 'http://hvz.rucus.me:36452/chat'
 CHAT_ADMIN_URL = 'http://hvz.rucus.me:36452/admin/'
 
-ACTIVATION_MAIL_SUBJECT = 'Subject'
-ACTIVATION_MAIL_MSG = '%s'
+ACTIVATION_MAIL_SUBJECT = 'Rhodes HvZ Account Activation Link'
+ACTIVATION_MAIL_MSG = 'https://hvz.rucus.me/users/activate/?key=%s'
