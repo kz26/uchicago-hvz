@@ -204,7 +204,7 @@ BROKER_URL = 'redis://localhost:6379/3'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'admin@rucus.me'
+DEFAULT_FROM_EMAIL = 'RU HvZ <admin@rucus.me>'
 SERVER_EMAIL = 'admin@rucus.me'
 SYMPA_FROM_EMAIL = 'admin@rucus.me'
 SYMPA_TO_EMAIL = ''
@@ -222,15 +222,6 @@ GAME_NE_BOUND = (-33.308830, 26.524041)
 # Dealer settings
 TEMPLATE_CONTEXT_PROCESSORS += 'dealer.contrib.django.staff.context_processor',
 DEALER_PATH = os.path.dirname(BASE_DIR)
-
-try:
-    from secrets import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
-except:
-    EMAIL_HOST_USER = 'placeholder'
-    EMAIL_HOST_PASSWORD = 'placeholder'
-EMAIL_HOST = 'mail.privateemail.com'
-EMAIL_PORT = '465'
-EMAIL_USE_SSL = True
 
 # Chat settings
 CHAT_SERVER_URL = 'http://hvz.rucus.me:36452/chat'

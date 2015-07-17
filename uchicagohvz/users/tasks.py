@@ -11,13 +11,3 @@ def do_sympa_update(user, listname, subscribe):
 	email = mail.EmailMessage(subject='', body=body, from_email=settings.SYMPA_FROM_EMAIL, to=[settings.SYMPA_TO_EMAIL])
 	email.send()
 
-@task
-def send_activation_email(subject, msg, dest):
-    email = mail.EmailMessage(
-        subject=subject,
-        body=msg,
-        to=[dest],
-    )
-    email.send()
-    return email
-
