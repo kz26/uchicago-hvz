@@ -27,6 +27,7 @@ class MissionSerializer(serializers.ModelSerializer):
 		fields = ('id', 'name', 'end_date', 'img', 'location', 'rtype')
 
 	location = serializers.SerializerMethodField()
+	rtype = serializers.SerializerMethodField()
 
 	def get_location(self, obj):
 		if not obj.pos:

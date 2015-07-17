@@ -479,9 +479,9 @@ google.maps.event.addListener map, 'center_changed', (e) ->
 	else
 		map.panTo(lvc)
 
+infoWin = new google.maps.InfoWindow()
 $.get("data/kills/")
 	.done (data) ->
-		infoWin = new google.maps.InfoWindow()
 		markers = []
 		for k in data
 			k.date = new Date(k.date)
@@ -534,7 +534,6 @@ $.get("data/kills/")
 
 $.get("data/missions/")
 	.done (data) ->
-		infoWin = new google.maps.InfoWindow()
 		markers = []
 		for k in data
 			if k.location != null
