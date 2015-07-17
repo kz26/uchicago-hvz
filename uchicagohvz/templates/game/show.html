@@ -546,11 +546,10 @@ $.get("data/missions/")
 						
 					}
 				endDT = moment(k.end_date).format('D/M/YY h:mm:ss A')
-				redeemString = "";
-				if (k.def_redeem_type in 'H') redeemString = "Human Only";
-				else if (k.def_redeem_type in 'Z') redeemString = "Zombie Only";
-				else if (k.def_redeem_type in 'A') redeemString = "All Players";
-				else redeemString = "ERROR";
+				redeemString = "ERROR"
+				redeemString = "Human Only" if k.def_redeem_type is 'H'
+				redeemString = "Zombie Only" if k.def_redeem_type is 'Z'
+				redeemString = "All Players" if k.def_redeem_type is 'A'
 				content = $(
 					"<ul style='color:black'>
 						<li><b>Mission:</b> #{k.name}</li>
