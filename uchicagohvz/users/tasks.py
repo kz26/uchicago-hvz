@@ -1,5 +1,4 @@
 from celery import task
-from django.core.mail import EmailMessage
 from django.conf import settings
 from django.core import mail
 
@@ -14,10 +13,10 @@ def do_sympa_update(user, listname, subscribe):
 
 @task
 def send_activation_email(subject, msg, dest):
-    email = EmailMessage(
-        subject,
-        msg,
-        to=dest,
+    email = mail.EmailMessage(
+        subject=subject,
+        body=msg,
+        to=[dest],
     )
-    print email.send(), email
+    email.send()
 

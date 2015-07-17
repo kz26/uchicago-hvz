@@ -33,7 +33,7 @@ def send_activation_email(student_number):
 	activation_key = hashlib.sha1(salt+dest).hexdigest()
 	key_expires = timezone.now().today() + timezone.timedelta(days=2)
 	msg = msg % (activation_key)
-	send_email(subject, msg, [dest])
+	send_email(subject, msg, dest)
 	return (activation_key, key_expires)
 
 def login(request):
