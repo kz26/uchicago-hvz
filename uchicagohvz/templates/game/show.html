@@ -537,7 +537,6 @@ $.get("data/missions/")
 		infoWin = new google.maps.InfoWindow()
 		markers = []
 		for k in data
-			k.date = new Date(k.date)
 			if k.location != null
 				marker = new google.maps.Marker {
 						map: map,
@@ -547,9 +546,9 @@ $.get("data/missions/")
 					}
 				endDT = moment(k.end_date).format('D/M/YY h:mm:ss A')
 				redeemString = "ERROR"
-				redeemString = "Human Only" if k.def_redeem_type is 'H'
-				redeemString = "Zombie Only" if k.def_redeem_type is 'Z'
-				redeemString = "All Players" if k.def_redeem_type is 'A'
+				redeemString = "Human Only" if k.rtype is 'H'
+				redeemString = "Zombie Only" if k.rtype is 'Z'
+				redeemString = "All Players" if k.rtype is 'A'
 				content = $(
 					"<ul style='color:black'>
 						<li><b>Mission:</b> #{k.name}</li>

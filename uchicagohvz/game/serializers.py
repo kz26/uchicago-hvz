@@ -24,7 +24,7 @@ class KillSerializer(serializers.ModelSerializer):
 class MissionSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Mission
-		fields = ('id', 'name', 'end_date', 'img', 'location')
+		fields = ('id', 'name', 'end_date', 'img', 'location', 'rtype')
 
 	location = serializers.SerializerMethodField()
 
@@ -32,4 +32,7 @@ class MissionSerializer(serializers.ModelSerializer):
 		if not obj.pos:
 			return None
 		return (obj.pos.latitude, obj.pos.longitude)
+
+	def get_rtype(self, obj):
+		return obj.def_redeem_type
 
