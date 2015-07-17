@@ -1,4 +1,5 @@
 from production_settings import *
+
 DEBUG = True
 try:
     from secrets import DATABASES
