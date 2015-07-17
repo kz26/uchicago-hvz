@@ -207,7 +207,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'admin@rucus.me'
 SERVER_EMAIL = 'admin@rucus.me'
 SYMPA_FROM_EMAIL = 'admin@rucus.me'
-SYMPA_TO_EMAIL = 'sympa@lists.uchicago.edu'
+SYMPA_TO_EMAIL = ''
 
 # HvZ game configuration
 HUMAN_KILL_POINTS = 1 # how many points killing a human is worth

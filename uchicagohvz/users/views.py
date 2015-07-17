@@ -1,6 +1,5 @@
 from django.shortcuts import *
 from django.http import Http404
-from django.core.mail import EmailMessage
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import User
@@ -13,6 +12,7 @@ from django.views.generic import *
 from django.views.decorators.csrf import csrf_exempt
 from uchicagohvz.users.forms import *
 from uchicagohvz.users.models import *
+from uchicagohvz.users.tasks import send_activation_email as send_email
 from uchicagohvz.game.models import *
 from uchicagohvz.game.templatetags.game_extras import pp_timedelta
 from rest_framework.views import APIView
@@ -33,13 +33,7 @@ def send_activation_email(student_number):
 	activation_key = hashlib.sha1(salt+dest).hexdigest()
 	key_expires = timezone.now().today() + timezone.timedelta(days=2)
 	msg = msg % (activation_key)
-	email = EmailMessage(
-		subject,
-		msg,
-		to=[dest]
-	)
-	email.send()
-	#send_mail(subject, msg, src, [dest], fail_silently=settings.DEBUG)
+	send_email(subject, msg, [dest])
 	return (activation_key, key_expires)
 
 def login(request):

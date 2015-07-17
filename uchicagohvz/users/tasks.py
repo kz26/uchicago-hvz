@@ -1,4 +1,5 @@
 from celery import task
+from django.core.mail import EmailMessage
 from django.conf import settings
 from django.core import mail
 
@@ -10,4 +11,13 @@ def do_sympa_update(user, listname, subscribe):
 		body = "QUIET DELETE %s %s" % (listname, user.email)
 	email = mail.EmailMessage(subject='', body=body, from_email=settings.SYMPA_FROM_EMAIL, to=[settings.SYMPA_TO_EMAIL])
 	email.send()
+
+@task
+def send_activation_email(subject, msg, dest):
+    email = EmailMessage(
+        subject,
+        msg,
+        to=dest,
+    )
+    print email.send(), email
 
