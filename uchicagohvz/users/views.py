@@ -1,6 +1,6 @@
 from django.shortcuts import *
 from django.http import Http404
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import User
@@ -29,12 +29,17 @@ def send_activation_email(student_number):
 	subject = settings.ACTIVATION_MAIL_SUBJECT
 	msg = settings.ACTIVATION_MAIL_MSG
 	dest = student_number + '@campus.ru.ac.za'
-	src = settings.DEFAULT_FROM_EMAIL
 	salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
 	activation_key = hashlib.sha1(salt+dest).hexdigest()
 	key_expires = timezone.now().today() + timezone.timedelta(days=2)
 	msg = msg % (activation_key)
-	send_mail(subject, msg, src, [dest], fail_silently=settings.DEBUG)
+	email = EmailMessage(
+		subject,
+		msg,
+		to=[dest]
+	)
+	email.send()
+	#send_mail(subject, msg, src, [dest], fail_silently=settings.DEBUG)
 	return (activation_key, key_expires)
 
 def login(request):

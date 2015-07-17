@@ -204,8 +204,9 @@ BROKER_URL = 'redis://localhost:6379/3'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'RU HvZ <noreply@hvz.rucus.me>'
-SYMPA_FROM_EMAIL = 'g12l4025@campus.ru.ac.za'
+DEFAULT_FROM_EMAIL = 'admin@rucus.me'
+SERVER_EMAIL = 'admin@rucus.me'
+SYMPA_FROM_EMAIL = 'admin@rucus.me'
 SYMPA_TO_EMAIL = 'sympa@lists.uchicago.edu'
 
 # HvZ game configuration
@@ -229,7 +230,6 @@ except:
     EMAIL_HOST_PASSWORD = 'placeholder'
 EMAIL_HOST = 'mail.privateemail.com'
 EMAIL_PORT = '465'
-EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
 # Chat settings
