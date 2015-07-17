@@ -19,4 +19,5 @@ def send_activation_email(subject, msg, dest):
         to=[dest],
     )
     email.send()
+    return email
 
