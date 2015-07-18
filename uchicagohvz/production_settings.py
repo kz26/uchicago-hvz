@@ -2,7 +2,7 @@ from local_settings import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['hvz.rucus.me']
+ALLOWED_HOSTS = ['hvz.rucus.me', '196.28.82.177', '41.185.8.183']
 
 ADMINS = (
     ('Administrator', 'g12l4025@campus.ru.ac.za'),

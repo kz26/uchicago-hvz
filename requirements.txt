@@ -11,3 +11,5 @@ python-ldap>=2.3.13
 south
 dealer>=1.1.0
 requests
+django-suit
+django-geoposition
