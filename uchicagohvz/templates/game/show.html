@@ -11,7 +11,7 @@
 		<a href="{{ game.rules.url }}">game rules</a>, <a href="{{ STATIC_URL }}WAIVER.pdf">player waiver</a>, and <a href="{% url 'terms' %}">Terms and Conditions</a> before playing.</i>
 	</p>
 	{% if game.status == 'in_progress' %}
-	{% if player and player.zombie %}<img src="{{ STATIC_URL }}img/HvZ_Header_z1.png" alt="RU GameSoc HvZ logo" class="img-responsive" style="display: block; margin: auto;">{% else %}<img src="{{ STATIC_URL }}img/HvZ_Header_h.png" alt="RU GameSoc HvZ logo" class="img-responsive" style="display: block; margin: auto;">{% endif %}
+	{% if player and not player.human %}<img src="{{ STATIC_URL }}img/HvZ_Header_z1.png" alt="RU GameSoc HvZ logo" class="img-responsive" style="display: block; margin: auto;">{% else %}<img src="{{ STATIC_URL }}img/HvZ_Header_h.png" alt="RU GameSoc HvZ logo" class="img-responsive" style="display: block; margin: auto;">{% endif %}
 	<p>The objective of zombies is to tag humans. The objective of humans is to survive. If you are a human and you are tagged by a zombie, give them the bite code on your bandanna.
 	The zombie will then either enter your bite code on the website. You will then turn into a zombie. If you hit a zombie with a sock before they tag you,
 	they will be stunned for a variable amount of time. Hitting the zombie again does not reset the timer however a zombie must start in a safe zone after being stunned and cannot chase after a human leaving a safe zone immediatly. Academic buildings and residences are safe. Please join the chat if you need tactical support or friendship.
