@@ -108,7 +108,7 @@ $.get("data/kills/")
 						icon: '{{ STATIC_URL }}img/skull.png',
 						position: new google.maps.LatLng(k.location[0], k.location[1])
 					}
-				killDT = moment(k.date).format('M/D/YY h:mm:ss A')
+				killDT = moment(k.date).format('D/M/YY h:mm:ss A')
 				content = $(
 					"<ul>
 						<li><b>Killer:</b> #{k.killer}</li>

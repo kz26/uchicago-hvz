@@ -9,13 +9,13 @@
 {% endif %}
 
 {% if form.errors %}
-<div class="alert alert-danger">Invalid CNetID and/or password.</div>
+<div class="alert alert-danger">Invalid Student Number and/or password.</div>
 {% endif %}
 
 <form class="form-horizontal" role="form" action="{% url 'users|login' %}" method="post">
 	{% csrf_token %}
 	<div class="form-group">
-		<label for="username" class="col-lg-4 control-label">CNetID</label>
+		<label for="username" class="col-lg-4 control-label">Student Number</label>
 		<div class="col-lg-4">
 			<input type="text" class="form-control" id="username" name="username" required>
 		</div>

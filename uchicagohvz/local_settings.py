@@ -200,7 +200,8 @@ HAYSTACK_CONNECTIONS = {
 }
 
 GEOPOSITION_MAP_OPTIONS = {
-    'minZoom' : 15,
+    'minZoom' : 5,
+    'zoom' : 17,
     'maxZoom' : 18,
     'center' : { 'lat': -33.314236, 'lng': 26.518826},
 }
