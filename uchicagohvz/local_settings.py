@@ -199,6 +199,15 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+GEOPOSITION_MAP_OPTIONS = {
+    'minZoom' : 14,
+    'maxZoom' : 16,
+}
+
+GEOPOSITION_MARKER_OPTIONS = {
+    'cursor': 'move',
+}
+
 # Celery configuration
 BROKER_URL = 'redis://localhost:6379/3'
 
