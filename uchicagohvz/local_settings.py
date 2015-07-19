@@ -200,14 +200,14 @@ HAYSTACK_CONNECTIONS = {
 }
 
 GEOPOSITION_MAP_OPTIONS = {
-    'minZoom' : 14,
+    'minZoom' : 15,
     'maxZoom' : 18,
-    'center' : { 'lat': -33.308830, 'lng': 26.524041},
+    'center' : { 'lat': -33.314236, 'lng': 26.518826},
 }
 
 GEOPOSITION_MARKER_OPTIONS = {
     'cursor': 'move',
-    'position': { 'lat': -33.308830, 'lng': 26.524041},
+    'position': { 'lat': -33.314236, 'lng': 26.5188267},
 }
 
 # Celery configuration
