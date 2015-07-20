@@ -139,7 +139,7 @@ DORMS = sorted((
 	('ALL', 'Allan Webb'),
 	('COU', 'Courtenay-Latimer'),
 	('DES', 'Desmond Tutu'),
-	('DRO', 'Drostdy')
+	('DRO', 'Drostdy'),
 	('FOU', 'Founders'),
 	('HOB', 'Hobson'),
 	('JAN', 'Jan Smuts'),
