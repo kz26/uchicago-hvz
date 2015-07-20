@@ -33,6 +33,8 @@ class UserRegistrationForm(forms.ModelForm):
 
 		if not(username and first_name and last_name and email and password):
 			self.error_class(['Please fill out all of the fields.'])
+		username = username.lower()
+		data['username'] = username
 		try:
 			User.objects.get(username=username)
 			self.error_class(['Someone already has that username.'])
