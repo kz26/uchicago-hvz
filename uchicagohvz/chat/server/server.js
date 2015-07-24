@@ -5,6 +5,7 @@ var ChatServer, app, chatServer, express, http, httpServer, moment, request, soc
 express = require('express');
 
 http = require('http');
+https = require('https');
 
 moment = require('moment');
 
@@ -64,14 +65,17 @@ ChatServer = (function() {
 
   ChatServer.prototype.auth = function(conn, authData) {
     var _this = this;
-    return request.get({
-      uri: "http://127.0.0.1:8080/game/" + authData.gameID + "/chat/auth/",
+    getreq = {
+      uri: "https://127.0.0.1/game/" + authData.gameID + "/chat/auth/",
       headers: {
         Host: 'hvz.rucus.me',
         Cookie: "sessionid=" + authData.sessionid
       },
       json: true
-    }, function(err, res, body) {
+    }
+    return request.get(
+      getreq, 
+      function(err, res, body) {
       if (res.statusCode === 200) {
         conn.userObject = body;
         conn.on('chat', function(data) {
