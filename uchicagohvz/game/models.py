@@ -410,7 +410,7 @@ class Award(models.Model):
 	game = models.ForeignKey(Game, related_name='+')
 	name = models.CharField(max_length=255)
 	points = models.IntegerField(help_text='Can be negative, e.g. to penalize players')
-	players = models.ManyToManyField(Player, related_name='awards', null=True, blank=True, help_text='Players that should receive this award.')
+	players = models.ManyToManyField(Player, related_name='awards', blank=True, help_text='Players that should receive this award.')
 	code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
 	redeem_limit = models.IntegerField(
 		help_text='Maximum number of players that can redeem award via code entry (set to 0 for awards to be added by moderators only)'

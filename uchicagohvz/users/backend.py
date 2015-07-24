@@ -1,7 +1,6 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 import ldap, ldap.filter
 
-User = get_user_model()
 
 class UChicagoLDAPBackend(object):
 	LDAP_SERVER = "ldaps://ldap.uchicago.edu:636"

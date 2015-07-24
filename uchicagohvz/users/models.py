@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User 
 from localflavor.us.models import PhoneNumberField
 from uchicagohvz.users.phone import CARRIERS
 
@@ -29,7 +29,7 @@ def get_or_create_profile(sender, **kwargs):
 			from uchicagohvz.users.tasks import do_sympa_update
 			do_sympa_update.delay(profile.user, 'hvz-chatter', True)
 			do_sympa_update.delay(profile.user, 'zombies', True)
-models.signals.post_save.connect(get_or_create_profile, sender=get_user_model())
+models.signals.post_save.connect(get_or_create_profile, sender=User)
 
 def sympa_update(sender, **kwargs):
 	if not kwargs.get('raw'):

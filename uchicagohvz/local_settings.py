@@ -50,7 +50,7 @@ INSTALLED_APPS = (
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	'mptt', 'localflavor', 'djcelery_email', 'compressor', 'rest_framework', 'south', 'haystack', 'captcha',
+	'mptt', 'localflavor', 'djcelery_email', 'compressor', 'rest_framework', 'haystack', 'captcha',
 	'uchicagohvz.users', 'uchicagohvz.game',
 )
 
