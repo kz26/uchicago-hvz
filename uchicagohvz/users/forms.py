@@ -47,9 +47,13 @@ class UserRegistrationForm(forms.ModelForm):
 
 class StudentAuthenticationForm(AuthenticationForm):
 	def clean(self):
+		super(AuthenticationForm, self).clean()
 		username = self.cleaned_data.get('username')
-		self.cleaned_data['username'] = username.strip().lower()
-		return super().clean()
+		if username:
+			self.cleaned_data['username'] = username.strip().lower()
+		else:
+			self.error_class['Invalid student number']
+		return self.cleaned_data
 
 class ResendActivationEmailForm(forms.Form):
 	username = forms.CharField()
