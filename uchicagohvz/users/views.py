@@ -38,7 +38,7 @@ def send_activation_email(student_number):
 	return (activation_key, key_expires)
 
 def login(request):
-	return auth_views.login(request, "users/login.html")
+	return auth_views.login(request, "users/login.html", authentication_form=StudentAuthenticationForm)
 
 def logout(request):
 	return auth_views.logout(request, "/")
@@ -49,7 +49,7 @@ class Activate(APIView):
 	def get(self, *args, **kwargs):
 		key = self.request.query_params.get('key', None)
 		if key:
-			profile = Profile.objects.get(activation_key=key)
+			profile = Profile.objects.get_object_or_404(activation_key=key)
 			if profile:
 				user = profile.user
 				user.is_active = True

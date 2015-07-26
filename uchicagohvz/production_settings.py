@@ -2,10 +2,10 @@ from local_settings import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['hvz.rucus.me', '196.28.82.177', '41.185.8.183', '46.101.29.8']
+ALLOWED_HOSTS = ['hvz.rucus.me', '46.101.29.8']
 
 ADMINS = (
-    ('Administrator', 'g12l4025@campus.ru.ac.za'),
+    ('Administrator', 'admin@rucus.me'),
 )
 
 # Database
@@ -36,7 +36,7 @@ try:
 except:
     EMAIL_HOST_USER = 'placeholder'
     EMAIL_HOST_PASSWORD = 'placeholder'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = True
 MAIL_USE_TLS = True
