@@ -49,7 +49,7 @@ class Activate(APIView):
 	def get(self, *args, **kwargs):
 		key = self.request.query_params.get('key', None)
 		if key:
-			profile = Profile.objects.get_object_or_404(activation_key=key)
+			profile = get_object_or_404(Profile, activation_key=key)
 			if profile:
 				user = profile.user
 				user.is_active = True
