@@ -49,8 +49,6 @@ class StudentAuthenticationForm(AuthenticationForm):
 	def clean(self):
 		username = self.cleaned_data.get('username')
 		self.cleaned_data['username'] = username.strip().lower()
-		if not student_id_regex(username):
-			self.error_class(['Invalid student number'])
 		return super().clean()
 
 class ResendActivationEmailForm(forms.Form):
