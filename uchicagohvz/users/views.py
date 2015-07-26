@@ -38,7 +38,7 @@ def send_activation_email(student_number):
 	return (activation_key, key_expires)
 
 def login(request):
-	return auth_views.login(request, "users/login.html", authentication_form=StudentAuthenticationForm)
+	return auth_views.login(request, "users/login.html")
 
 def logout(request):
 	return auth_views.logout(request, "/")
