@@ -1,6 +1,6 @@
 from django import forms
+from django.contrib.auth import forms as auth_forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm
 from captcha.fields import ReCaptchaField
 from uchicagohvz.users.models import *
 from uchicagohvz.game.models import Game, Player
@@ -45,14 +45,10 @@ class UserRegistrationForm(forms.ModelForm):
 			self.error_class(['Invalid student number'])
 		return data
 
-class StudentAuthenticationForm(AuthenticationForm):
+class StudentAuthenticationForm(auth_forms.AuthenticationForm):
 	def clean(self):
-		super(AuthenticationForm, self).clean()
 		username = self.cleaned_data.get('username')
-		if username:
-			self.cleaned_data['username'] = username.strip().lower()
-		else:
-			self.error_class['Invalid student number']
+		self.cleaned_data['username'] = username.strip().lower()
 		return self.cleaned_data
 
 class ResendActivationEmailForm(forms.Form):
