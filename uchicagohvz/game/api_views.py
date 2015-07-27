@@ -75,11 +75,12 @@ class MissionFeed_Extended(ListAPIView):
 
 	def get_queryset(self):
 		game_id = self.kwargs['pk']
-		user_id = request.user.id
+		user_id = self.request.user.id
 		player = get_object_or_404(Player, game__id=game_id, user__id=user_id)
 		now = timezone.now()
 		# return missions that are currently available (i.e. now is between start date and end date)
+		missions = Mission.objects.exclude(start_date__gte=now).filter(end_date__gte=now).filter(game__id=game_id).order_by('end_date')
 		if player.human:
-			return Mission.objects.exclude(start_date__gte=now).exclude(def_redeem_type='Z').filter(end_date__gte=now).order_by('end_date')
+			return missions.exclude(def_redeem_type='Z')
 		else:
-			return Mission.objects.exclude(start_date__gte=now).exclude(def_redeem_type='H').filter(end_date__gte=now).order_by('end_date')
+			return missions.exclude(def_redeem_type='H')
