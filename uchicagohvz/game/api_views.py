@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from uchicagohvz.game.models import *
 from uchicagohvz.game.data_apis import *
 from uchicagohvz.game.serializers import *
@@ -58,3 +59,27 @@ class MissionFeed(ListAPIView):
 		now = timezone.now()
 		# return missions that are currently available (i.e. now is between start date and end date)
 		return Mission.objects.exclude(start_date__gte=now).filter(end_date__gte=now).order_by('end_date')
+
+# class RequestAwardCode(APIView):
+# 	permission_classes = (IsAdminUser, )
+
+# 	def get(self, request, format=None, *args, **kwargs):
+# 		mission = get_object_or_404(Mission, id=self.kwargs['mk'])
+# 		award = Award.objects.create(group=mission)
+# 		award.save()
+# 		return Response(award.code)
+
+class MissionFeed_Extended(ListAPIView):
+	permission_classes = (IsAuthenticated, )
+	serializer_class = MissionSerializer
+
+	def get_queryset(self):
+		game_id = self.kwargs['pk']
+		user_id = request.user.id
+		player = get_object_or_404(Player, game__id=game_id, user__id=user_id)
+		now = timezone.now()
+		# return missions that are currently available (i.e. now is between start date and end date)
+		if player.human:
+			return Mission.objects.exclude(start_date__gte=now).exclude(def_redeem_type='Z').filter(end_date__gte=now).order_by('end_date')
+		else:
+			return Mission.objects.exclude(start_date__gte=now).exclude(def_redeem_type='H').filter(end_date__gte=now).order_by('end_date')
