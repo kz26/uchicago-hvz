@@ -52,24 +52,6 @@ class ZombiesByMajor(APIView):
 		return Response(data)
 
 class MissionFeed(ListAPIView):
-	serializer_class = MissionSerializer
-
-	def get_queryset(self):
-		game = get_object_or_404(Game, id=self.kwargs['pk'])
-		now = timezone.now()
-		# return missions that are currently available (i.e. now is between start date and end date)
-		return Mission.objects.exclude(start_date__gte=now).filter(end_date__gte=now).order_by('end_date')
-
-# class RequestAwardCode(APIView):
-# 	permission_classes = (IsAdminUser, )
-
-# 	def get(self, request, format=None, *args, **kwargs):
-# 		mission = get_object_or_404(Mission, id=self.kwargs['mk'])
-# 		award = Award.objects.create(group=mission)
-# 		award.save()
-# 		return Response(award.code)
-
-class MissionFeed_Extended(ListAPIView):
 	permission_classes = (IsAuthenticated, )
 	serializer_class = MissionSerializer
 
@@ -84,3 +66,22 @@ class MissionFeed_Extended(ListAPIView):
 			return missions.exclude(def_redeem_type='Z')
 		else:
 			return missions.exclude(def_redeem_type='H')
+
+class MissionFeedAll(ListAPIView):
+	serializer_class = MissionSerializer
+
+	def get_queryset(self):
+		game = get_object_or_404(Game, id=self.kwargs['pk'])
+		now = timezone.now()
+		# return missions that are currently available (i.e. now is between start date and end date)
+		return Mission.objects.exclude(game__id=game_id).exclude(end_date__gte=now).order_by('end_date')
+
+# class RequestAwardCode(APIView):
+# 	permission_classes = (IsAdminUser, )
+
+# 	def get(self, request, format=None, *args, **kwargs):
+# 		mission = get_object_or_404(Mission, id=self.kwargs['mk'])
+# 		award = Award.objects.create(group=mission)
+# 		award.save()
+# 		return Response(award.code)
+
