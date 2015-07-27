@@ -71,10 +71,10 @@ class MissionFeedAll(ListAPIView):
 	serializer_class = MissionSerializer
 
 	def get_queryset(self):
-		game = get_object_or_404(Game, id=self.kwargs['pk'])
+		game_id = self.kwargs['pk']
 		now = timezone.now()
 		# return missions that are currently available (i.e. now is between start date and end date)
-		return Mission.objects.exclude(game__id=game_id).exclude(end_date__gte=now).order_by('end_date')
+		return Mission.objects.filter(game__id=game_id).exclude(end_date__lte=now).order_by('end_date')
 
 # class RequestAwardCode(APIView):
 # 	permission_classes = (IsAdminUser, )

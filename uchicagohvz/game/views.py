@@ -203,13 +203,11 @@ class SubmitCodeSMS(APIView):
 
 class RequestAwardCode(APIView):
 	permission_classes = (IsAdminUser, )
-
 	def get(self, request, format=None, *args, **kwargs):
 		mission = get_object_or_404(Mission, id=self.kwargs['mk'])
 		award = Award.objects.create(group=mission)
 		award.save()
 		return Response(award.code)
-
 
 class SubmitAwardCode(BaseFormView):
 	form_class = AwardCodeForm
