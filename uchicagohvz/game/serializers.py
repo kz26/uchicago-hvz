@@ -37,3 +37,13 @@ class MissionSerializer(serializers.ModelSerializer):
 	def get_rtype(self, obj):
 		return obj.def_redeem_type
 
+class EmailSerializer(serializers.ModelSerializer)
+	class Meta:
+		model = Player
+		fields = ('email', )
+
+	email = serializers.SerializerMethodField()
+
+	def get_email(self, obj):
+		return obj.user__email
+

@@ -76,12 +76,17 @@ class MissionFeedAll(ListAPIView):
 		# return missions that are currently available (i.e. now is between start date and end date)
 		return Mission.objects.filter(game__id=game_id).exclude(end_date__lte=now).order_by('end_date')
 
-# class RequestAwardCode(APIView):
-# 	permission_classes = (IsAdminUser, )
+class Humans(ListAPIView):
+	permission_classes = (IsAdminUser, )
+	serializer_class = EmailSerializer
 
-# 	def get(self, request, format=None, *args, **kwargs):
-# 		mission = get_object_or_404(Mission, id=self.kwargs['mk'])
-# 		award = Award.objects.create(group=mission)
-# 		award.save()
-# 		return Response(award.code)
+	game_id = self.kwargs['pk']
+		return Player.objects.exclude(active=False).exclude(human=False).filter(game__id=game_id)
+
+class Zombies(ListAPIView):
+	permission_classes = (IsAdminUser, )
+	serializer_class = EmailSerializer
+
+	game_id = self.kwargs['pk']
+		return Player.objects.exclude(active=False).exclude(human=True).filter(game__id=game_id)
 
