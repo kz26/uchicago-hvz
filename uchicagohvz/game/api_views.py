@@ -80,13 +80,15 @@ class Humans(ListAPIView):
 	permission_classes = (IsAdminUser, )
 	serializer_class = EmailSerializer
 
-	game_id = self.kwargs['pk']
+	def get_queryset(self):
+		game_id = self.kwargs['pk']
 		return Player.objects.exclude(active=False).exclude(human=False).filter(game__id=game_id)
 
 class Zombies(ListAPIView):
 	permission_classes = (IsAdminUser, )
 	serializer_class = EmailSerializer
-
-	game_id = self.kwargs['pk']
+	
+	def get_queryset(self):
+		game_id = self.kwargs['pk']
 		return Player.objects.exclude(active=False).exclude(human=True).filter(game__id=game_id)
 
