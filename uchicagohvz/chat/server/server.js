@@ -83,13 +83,13 @@ ChatServer = (function() {
         });
         conn.on('close', function() {
           _this.removeConn(conn);
-          return _this.broadcast({type: 'announce', announce: '#{ authData.name } has left the room.'})
+          return _this.broadcast({type: 'announce', announce: '#{ authData.name } has left the room.'});
         });
         _this.lobby.push(conn);
         conn.writeJSON({
           type: 'authenticated'
         });
-        return _this.broadcast({type: 'announce', announce: '#{ authData.name } has entered the fray'})
+        return _this.broadcast({type: 'announce', announce: '#{ authData.name } has entered the fray'});
       }
     });
   };
