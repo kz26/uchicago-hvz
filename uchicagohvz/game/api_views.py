@@ -100,3 +100,17 @@ class Players(APIView):
 		players = Player.objects.exclude(active=False).filter(game__id=game_id)
 		return Response('; '.join([player.user.email for player in players]))
 
+class HCommando(APIView):
+	permission_classes = (IsAdminUser, )
+	
+	def get(self, request, format=None, *args, **kwargs):
+		game_id = self.kwargs['pk']
+		hvts = HighValueTarget.objects.exclude(player__active=False).filter(player__game__id=game_id)
+		return Response('; '.join([hvt.player.user.email for hvt in hvts]))
+
+class ZCommando(APIView):
+	permission_classes = (IsAdminUser, )
+	
+	def get(self, request, format=None, *args, **kwargs):
+		return Response('')
+
