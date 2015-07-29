@@ -99,7 +99,7 @@ ChatCtrl = ($scope, $window, $cookies, chatServer, moment) ->
 	$scope.$on 'chat:authenticated', ->
 		$scope.connected = true
 
-	$scope.$on 'chat:announce', ->
+	$scope.$on 'chat:announce', (e, data) ->
 		$scope.messages.push "#{ data.announce }"
 
 	$scope.$on 'chat:chat', (e, data) ->
