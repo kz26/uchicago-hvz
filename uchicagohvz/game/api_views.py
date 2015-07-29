@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from uchicagohvz.game.models import *
 from uchicagohvz.game.data_apis import *
 from uchicagohvz.game.serializers import *
+from uchicagohvz.game.renderers import *
 from django.utils import timezone
 
 class KillFeed(ListAPIView):
@@ -78,7 +79,8 @@ class MissionFeedAll(ListAPIView):
 
 class Humans(APIView):
 	permission_classes = (IsAdminUser, )
-	serializer_class = EmailSerializer
+	# serializer_class = EmailSerializer
+	renderer_classes = (MailingListRenderer, )
 
 	def get(self, request, format=None, *args, **kwargs):
 		game_id = self.kwargs['pk']
@@ -87,7 +89,8 @@ class Humans(APIView):
 
 class Zombies(APIView):
 	permission_classes = (IsAdminUser, )
-	serializer_class = EmailSerializer
+	# serializer_class = EmailSerializer
+	renderer_classes = (MailingListRenderer, )
 	
 	def get(self, request, format=None, *args, **kwargs):
 		game_id = self.kwargs['pk']
