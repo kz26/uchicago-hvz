@@ -82,7 +82,7 @@ class Humans(APIView):
 	def get(self, request, format=None, *args, **kwargs):
 		game_id = self.kwargs['pk']
 		players = Player.objects.exclude(active=False).exclude(human=False).filter(game__id=game_id)
-		return Response(';'.join([player.user.email for player in players]))
+		return Response('; '.join([player.user.email for player in players]))
 
 class Zombies(APIView):
 	permission_classes = (IsAdminUser, )
@@ -90,5 +90,13 @@ class Zombies(APIView):
 	def get(self, request, format=None, *args, **kwargs):
 		game_id = self.kwargs['pk']
 		players = Player.objects.exclude(active=False).exclude(human=True).filter(game__id=game_id)
-		return Response(';'.join([player.user.email for player in players]))
+		return Response('; '.join([player.user.email for player in players]))
+
+class Players(APIView):
+	permission_classes = (IsAdminUser, )
+	
+	def get(self, request, format=None, *args, **kwargs):
+		game_id = self.kwargs['pk']
+		players = Player.objects.exclude(active=False).filter(game__id=game_id)
+		return Response('; '.join([player.user.email for player in players]))
 
