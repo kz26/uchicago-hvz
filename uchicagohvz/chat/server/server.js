@@ -82,14 +82,14 @@ ChatServer = (function() {
           return _this.chat(conn, data);
         });
         conn.on('close', function() {
-          _this.removeConn(conn);
-          return _this.broadcast({type: 'announce', announce: '#{ authData.name } has left the room.'});
+          _this.broadcast({type: 'announce', announce: '#{ authData.name } has left the room.'});
+          return _this.removeConn(conn);
         });
         _this.lobby.push(conn);
-        conn.writeJSON({
+        _this.broadcast({type: 'announce', announce: '#{ authData.name } has entered the fray'});
+        return conn.writeJSON({
           type: 'authenticated'
         });
-        return _this.broadcast({type: 'announce', announce: '#{ authData.name } has entered the fray'});
       }
     });
   };
