@@ -28,6 +28,7 @@
 <script>
 	var CHAT_SERVER_URL = '{{ CHAT_SERVER_URL }}';
 	var GAME_ID = {{ game.pk }};
+	var NAME = {{ player.display_name() }}
 </script>
 {% include 'includes/angular.html' %}
 {% include 'includes/moment.html' %}
@@ -99,7 +100,7 @@ ChatCtrl = ($scope, $window, $cookies, chatServer, moment) ->
 		$scope.connected = true
 
 	$scope.$on 'chat:chat', (e, data) ->
-		$scope.messages.push "[#{ dtNow() }] #{ data.message }"
+		$scope.messages.push "[#{ dtNow() }] #{ data.name }: #{ data.message }"
 
 	$scope.$on 'chat:refresh', ->
 		$window.location.reload()
@@ -110,7 +111,7 @@ ChatCtrl = ($scope, $window, $cookies, chatServer, moment) ->
 
 	$scope.transmit = ->
 		if $scope.transmission and $scope.connected
-			chatServer.socket.sendJSON {type: 'chat', message: $scope.transmission}
+			chatServer.socket.sendJSON {type: 'chat', message: $scope.transmission, name: NAME}
 			$scope.transmission = ''
 
 </script>

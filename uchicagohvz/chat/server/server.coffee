@@ -39,7 +39,7 @@ class ChatServer
 	auth: (conn, authData) ->
 		# authData object needs to contain gameID and sessionid
 		request.get {
-			uri: "http://127.0.0.1:8080/game/#{ authData.gameID }/chat/auth/",
+			uri: "https://127.0.0.1:8080/game/#{ authData.gameID }/chat/auth/",
 			headers: {
 				'User-Agent': "#{ pkg.name }/#{ pkg.version }",
 				Host: 'hvz.rucus.me',
