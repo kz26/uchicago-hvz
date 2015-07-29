@@ -74,7 +74,7 @@ class MissionFeedAll(ListAPIView):
 		game_id = self.kwargs['pk']
 		now = timezone.now()
 		# return missions that are currently available (i.e. now is between start date and end date)
-		return Mission.objects.filter(game__id=game_id).exclude(end_date__lte=now).order_by('end_date')
+		return Mission.objects.filter(game__id=game_id).exclude(end_date__gte=now).order_by('end_date')
 
 class Humans(APIView):
 	permission_classes = (IsAdminUser, )
