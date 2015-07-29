@@ -80,7 +80,7 @@ class MissionFeedAll(ListAPIView):
 class Humans(APIView):
 	permission_classes = (IsAdminUser, )
 	# serializer_class = EmailSerializer
-	renderer_classes = (MailingListRenderer, )
+	# renderer_classes = (MailingListRenderer, )
 
 	def get(self, request, format=None, *args, **kwargs):
 		game_id = self.kwargs['pk']
@@ -90,10 +90,10 @@ class Humans(APIView):
 class Zombies(APIView):
 	permission_classes = (IsAdminUser, )
 	# serializer_class = EmailSerializer
-	renderer_classes = (MailingListRenderer, )
+	# renderer_classes = (MailingListRenderer, )
 	
 	def get(self, request, format=None, *args, **kwargs):
 		game_id = self.kwargs['pk']
 		players = Player.objects.exclude(active=False).exclude(human=True).filter(game__id=game_id)
-		return Response([player.user.email for player in players])
+		return Response([player.user.email for player in players].join(';'))
 
