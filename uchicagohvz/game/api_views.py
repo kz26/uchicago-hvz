@@ -76,19 +76,21 @@ class MissionFeedAll(ListAPIView):
 		# return missions that are currently available (i.e. now is between start date and end date)
 		return Mission.objects.filter(game__id=game_id).exclude(end_date__lte=now).order_by('end_date')
 
-class Humans(ListAPIView):
+class Humans(APIView):
 	permission_classes = (IsAdminUser, )
 	serializer_class = EmailSerializer
 
-	def get_queryset(self):
+	def get(self):
 		game_id = self.kwargs['pk']
-		return Player.objects.exclude(active=False).exclude(human=False).filter(game__id=game_id)
+		players = Player.objects.exclude(active=False).exclude(human=False).filter(game__id=game_id)
+		return Response([player.user.email for player in players])
 
-class Zombies(ListAPIView):
+class Zombies(APIView):
 	permission_classes = (IsAdminUser, )
 	serializer_class = EmailSerializer
 	
-	def get_queryset(self):
+	def get(self):
 		game_id = self.kwargs['pk']
-		return Player.objects.exclude(active=False).exclude(human=True).filter(game__id=game_id)
+		players = Player.objects.exclude(active=False).exclude(human=True).filter(game__id=game_id)
+		return Response([player.user.email for player in players])
 

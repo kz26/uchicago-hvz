@@ -45,5 +45,5 @@ class EmailSerializer(serializers.ModelSerializer):
 	email = serializers.SerializerMethodField()
 
 	def get_email(self, obj):
-		return obj.user__email
+		return obj.user.email
 
