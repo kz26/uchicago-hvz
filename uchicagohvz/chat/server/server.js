@@ -82,12 +82,14 @@ ChatServer = (function() {
           return _this.chat(conn, data);
         });
         conn.on('close', function() {
-          return _this.removeConn(conn);
+          _this.removeConn(conn);
+          return _this.broadcast({type: 'announce', announce: '#{ authData.name } has left the room.'})
         });
         _this.lobby.push(conn);
-        return conn.writeJSON({
+        conn.writeJSON({
           type: 'authenticated'
         });
+        return _this.broadcast({type: 'announce', announce: '#{ authData.name } has entered the fray'})
       }
     });
   };

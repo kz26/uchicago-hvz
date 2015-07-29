@@ -54,8 +54,10 @@ class ChatServer
 					@chat conn, data
 				conn.on 'close', =>
 					@removeConn conn
+					@broadcast {type: 'announce', announce: '#{ authData.name } has left the room.'}
 				@lobby.push conn
 				conn.writeJSON {type: 'authenticated'}
+				@broadcast {type: 'announce', announce: '#{ authData.name } has entered the fray'}
 
 	chat: (conn, data) ->
 		if conn.userObject.rooms.length == 1
