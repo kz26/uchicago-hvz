@@ -50,7 +50,7 @@ INSTALLED_APPS = (
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	'mptt', 'localflavor', 'djcelery_email', 'compressor', 'rest_framework', 'haystack', 'captcha',
+	'mptt', 'localflavor', 'djcelery_email', 'compressor', 'rest_framework', 'captcha', 'django_redis',
 	'uchicagohvz.users', 'uchicagohvz.game',
 )
 
@@ -141,8 +141,11 @@ LOGIN_REDIRECT_URL = "/"
 # Caching and sessions
 CACHES = {
 	'default': {
-		'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-		'LOCATION': '127.0.0.1:11211',
+		'BACKEND': 'django_redis.cache.RedisCache',
+		'LOCATION': 'redis://localhost:6379/3',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
 	}
 }
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
@@ -160,13 +163,6 @@ MESSAGE_TAGS = {
     message_constants.WARNING: 'warning',
     message_constants.ERROR: 'danger'
 } # Bootstrap 3 alert integration
-
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
-    },
-}
 
 # Celery configuration
 BROKER_URL = 'redis://localhost:6379/3'

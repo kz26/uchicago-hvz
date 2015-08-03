@@ -292,6 +292,8 @@ class Player(models.Model):
 				name = self.bite_code
 		else:
 			name = self.user.get_full_name()
+		if not name:
+			name = "CONTACT A MODERATOR"
 		if self.squad:
 			name = "%s [%s]" % (name, self.squad.name)
 		elif self.new_squad:
@@ -468,3 +470,29 @@ class HighValueDorm(models.Model):
 		super(HighValueDorm, self).save(*args, **kwargs)
 		from uchicagohvz.game.tasks import refresh_kill_points
 		refresh_kill_points.delay(self.game.id)
+
+class Mission(models.Model):
+    class Meta:
+        unique_together = ('game', 'name')
+    game = models.ForeignKey(Game, related_name='missions')
+    name = models.CharField(max_length=63)
+    awards = models.ManyToManyField(Award, related_name='missions', blank=True, help_text='Awards associated with this mission.')
+    description = models.CharField(max_length=255)
+    summary = models.TextField(max_length=6000, default="")
+    zombies_win = models.BooleanField(default=False) #because mods hate zombies :P
+
+
+    def __unicode__(self):
+        return "%s (%s)" % (self.name, self.game.name)
+
+    def save(self, *args, **kwargs):
+        super(Mission, self).save(*args, **kwargs)
+
+    def mission_attendance(self, *args, **kwargs):
+        attendees = []
+        for award in self.awards.all():
+            for player in award.players.all():
+                if player not in attendees:
+                    attendees.append(player)
+
+        return len(attendees)

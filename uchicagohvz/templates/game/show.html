@@ -233,7 +233,7 @@
 	<li class="active"><a href="#analytics" data-toggle="tab"><span class="glyphicon glyphicon-stats"></span> Analytics</a></li>
 	<li><a href="#leaderboards-individual" data-toggle="tab"><span class="glyphicon glyphicon-list"></span> Individual Leaderboards</a></li>
 	{% if game.squads.count %}<li><a href="#leaderboards-squad" data-toggle="tab"><span class="glyphicon glyphicon-th-list"></span> Squad Leaderboards</a></li>{% endif %}
-	{% if game.flavor %}<li><a href="#flavor" data-toggle="tab"><span class="glyphicon glyphicon-pencil"></span> Flavor</a></li>{% endif %}
+	{% if game.flavor %}<li><a href="#flavor" data-toggle="tab"><span class="glyphicon glyphicon-pencil"></span> Flavor</a></li>{% endif %}{% if game.missions %}<li><a href="#missions" data-toggle="tab"><span class="glyphicon glyphicon-flag"></span> Missions</a></li>{% endif %}
 </ul>
 <div class="tab-content">
 	<div id="analytics" class="tab-pane active">
@@ -445,7 +445,18 @@
 			</div>
 		</div>
 	{% endif %}
-
+	{% if game.missions %}
+		<div id="missions" class="tab-pane">
+			{% for mission in missions %}
+				<h2>{{ mission.name }} {% if mission.zombies_win %}
+				<small><span class="text-danger"> Zombies Win</span></small>
+				{% else %}
+				<small><span class="text-success"> Humans Win</span></small>
+				{% endif %}</h2>
+				<p>{{ mission.description }} <a href="{% url 'mission|show' pk=mission.id %}">More info</a></p>
+			{% endfor %}
+		</div>
+	{% endif %}
 </div>
 {% endif %}
 		

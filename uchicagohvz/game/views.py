@@ -54,6 +54,7 @@ class ShowGame(DetailView):
 				context['top_humans'] = top_humans(self.object)[:10]
 				context['top_zombies'] = top_zombies(self.object)[:10]
 				context['squad_count'] = self.object.squads.count()
+				context['missions'] = self.object.missions.all()
 
 				if self.object.squads.count():
 					context['top_human_squads'] = top_human_squads(self.object)
@@ -270,3 +271,7 @@ class ShowSquad(DetailView):
 class ShowKill(DetailView):
 	model = Kill
 	template_name = 'game/show_kill.html'
+
+class ShowMission(DetailView):
+	model = Mission
+	template_name = 'game/show_mission.html'

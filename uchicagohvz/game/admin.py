@@ -109,7 +109,21 @@ class HVTAdminForm(forms.ModelForm):
 class HVTAdmin(admin.ModelAdmin):
 	form = HVTAdminForm
 
+class MissionAdminForm(forms.ModelForm):
+	def clean_awards(self):
+		awards = self.cleaned_data.get('awards', [])
+		game = self.cleaned_data.get('game')
+		if game:
+			for award in awards:
+				if award.game != game:
+					raise forms.ValidationError("%s is part of game %s but this Mission is for game %s." % (
+						award.name, award.game.name, game.name)
+					)
+		return awards
 
+class MissionAdmin(admin.ModelAdmin):
+	form = MissionAdminForm
+	filter_horizontal = ('awards',)
 
 admin.site.register(Squad)
 admin.site.register(New_Squad)
@@ -118,3 +132,4 @@ admin.site.register(Kill, KillAdmin)
 admin.site.register(Award, AwardAdmin)
 admin.site.register(HighValueTarget, HVTAdmin)
 admin.site.register(HighValueDorm)
+admin.site.register(Mission, MissionAdmin)
