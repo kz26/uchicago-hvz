@@ -1,0 +1,49 @@
+{% extends 'base.html' %}{% load mptt_tags %}{% load compress %}
+{% block content %}
+<div class="page-header">
+    <h1><span class="{% if mission.zombies_win %}text-danger{% else %}text-success{% endif %}">{{ mission.name }}</span> <small>{{ mission.game.name }}</small></h1>
+</div>
+
+<div class="row">
+    <dl style="font-size: 18pt">
+
+    <dt>Mission Attendance</dt>
+    <dd>{{ mission.mission_attendance }}</dd>
+
+    <dt>Winner</dt>
+    {% if mission.zombies_win %}
+    <dd class='text-danger'>Zombies</dd>
+    {% else %}
+    <dd class='text-success'>Humans</dd>
+    {% endif %}
+    </dl>
+
+    <h3><b>Mission Description</b></h3>
+    <p>{{ mission.summary }}</p>
+
+    <br>
+
+    {% for award in mission.awards.all %}
+        {% if award.players.count %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>{{ award.name }}</th>
+                    <th>Points Received</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in award.players.all %}
+                <tr>
+                    <td><a href='{{ player.get_absolute_url }}'>{{ player.display_name }}</a></td>
+                    <td>{{ award.points }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    {% endfor %}
+
+</div>
+
+{% endblock %}
