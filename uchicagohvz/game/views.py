@@ -197,8 +197,8 @@ class AnnotateKill(UpdateView):
 class SubmitCodeSMS(APIView):
 	@method_decorator(csrf_exempt)
 	def post(self, request, *args, **kwargs):
-		if all([f in request.DATA for f in ('msisdn', 'text')]):
-			process_sms_code.delay(request.DATA['msisdn'], request.DATA['text'])
+		if all([f in request.data for f in ('msisdn', 'text')]):
+			process_sms_code.delay(request.data['msisdn'], request.data['text'])
 		return Response()
 
 class SubmitAwardCode(BaseFormView):
