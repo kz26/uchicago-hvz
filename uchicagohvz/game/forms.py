@@ -11,6 +11,7 @@ class SquadForm(forms.Form):
 	def __init__(self, *args, **kwargs):
 		self.game = kwargs.pop('game')
 		super(SquadForm, self).__init__(*args, **kwargs)
+		self.fields['choose_squad'].queryset = New_Squad.objects.filter(game=self.game)
 		self.fields['choose_squad'].widget.attrs['class'] = 'form-control' # for Bootstrap 3
 		
 	def clean(self):
