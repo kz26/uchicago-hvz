@@ -96,6 +96,24 @@ def process_sms_code(msisdn, text):
 		send_sms_invalid_code(profile, code)
 
 @task
+def send_zombie_text(msg):
+	players = game.players.filter(active=True, human=False, user__profile__phone_number__isnull=False)#, user__profile__subscribe_zombie_texts=True)
+	to_addrs = []
+	for player in players:
+		pn = player.user.profile.phone_number.replace('-', '')
+		to_addrs.append(CARRIERS[player.user.profile.phone_carrier] % (pn))
+	random.shuffle(to_addrs)
+	body = msg
+	def gen_emails():
+		MAX_RECIPIENTS = 999
+		for i in range(0, len(to_addrs), MAX_RECIPIENTS):
+			recipients = to_addrs[i:i + MAX_RECIPIENTS]
+			email = mail.EmailMessage(body=body, to=recipients)
+			yield email		
+	conn = mail.get_connection()
+	conn.send_messages(tuple(gen_emails()))
+
+@task
 def send_death_notification(kill):
 	killer = kill.killer
 	victim = kill.victim

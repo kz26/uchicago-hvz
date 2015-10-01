@@ -197,9 +197,39 @@ class AnnotateKill(UpdateView):
 class SubmitCodeSMS(APIView):
 	@method_decorator(csrf_exempt)
 	def post(self, request, *args, **kwargs):
-		if all([f in request.DATA for f in ('msisdn', 'text')]):
-			process_sms_code.delay(request.DATA['msisdn'], request.DATA['text'])
+		if all([f in request.data for f in ('msisdn', 'text')]):
+			process_sms_code.delay(request.data['msisdn'], request.data['text'])
 		return Response()
+
+class SendZombieText(BaseFormView):
+	form_class = ZombieTextForm
+	http_method_names = ['post']
+
+	@method_decorator(login_required)
+	def dispatch(self, request, *args, **kwargs):
+		return super(SendZombieText, self).dispatch(request, *args, **kwargs)
+
+	@transaction.atomic
+	def form_valid(self, form):
+		message = form.message
+		send_zombie_text(message)
+		messages.success(self.request, mark_safe("Message sent to subscribing zombies!"))
+		return HttpResponseRedirect(self.game.get_absolute_url())
+
+	def form_invalid(self, form):
+		for e in form.non_field_errors():
+			messages.error(self.request, e)
+		return HttpResponseRedirect(self.game.get_absolute_url())
+
+	def get_form_kwargs(self):
+		kwargs = super(SendZombieText, self).get_form_kwargs()
+		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
+		if self.game.status == 'in_progress':
+			self.player = get_object_or_404(Player, game=self.game, active=True, user=self.request.user)
+			kwargs['player'] = self.player
+			return kwargs
+		else:
+			raise PermissionDenied
 
 class SubmitAwardCode(BaseFormView):
 	form_class = AwardCodeForm

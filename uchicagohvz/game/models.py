@@ -107,7 +107,8 @@ class New_Squad(models.Model):
 	def __unicode__(self):
 		return "%s" % (self.name)
 
-
+	def get_active_players(self):
+		return self.players.filter(active=True)
 
 class Squad(models.Model):
 	class Meta:
@@ -196,6 +197,7 @@ class Player(models.Model):
 	renting_gun = models.BooleanField(default=False)
 	gun_returned = models.BooleanField(default=False)
 	last_words = models.CharField(max_length=255, blank=True)
+	lead_zombie = models.BooleanField(default=False)
 
 	def save(self, *args, **kwargs):
 		if self.game.status == 'registration' or not self.major: # allow updates to major during registration
@@ -411,7 +413,7 @@ class Award(models.Model):
 	
 	game = models.ForeignKey(Game, related_name='+')
 	name = models.CharField(max_length=255)
-	points = models.IntegerField(help_text='Can be negative, e.g. to penalize players')
+	points = models.FloatField(help_text='Can be negative, e.g. to penalize players')
 	players = models.ManyToManyField(Player, related_name='awards', blank=True, help_text='Players that should receive this award.')
 	code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
 	redeem_limit = models.IntegerField(
