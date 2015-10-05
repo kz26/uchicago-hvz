@@ -54,6 +54,7 @@ class ShowGame(DetailView):
 				context['top_humans'] = top_humans(self.object)[:10]
 				context['top_zombies'] = top_zombies(self.object)[:10]
 				context['squad_count'] = self.object.squads.count()
+				context['new_squad_count'] = self.object.new_squads.count()
 				context['missions'] = self.object.missions.all()
 
 				if self.object.squads.count():

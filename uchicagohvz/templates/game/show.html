@@ -184,6 +184,7 @@
 			{% endif %}
 			{% endif %}
 		</dl>
+
 		{% if game.status == "finished" and player.renting_gun and not player.gun_returned %}
 		<p class="text-danger">Please return your gun as soon as possible!</p>
 		{% endif %}
@@ -247,6 +248,7 @@
 	<li class="active"><a href="#analytics" data-toggle="tab"><span class="glyphicon glyphicon-stats"></span> Analytics</a></li>
 	<li><a href="#leaderboards-individual" data-toggle="tab"><span class="glyphicon glyphicon-list"></span> Individual Leaderboards</a></li>
 	{% if game.squads.count %}<li><a href="#leaderboards-squad" data-toggle="tab"><span class="glyphicon glyphicon-th-list"></span> Squad Leaderboards</a></li>{% endif %}
+	{% if game.new_squads.count %}<li><a href="#leaderboards-new-squad" data-toggle="tab"><span class="glyphicon glyphicon-th-list"></span> Squads</a></li>{% endif %}
 	{% if game.flavor %}<li><a href="#flavor" data-toggle="tab"><span class="glyphicon glyphicon-pencil"></span> Flavor</a></li>{% endif %}{% if game.missions %}<li><a href="#missions" data-toggle="tab"><span class="glyphicon glyphicon-flag"></span> Missions</a></li>{% endif %}
 </ul>
 <div class="tab-content">
