@@ -2,6 +2,7 @@ from __future__ import division
 from django.shortcuts import *
 from django.conf import settings
 from django.db import transaction
+from django.db.models.expressions import RawSQL
 from django.contrib import messages
 from django.http import *
 from django.core.exceptions import *
@@ -28,6 +29,14 @@ import re
 class ListGames(ListView):
 	model = Game
 	template_name = 'game/list.html'
+
+	def get_queryset(self):
+		qs = super(ListGames, self).get_queryset()
+		if self.request.user.is_authenticated():
+			qs = qs.annotate(is_player=RawSQL("SELECT EXISTS(SELECT 1 FROM game_player WHERE \
+				game_player.game_id = game_game.id AND game_player.user_id = %s AND \
+				game_player.active = true)", (self.request.user.id,)))	
+		return qs
 
 class ShowGame(DetailView):
 	model = Game
