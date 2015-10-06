@@ -35,7 +35,7 @@ class ListGames(ListView):
 		if self.request.user.is_authenticated():
 			qs = qs.annotate(is_player=RawSQL("SELECT EXISTS(SELECT 1 FROM game_player WHERE \
 				game_player.game_id = game_game.id AND game_player.user_id = %s AND \
-				game_player.active = 1)", (self.request.user.id,)))	
+				game_player.active = true)", (self.request.user.id,)))	
 		return qs
 
 class ShowGame(DetailView):
