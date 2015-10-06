@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'uchicagohvz.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-
+    url(r'^admin/jsi18n/$', 'django.views.i18n.javascript_catalog'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('uchicagohvz.game.urls')),
     url(r'^users/', include('uchicagohvz.users.urls')),

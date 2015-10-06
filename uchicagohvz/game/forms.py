@@ -2,6 +2,7 @@ from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from uchicagohvz.game.models import *
 
 class SquadForm(forms.Form):
@@ -85,6 +86,21 @@ class AnnotateKillForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(AnnotateKillForm, self).__init__(*args, **kwargs)
+
+class UploadMissionPictureForm(forms.ModelForm):
+	class Meta:
+		model = MissionPicture
+		fields = ('lat', 'lng', 'picture', 'players')
+
+	players = forms.ModelMultipleChoiceField(required=False, queryset=Player.objects.all(), widget=FilteredSelectMultiple(('Players'), False,))
+	lat = forms.FloatField(required=False, validators=[validate_lat])
+	lng = forms.FloatField(required=False, validators=[validate_lng])
+	picture = forms.FileField(required=False)
+
+	def __init__(self, *args, **kwargs):
+		self.game = kwargs.pop('game')
+		super(UploadMissionPictureForm, self).__init__(*args, **kwargs)
+		self.fields['players'].queryset = Player.objects.filter(game=self.game)
 
 class AwardCodeForm(forms.Form):
 	code = forms.CharField()

@@ -21,3 +21,18 @@ class KillSerializer(serializers.ModelSerializer):
 			return None
 		return (obj.lat, obj.lng)
 
+class PictureSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = MissionPicture
+		fields = ('picture', 'location', 'date', 'points')
+
+	picture = serializers.SerializerMethodField()
+	location = serializers.SerializerMethodField()
+
+	def get_picture(self, obj):
+		return obj.picture.url
+
+	def get_location(self, obj):
+		if not (obj.lat and obj.lng):
+			return None
+		return (obj.lat, obj.lng)

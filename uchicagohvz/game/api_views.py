@@ -25,6 +25,18 @@ class SquadKillFeed(ListAPIView):
 		squad = get_object_or_404(Squad, id=self.kwargs['pk'])
 		return squad.get_kills()
 
+class NewSquadKillFeed(ListAPIView):
+	serializer_class = KillSerializer
+	def get_queryset(self):
+		new_squad = get_object_or_404(New_Squad, id=self.kwargs['pk'])
+		return new_squad.get_kills()
+
+class PictureFeed(ListAPIView):
+	serializer_class = PictureSerializer
+	def get_queryset(self):
+		game = get_object_or_404(Game, id=self.kwargs['pk'])
+		return MissionPicture.objects.filter(game=game).order_by('-date')
+
 class HumansPerHour(APIView):
 	def get(self, request, *args, **kwargs):
 		game = get_object_or_404(Game, id=kwargs['pk'])

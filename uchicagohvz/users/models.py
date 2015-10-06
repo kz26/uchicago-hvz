@@ -14,6 +14,7 @@ class Profile(models.Model):
 	subscribe_death_notifications = models.BooleanField(default=False)
 	subscribe_chatter_listhost = models.BooleanField(default=True)
 	subscribe_zombies_listhost = models.BooleanField(default=True)
+	subscribe_zombie_texts = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return self.user.get_full_name()

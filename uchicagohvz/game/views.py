@@ -35,7 +35,7 @@ class ListGames(ListView):
 		if self.request.user.is_authenticated():
 			qs = qs.annotate(is_player=RawSQL("SELECT EXISTS(SELECT 1 FROM game_player WHERE \
 				game_player.game_id = game_game.id AND game_player.user_id = %s AND \
-				game_player.active = true)", (self.request.user.id,)))	
+				game_player.active = 1)", (self.request.user.id,)))	
 		return qs
 
 class ShowGame(DetailView):
@@ -63,7 +63,6 @@ class ShowGame(DetailView):
 				context['top_humans'] = top_humans(self.object)[:10]
 				context['top_zombies'] = top_zombies(self.object)[:10]
 				context['squad_count'] = self.object.squads.count()
-				context['new_squad_count'] = self.object.new_squads.count()
 				context['missions'] = self.object.missions.all()
 
 				if self.object.squads.count():
@@ -211,36 +210,6 @@ class SubmitCodeSMS(APIView):
 			process_sms_code.delay(request.data['msisdn'], request.data['text'])
 		return Response()
 
-class SendZombieText(BaseFormView):
-	form_class = ZombieTextForm
-	http_method_names = ['post']
-
-	@method_decorator(login_required)
-	def dispatch(self, request, *args, **kwargs):
-		return super(SendZombieText, self).dispatch(request, *args, **kwargs)
-
-	@transaction.atomic
-	def form_valid(self, form):
-		message = form.message
-		send_zombie_text(message)
-		messages.success(self.request, mark_safe("Message sent to subscribing zombies!"))
-		return HttpResponseRedirect(self.game.get_absolute_url())
-
-	def form_invalid(self, form):
-		for e in form.non_field_errors():
-			messages.error(self.request, e)
-		return HttpResponseRedirect(self.game.get_absolute_url())
-
-	def get_form_kwargs(self):
-		kwargs = super(SendZombieText, self).get_form_kwargs()
-		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
-		if self.game.status == 'in_progress':
-			self.player = get_object_or_404(Player, game=self.game, active=True, user=self.request.user)
-			kwargs['player'] = self.player
-			return kwargs
-		else:
-			raise PermissionDenied
-
 class SubmitAwardCode(BaseFormView):
 	form_class = AwardCodeForm
 	http_method_names = ['post']
@@ -308,6 +277,10 @@ class ShowSquad(DetailView):
 	model = Squad
 	template_name = 'game/show_squad.html'
 
+class ShowNewSquad(DetailView):
+	model = New_Squad
+	template_name = 'game/show_new_squad.html'
+
 class ShowKill(DetailView):
 	model = Kill
 	template_name = 'game/show_kill.html'
@@ -315,3 +288,63 @@ class ShowKill(DetailView):
 class ShowMission(DetailView):
 	model = Mission
 	template_name = 'game/show_mission.html'
+
+class UploadMissionPicture(FormView):
+    form_class = UploadMissionPictureForm
+    model = MissionPicture
+    template_name = 'game/upload-mission-picture.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(UploadMissionPicture, self).dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        mission_picture = super(UploadMissionPicture, self).get_object()
+        if mission_picture.player.user == self.request.user:
+            return mission_picture
+        raise PermissionDenied
+
+    def form_valid(self, form):
+        mission_picture = form.save(commit=False)
+        mission_picture.game = get_object_or_404(Game, id=self.kwargs['pk'])
+        mission_picture.save()
+        messages.success(self.request, 'Picture successfully uploaded.')
+        return HttpResponseRedirect(mission_picture.game.get_absolute_url())
+
+    def get_form_kwargs(self):
+    	kwargs = super(UploadMissionPicture, self).get_form_kwargs()
+    	self.game = get_object_or_404(Game, id=self.kwargs['pk'])
+    	kwargs['game'] = self.game
+    	return kwargs
+
+
+class SendZombieText(BaseFormView):
+    form_class = ZombieTextForm
+    http_method_names = ['post']
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+    	self.game = get_object_or_404(Game, id=self.kwargs['pk'])
+        return super(SendZombieText, self).dispatch(request, *args, **kwargs)
+
+    @transaction.atomic
+    def form_valid(self, form):
+        message = form.message
+        send_zombie_text(message)
+        messages.success(self.request, mark_safe("Message sent to subscribing zombies!"))
+        return HttpResponseRedirect(self.game.get_absolute_url())
+
+    def form_invalid(self, form):
+        for e in form.non_field_errors():
+            messages.error(self.request, e)
+        return HttpResponseRedirect(self.game.get_absolute_url())
+
+    def get_form_kwargs(self):
+        kwargs = super(SendZombieText, self).get_form_kwargs()
+        self.game = get_object_or_404(Game, id=self.kwargs['pk'])
+        if self.game.status == 'in_progress':
+            self.player = get_object_or_404(Player, game=self.game, active=True, user=self.request.user)
+            kwargs['player'] = self.player
+            return kwargs
+        else:
+            raise PermissionDenied

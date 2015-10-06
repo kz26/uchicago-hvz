@@ -17,6 +17,9 @@ import random
 def gen_rules_filename(instance, fn):
 	return "rules/%s%s" % (instance.name, os.path.splitext(fn)[1])
 
+def gen_pics_filename(instance, fn):
+	return "pictures/%s%s" % (instance.picture.url, os.path.splitext(fn)[1])
+
 class GameManager(models.Manager):
 	def games_in_progress(self):
 		now = timezone.now()
@@ -107,8 +110,27 @@ class New_Squad(models.Model):
 	def __unicode__(self):
 		return "%s" % (self.name)
 
+	@models.permalink
+	def get_absolute_url(self):
+		return ('new_squad|show', [self.pk])
+
 	def get_active_players(self):
 		return self.players.filter(active=True)
+
+	def get_kills(self):
+		return Kill.objects.exclude(parent=None).filter(killer__in=self.get_active_players())
+
+	@property
+	def size(self):
+		return self.get_active_players().count()
+
+	@property
+	def num_humans(self):
+		return self.get_active_players().filter(human=True).count()
+
+	@property
+	def num_zombies(self):
+		return self.get_active_players().filter(human=False).count()
 
 class Squad(models.Model):
 	class Meta:
@@ -346,6 +368,29 @@ class Player(models.Model):
 	@models.permalink
 	def get_absolute_url(self):
 		return ('player|show', [self.pk])
+
+class MissionPicture(models.Model):
+	players = models.ManyToManyField(Player, related_name='pictures', blank=True, help_text='Players in this picture.')
+	game = models.ForeignKey(Game, related_name="pictures")
+	picture = models.FileField(upload_to=gen_pics_filename, storage=OverwriteFileSystemStorage())
+	lat = models.FloatField(null=True, blank=True, verbose_name='latitude')
+	lng = models.FloatField(null=True, blank=True, verbose_name='longitude')
+
+	def __unicode__(self):
+		name = ""
+		for p in self.players.all():
+			name += p.user.get_full_name() + " "
+		name += self.game.name
+		return name
+
+	@property
+	def geotagged(self):
+	    return self.lat and self.lng
+
+	@models.permalink
+	def get_absolute_url(self):
+		return ('mission_picture|show', [self.pk])
+	
 
 class Kill(MPTTModel):
 	class Meta:

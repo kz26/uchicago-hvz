@@ -97,13 +97,13 @@ def process_sms_code(msisdn, text):
 
 @task
 def send_zombie_text(msg):
-	players = game.players.filter(active=True, human=False, user__profile__phone_number__isnull=False)#, user__profile__subscribe_zombie_texts=True)
+	players = game.players.filter(active=True, human=False, user__profile__phone_number__isnull=False, user__profile__subscribe_zombie_texts=True)
 	to_addrs = []
 	for player in players:
 		pn = player.user.profile.phone_number.replace('-', '')
 		to_addrs.append(CARRIERS[player.user.profile.phone_carrier] % (pn))
 	random.shuffle(to_addrs)
-	body = msg
+	body = "MESSAGE FROM THE LEAD ZOMBIE: %s" % msg
 	def gen_emails():
 		MAX_RECIPIENTS = 999
 		for i in range(0, len(to_addrs), MAX_RECIPIENTS):

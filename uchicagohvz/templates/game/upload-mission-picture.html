@@ -1,0 +1,77 @@
+{% extends 'base.html' %}{% load compress %}
+{% block content %}
+<div class="page-header">
+    <h1>Upload Mission Picture </h1>
+</div>
+
+{% if user.is_staff %}
+{{ form.errors }}
+<form role="form" method="post">
+    {% csrf_token %}
+    <input id="latField" type="hidden" name="lat" value="{{ form.lat.value }}">
+    <input id="lngField" type="hidden" name="lng" value="{{ form.lng.value }}">
+    <div class="form-group">
+        <label for="killMap">Kill location</label>
+        <span class="help-block">Left-click on map to mark location</span>
+        {% if form.lat.errors or form.lng.errors %}
+        <ul class="errorlist">
+            <li><span class="text-danger">A valid location within the game boundaries must be specified.</span></li>
+        </ul>
+        {% endif %}
+        <div class="row">
+            <div class="col-lg-6">
+                <div id="killMap" style="height: 350px;"></div>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-success" type="submit">Save</button>
+</form>
+
+{% else %}
+<h3>You aren't supposed to be here....</h3>
+{% endif %}
+{% endblock %}
+{% block script %}
+{% include 'includes/google-maps.html' %}
+{% compress js %}
+<script type="text/coffeescript">
+
+$(document).ready ->
+    swPoint = new google.maps.LatLng(GAME_SW_BOUND[0], GAME_SW_BOUND[1])
+    nePoint = new google.maps.LatLng(GAME_NE_BOUND[0], GAME_NE_BOUND[1])
+    bounds = new google.maps.LatLngBounds(swPoint, nePoint)
+
+    mapOptions = {
+        center: new google.maps.LatLng(GAME_CENTER[0], GAME_CENTER[1]),
+        zoom: 17
+    }
+
+    map = new google.maps.Map($('#killMap').get(0), mapOptions)
+
+    lvc = map.getCenter()
+    google.maps.event.addListener map, 'center_changed', (e) ->
+        nc = map.getCenter()
+        if bounds.contains(nc)
+            lvc = nc
+        else
+            map.panTo(lvc)
+
+    marker = new google.maps.Marker({map: map, icon: '{{ STATIC_URL }}img/camera.png'})
+    google.maps.event.addListener map, 'click', (e) ->
+        marker.setPosition(e.latLng)
+
+    google.maps.event.addListener marker, 'position_changed', ->
+        $('#latField').val(marker.position.lat())
+        $('#lngField').val(marker.position.lng())
+
+    if $('#latField').val() and $('#lngField').val()
+        marker.setPosition(new google.maps.LatLng($('#latField').val(), $('#lngField').val()))
+
+    if 'geolocation' of navigator
+        navigator.geolocation.getCurrentPosition (pos) ->
+            loc = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude)
+            marker.setPosition(e.latLng)
+
+</script>
+{% endcompress %}
+{% endblock %}

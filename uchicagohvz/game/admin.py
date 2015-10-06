@@ -125,6 +125,22 @@ class MissionAdmin(admin.ModelAdmin):
 	form = MissionAdminForm
 	filter_horizontal = ('awards',)
 
+class MissionPictureAdminForm(forms.ModelForm):
+	def clean_players(self):
+		players = self.cleaned_data.get('players', [])
+		game = self.cleaned_data.get('game')
+		if game:
+			for player in players:
+				if player.game != game:
+					raise forms.ValidationError("%s is part of game %s but this Award is for game %s." % (
+						player.user.get_full_name(), player.game.name, game.name)
+					)
+		return players
+
+class MissionPictureAdmin(admin.ModelAdmin):
+	form = MissionPictureAdminForm
+	filter_horizontal = ('players',)
+
 admin.site.register(Squad)
 admin.site.register(New_Squad)
 admin.site.register(Player, PlayerAdmin)
@@ -133,3 +149,4 @@ admin.site.register(Award, AwardAdmin)
 admin.site.register(HighValueTarget, HVTAdmin)
 admin.site.register(HighValueDorm)
 admin.site.register(Mission, MissionAdmin)
+admin.site.register(MissionPicture, MissionPictureAdmin)
