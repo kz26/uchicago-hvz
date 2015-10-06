@@ -74,12 +74,6 @@
 			{% endif %}
 		</dl>
 	</div>
-	{% if user.is_staff %}
-	<div class="col-lg-4">
-		<h2>Upload Mission Photo</h2>
-		<a href="{% url 'game|upload-mission-picture' pk=game.pk %}">Upload photo</a>
-	</div>
-	{% endif %}
 </div>
 
 {% if player %}
@@ -330,8 +324,6 @@
 						</label>
 					</div>
 				</div>
-				<h2>Weeklong Mission Pictures</h2>
-				<div id="picMap" style="height: 350px;"></div>
 				<h2>Most Infectious Dorms</h2>
 				<p>Where infectivity = (total zombie points earned by dorm / # players in dorm) * 100</p>
 				<table class="table table-bordered table-striped">
@@ -560,7 +552,6 @@ mapOptions = {
 	zoom: 15
 }
 map = new google.maps.Map($('#killMap').get(0), mapOptions)
-pmap = new google.maps.Map($('#picMap').get(0), mapOptions)
 
 lvc = map.getCenter()
 google.maps.event.addListener map, 'center_changed', (e) ->
@@ -569,42 +560,6 @@ google.maps.event.addListener map, 'center_changed', (e) ->
 		lvc = nc
 	else
 		map.panTo(lvc)
-
-plvc = pmap.getCenter()
-google.maps.event.addListener pmap, 'center_changed', (e) ->
-	nc = pmap.getCenter()
-	if bounds.contains(nc)
-		plvc = nc
-	else
-		pmap.panTo(plvc)
-
-$.get("data/pictures/")
-	.done (data) ->
-		infoWin = new google.maps.InfoWindow()
-		markers = []
-		for k in data
-			k.date = new Date(k.date)
-			if k.location != null
-				marker = new google.maps.Marker {
-						map: pmap,
-						icon: '{{ STATIC_URL }}img/camera.png',
-						position: new google.maps.LatLng(k.location[0], k.location[1])
-					}
-				pictureDT = moment(k.date).format('M/D/YY h:mm:ss A')
-				content = $(
-					"<ul style='color:black'>
-						<li><img src=#{k.picture.url} alt='mission pic' width='64' height='64'></li>
-						<li><b>Date:</b> #{pictureDT}</li>
-					</ul>"
-				)
-				content.css('width', '300px')
-				markers.push([marker, k])
-				google.maps.event.addListener marker, 'click', ((marker, content) ->
-					return ->
-						infoWin.setContent(content)
-						infoWin.open(map, marker)
-				)(marker, content.get(0))
-
 
 $.get("data/kills/")
 	.done (data) ->
