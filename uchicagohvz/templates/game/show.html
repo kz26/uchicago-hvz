@@ -229,6 +229,12 @@
 		<p>Scores are not available at this time.</p>
 		{% endif %}
 	</div>
+	{% if game.picture %}
+	<div class="col-lg-4">
+		<h2>Relic Site</h2>
+		<img src={{ game.picture.url }} alt="relic site">
+	</div>
+	{% endif %}
 </div>
 {% endif %}
 
