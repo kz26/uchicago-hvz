@@ -178,7 +178,7 @@ HVT_KILL_POINTS = 3 # default points a high-value target is worth (replaces regu
 HVT_AWARD_POINTS = 0 # default award points a human gets for being an HVT and surviving
 HVD_KILL_POINTS = 3 # default points a target from a high-value dorm is worth (can stack on top of HVT points)
 LEADERBOARD_CACHE_DURATION = 3600 # how many seconds to cache certain DB-intensive leaderboard queries
-NEXMO_NUMBER = '201-621-9592'
+NEXMO_NUMBER = '979-476-7025'
 GAME_SW_BOUND = (41.783985, -87.606053)
 GAME_NE_BOUND = (41.798128, -87.584016)
 
