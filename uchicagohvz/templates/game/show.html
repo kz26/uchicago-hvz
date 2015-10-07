@@ -492,7 +492,7 @@
 	{% if game.flavor %}
 		<div id="flavor" class="tab-pane">
 			<div class="row">
-				<p class="center" style="margin-top: 1em;">{{ game.flavor }}</p>
+				<p class="left" style="margin-top: 1em;">{{ game.flavor|urlize|linebreaksbr }}</p>
 			</div>
 		</div>
 	{% endif %}
