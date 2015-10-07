@@ -458,7 +458,7 @@
 	<div id="leaderboards-new-squad" class="tab-pane">
 		<div class="row">
 			<div class="col-md-6">
-				<h2><span class="bold text-success">Human Squads</span></h2>
+				<h2><span class="bold">Squads</span></h2>
 				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
@@ -469,11 +469,13 @@
 					</thead>
 					<tbody>
 						{% for s in game.new_squads.all %}
+						{% if s.get_active_players %}
 						<tr>
 							<td><a href="{{ s.get_absolute_url }}">{{ s.name }}</a>{% if s.num_humans == 0 %} <span class="text-danger">(killed in action)</span>{% endif %}</td>
 							<td style="width:80px">{{ s.num_humans }} of {{ s.size }}</td>
 							<td>{{ s.size }}</td>
 						</tr>
+						{% endif %}
 						{% endfor %}
 					</tbody>
 				</table>
