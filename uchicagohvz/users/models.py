@@ -8,6 +8,8 @@ from uchicagohvz.users.phone import CARRIERS
 
 class Profile(models.Model):
 	user = models.OneToOneField(settings.AUTH_USER_MODEL)
+	use_ldap_name = models.BooleanField(default=True, help_text="If true, use LDAP as authoritative source \
+		for user's first/last name")
 	phone_number = PhoneNumberField(blank=True)
 	phone_carrier = models.CharField(max_length=32, blank=True, choices=[(k, k) for k in sorted(CARRIERS.keys())])
 	last_words = models.CharField(max_length=255, blank=True)

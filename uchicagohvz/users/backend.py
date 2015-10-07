@@ -56,8 +56,9 @@ class UChicagoLDAPBackend(object):
 						user = self.provision_user(user_data, password)[0]
 					else:
 						user.set_password(password)
-					user.first_name = user_data['givenName'][0]
-					user.last_name = user_data['sn'][0]
+					if user.profile.use_ldap_name:
+						user.first_name = user_data['givenName'][0]
+						user.last_name = user_data['sn'][0]
 					user.email = user_data['mail'][0]
 					user.save()
 					return user
