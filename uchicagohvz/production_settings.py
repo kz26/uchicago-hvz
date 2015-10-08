@@ -31,11 +31,7 @@ REST_FRAMEWORK = {
 # Email settings
 EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 CELERY_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-## Uncomment for Mandrill
-from secrets import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
-EMAIL_HOST = 'smtp.mandrillapp.com'
-EMAIL_PORT = '587'
+from secrets import EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 EMAIL_USE_TLS = True
 
 ## Uncomment for localhost email
