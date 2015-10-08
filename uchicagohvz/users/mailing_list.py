@@ -45,7 +45,7 @@ class ChatterMailgunHook(APIView):
 			msg['Subject'] = "[HvZ-Chatter] " + request.data['subject']
 			to_addrs = tuple(Profile.objects.filter(
 				user__is_active=True, subscribe_chatter_listhost=True).values_list('user__email', flat=True))
-			smtp_localhost_send(msg['Sender'], to_addrs, msg.as_string())
+			smtp_localhost_send(listhost_addr, to_addrs, msg.as_string())
 			return Response()
 		else:
 			return Response(status=406) 
