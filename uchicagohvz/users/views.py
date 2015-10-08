@@ -51,6 +51,20 @@ class ShowProfile(DetailView):
 	template_name = "users/profile.html"
 
 	def get_context_data(self, **kwargs):
+		def add(x,y):
+			try:
+				return x+y
+			except TypeError:
+				if isinstance( x, datetime.timedelta ):
+					return x
+				elif isinstance( y, datetime.timedelta ):
+					return y
+				else:
+					return 0
+
+		def f(t):
+			return isinstance( t, datetime.timedelta )
+
 		context = super(ShowProfile, self).get_context_data(**kwargs)
 		if self.request.user.is_authenticated():		
 			player_list = Player.objects.filter(user=self.request.user)
