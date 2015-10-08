@@ -15,7 +15,7 @@ def do_sympa_update(user, listname, subscribe):
 	email.send()
 
 @task
-def smtp_localhost_send_raw(from_addr, to_addrs, msg):
+def smtp_localhost_send(from_addr, to_addrs, msg):
 	server = smtplib.SMTP('localhost')
 	server.sendmail(from_addr, to_addrs, msg)
 	server.quit()

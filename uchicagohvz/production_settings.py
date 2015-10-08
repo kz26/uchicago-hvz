@@ -1,8 +1,8 @@
 from local_settings import *
 
-DEBUG = False
+DEBUG = False 
 
-ALLOWED_HOSTS = ['uchicagohvz.org', 'www.uchicagohvz.org']
+ALLOWED_HOSTS = ['*']
 
 ADMINS = (
     ('Administrator', 'admin@uchicagohvz.org'),
@@ -31,11 +31,8 @@ REST_FRAMEWORK = {
 # Email settings
 EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 CELERY_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-from secrets import EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+from secrets import EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, MAILGUN_API_KEY
 EMAIL_USE_TLS = True
-
-## Uncomment for localhost email
-#EMAIL_HOST = 'localhost'
 
 # Chat settings
 CHAT_SERVER_URL = '//www.uchicagohvz.org/chat'
