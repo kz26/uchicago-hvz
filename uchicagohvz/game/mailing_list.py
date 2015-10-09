@@ -5,6 +5,8 @@ from django.shortcuts import get_object_or_404
 
 
 class HZMailingListBase(MailgunHookBase):
+	
+	anonymize_from = True
 
 	def get_to_addrs(self):
 		raise NotImplementedError()

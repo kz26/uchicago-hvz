@@ -30,6 +30,8 @@ class MailgunHookBase(APIView):
 	listhost_unsubscribe_template = 'users/emails/how_to_unsubscribe.txt'
 	listhost_unsubscribe = '<https://www.uchicagohvz.org/users/update_profile/>'
 
+	anonymize_from = False
+
 	def get_listhost_id(self):
 		return getattr(self, 'listhost_id')
 
@@ -55,7 +57,10 @@ class MailgunHookBase(APIView):
 			for x in ('From', 'Sender', 'To', 'Reply-To', 'Subject'):
 				del msg[x]
 			listhost_addr = self.get_listhost_address()
-			msg['From'] = request.data['from']
+			if self.anonymize_from:
+				msg['From'] = self.listhost_addr
+			else:
+				msg['From'] = request.data['from']
 			msg['Sender'] = listhost_addr
 			msg['To'] = listhost_addr
 			msg['Reply-To'] = listhost_addr
