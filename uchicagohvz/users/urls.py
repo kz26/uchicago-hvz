@@ -14,7 +14,7 @@ urlpatterns = patterns('',
     url(r'^profile/(?P<pk>[0-9]+)/$', ShowProfile.as_view(), name="users|profile"),
     url(r'^update_profile/$', UpdateProfile.as_view(), name="users|update_profile"),
     url(r'^register/$', RegisterUser.as_view(), name="users|register"),
-    url(r'^chatter_mailgun_mime$', mailing_list.ChatterMailgunHook.as_view()),
+    url(r'^chatter_mailgun_mime$', mailing_list.ChatterMailingList.as_view()),
 
     url(r'^password_reset/$', 
         password_reset, 

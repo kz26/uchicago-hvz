@@ -1,8 +1,11 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
+
+from uchicagohvz.chat.views import *
+from uchicagohvz.game import mailing_list
 from uchicagohvz.game.views import *
 from uchicagohvz.game.api_views import *
-from uchicagohvz.chat.views import *
+
 
 urlpatterns = patterns('',
     # Examples:
@@ -27,6 +30,8 @@ urlpatterns = patterns('',
     url(r'^game/(?P<pk>[0-9]+)/data/zombies-by-major/$', ZombiesByMajor.as_view(), name='game|data|zbm'),
     url(r'^game/(?P<pk>[0-9]+)/data/pictures/$', PictureFeed.as_view(), name='game|data|pictures'),
     url(r'^game/(?P<pk>[0-9]+)/choose_squad/$', ChooseSquad.as_view(), name='game|choose_squad'),
+    url(r'^game/(?P<pk>[0-9]+)/ml/humans_mailgun_mime$', mailing_list.HumansMailingList.as_view()),
+    url(r'^game/(?P<pk>[0-9]+)/ml/zombies_mailgun_mime$', mailing_list.ZombiesMailingList.as_view()),
     url(r'^kill/(?P<pk>[0-9]+)/$', ShowKill.as_view(), name='kill|show'),
     url(r'^kill/(?P<pk>[0-9]+)/annotate/$', AnnotateKill.as_view(), name='kill|annotate'),
     url(r'^player/(?P<pk>[0-9]+)/$', ShowPlayer.as_view(), name='player|show'),

@@ -1,16 +1,21 @@
 from __future__ import division
-from django.db import models
-from django.db.models import Q
-from django.db import transaction
 from django.conf import settings
+from django.db import models
+from django.db import transaction
+from django.db.models import Q
+from django.template import defaultfilters
 from django.utils import timezone
+
 from uchicagohvz.overwrite_fs import OverwriteFileSystemStorage
 from uchicagohvz.users.backend import UChicagoLDAPBackend
+
 from mptt.models import MPTTModel, TreeForeignKey
 from ranking import Ranking
+
 import hashlib
 import os
 import random
+
 
 # Create your models here.
 
@@ -76,6 +81,15 @@ class Game(models.Model):
 			return 'finished'
 		else:
 			return 'future'
+
+	@property
+	def humans_listhost_address(self):
+		return "%s-humans@lists.uchicagohvz.org" % defaultfilters.slugify(self.name)
+
+	@property
+	def zombies_listhost_address(self):
+		return "%s-zombies@lists.uchicagohvz.org" % defaultfilters.slugify(self.name)
+		
 
 	@models.permalink
 	def get_absolute_url(self):
@@ -346,7 +360,10 @@ class Player(models.Model):
 	def human_rank(self):
 		from data_apis import top_humans
 		th = top_humans(self.game)
-		player_score = [x['human_points'] for x in th if x['player_id'] == self.id][0]
+		try:
+			player_score = [x['human_points'] for x in th if x['player_id'] == self.id][0]
+		except IndexError:
+			player_score = None
 		scores = [x['human_points'] for x in th]
 		return (Ranking(scores, start=1).rank(player_score), len(th))
 
@@ -356,7 +373,7 @@ class Player(models.Model):
 		tz = top_zombies(self.game)
 		try:
 			player_score = [x['zombie_points'] for x in tz if x['player_id'] == self.id][0]
-		except:
+		except IndexError:
 			return None
 		scores = [x['zombie_points'] for x in tz]
 		return (Ranking(scores, start=1).rank(player_score), len(tz))

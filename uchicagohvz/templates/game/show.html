@@ -81,6 +81,16 @@
 <div class="row">
 
 	{% if player.active and game.status == 'in_progress' %}
+	<div class="center" style="font-size: 16pt;">
+	{% if player.user.profile.subscribe_chatter_listhost %}
+		<p><a href="mailto:chatter@lists.uchicagohvz.org" target="_blank">Chatter listhost (all players): chatter@lists.uchicagohvz.org</a></p>
+		{% if player.human %}
+		<p><a href="mailto:{{ game.humans_listhost_address }}" target="_blank">Humans-only chatter listhost: {{ game.humans_listhost_address }}</a></p>
+		{% else %}
+		<p><a href="mailto:{{ game.humans_listhost_address }}" target="_blank">Zombies-only chatter listhost: {{ game.humans_listhost_address }}</a></p>
+		{% endif %}
+	{% endif %}
+	</div>
 	<a class="btn btn-block bigger btn-{% if player.human %}success{% else %}danger{% endif %}" href="{% url 'game|chat' pk=game.pk %}" target="_blank">
 		{% if player.human %}Get on the radio{% else %}ENTER FEEDING AREA{% endif %}
 	</a>
