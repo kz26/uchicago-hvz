@@ -43,6 +43,8 @@ class ChatterMailgunHook(APIView):
 			msg['To'] = listhost_addr
 			msg['Reply-To'] = listhost_addr
 			msg['Subject'] = "[HvZ-Chatter] " + request.data['subject']
+			msg['List-Id'] = 'HvZ-Chatter <https://www.uchicagohvz.org>'
+			msg['List-Unsubscribe'] = '<https://www.uchicagohvz.org/users/update_profile/>'
 			to_addrs = tuple(Profile.objects.filter(
 				user__is_active=True, subscribe_chatter_listhost=True).values_list('user__email', flat=True))
 			smtp_localhost_send(listhost_addr, to_addrs, msg.as_string())
