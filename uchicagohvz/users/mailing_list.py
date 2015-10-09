@@ -58,7 +58,7 @@ class MailgunHookBase(APIView):
 				del msg[x]
 			listhost_addr = self.get_listhost_address()
 			if self.anonymize_from:
-				msg['From'] = self.listhost_addr
+				msg['From'] = listhost_addr
 			else:
 				msg['From'] = request.data['from']
 			msg['Sender'] = listhost_addr

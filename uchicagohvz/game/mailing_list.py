@@ -1,7 +1,8 @@
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
+
 from .models import Game
 from uchicagohvz.users.mailing_list import MailgunHookBase
-
-from django.shortcuts import get_object_or_404
 
 
 class HZMailingListBase(MailgunHookBase):
@@ -26,7 +27,8 @@ class HumansMailingList(HZMailingListBase):
 		return self.game.humans_listhost_address
 
 	def get_to_addrs(self):
-		return tuple(self.game.players.filter(active=True, user__profile__subscribe_chatter_listhost=True, human=True) \
+		return tuple(self.game.players.filter(active=True, user__profile__subscribe_chatter_listhost=True) \
+			.filter(Q(human=True) | Q(user__is_superuser=True)).distinct() \
 			.values_list('user__email', flat=True))
 
 
@@ -41,5 +43,6 @@ class ZombiesMailingList(HZMailingListBase):
 		return self.game.zombies_listhost_address
 
 	def get_to_addrs(self):
-		return tuple(self.game.players.filter(active=True, user__profile__subscribe_chatter_listhost=True, human=False) \
+		return tuple(self.game.players.filter(active=True, user__profile__subscribe_chatter_listhost=True) \
+			.filter(Q(human=False) | Q(user__is_superuser=True)).distinct() \
 			.values_list('user__email', flat=True))
