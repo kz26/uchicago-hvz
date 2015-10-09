@@ -59,6 +59,8 @@ class MailgunHookBase(APIView):
 			listhost_addr = self.get_listhost_address()
 			if self.anonymize_from:
 				msg['From'] = listhost_addr
+				if 'X-Envelope-From' in msg:
+					del msg['X-Envelope-From']
 			else:
 				msg['From'] = request.data['from']
 			msg['Sender'] = listhost_addr
@@ -89,7 +91,7 @@ class MailgunHookBase(APIView):
 					msg.attach(unsub_p)
 				elif msg.get_content_maintype() == 'text':
 					subtype = msg.get_content_subtype()
-					text_p = MIMEText(msg.get_payload(), subtype, msg.get_content_charset('us-ascii'))
+					text_p = MIMEText(msg.get_payload(decode=True), subtype, msg.get_content_charset('us-ascii'))
 					msg.set_type('multipart/mixed')
 					msg.set_payload([text_p, unsub_p])
 			smtp_localhost_send(listhost_addr, self.get_to_addrs(), msg.as_string())
