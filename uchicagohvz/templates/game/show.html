@@ -85,9 +85,9 @@
 	{% if player.user.profile.subscribe_chatter_listhost %}
 		<p><a href="mailto:chatter@lists.uchicagohvz.org" target="_blank">Chatter listhost (all players): chatter@lists.uchicagohvz.org</a></p>
 		{% if player.human %}
-		<p><a href="mailto:{{ game.humans_listhost_address }}" target="_blank">Humans-only chatter listhost: {{ game.humans_listhost_address }}</a></p>
+		<p><a href="mailto:{{ game.humans_listhost_address }}" target="_blank">Humans-only chatter listhost (anonymized): {{ game.humans_listhost_address }}</a></p>
 		{% else %}
-		<p><a href="mailto:{{ game.humans_listhost_address }}" target="_blank">Zombies-only chatter listhost: {{ game.humans_listhost_address }}</a></p>
+		<p><a href="mailto:{{ game.humans_listhost_address }}" target="_blank">Zombies-only chatter listhost (anonymized): {{ game.humans_listhost_address }}</a></p>
 		{% endif %}
 	{% endif %}
 	</div>
