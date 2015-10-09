@@ -59,10 +59,11 @@ class MailgunHookBase(APIView):
 			msg['Sender'] = listhost_addr
 			msg['To'] = listhost_addr
 			msg['Reply-To'] = listhost_addr
-			msg['Subject'] = request.data['subject']
 			subject_tag = "[%s]" % self.get_listhost_name()
 			if subject_tag not in msg['Subject']:
-				msg['Subject'] = subject_tag + ' ' + msg['Subject']
+				msg['Subject'] = subject_tag + ' ' + request.data['subject']
+			else:
+				msg['Subject'] = request.data['subject']
 			msg['List-Id'] = self.get_listhost_id()
 			msg['List-Unsubscribe'] = self.listhost_unsubscribe
 			include_unsub = True 
