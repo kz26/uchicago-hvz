@@ -64,7 +64,7 @@ class ChatterMailgunHook(APIView):
 						msg.set_type('multipart/mixed')
 						msg_a_p = MIMEMultipart('alternative')
 						msg_a_p.set_payload(msg_a)
-						msg.set_payload(msg_a_p)
+						msg.set_payload([msg_a_p])
 					msg.attach(unsub_p)
 				elif msg.get_content_maintype() == 'text':
 					subtype = msg.get_content_subtype()
