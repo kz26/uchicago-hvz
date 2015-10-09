@@ -60,7 +60,7 @@ class MailgunHookBase(APIView):
 			msg['To'] = listhost_addr
 			msg['Reply-To'] = listhost_addr
 			subject_tag = "[%s]" % self.get_listhost_name()
-			if subject_tag not in msg['Subject']:
+			if subject_tag not in request.data['subject']:
 				msg['Subject'] = subject_tag + ' ' + request.data['subject']
 			else:
 				msg['Subject'] = request.data['subject']
