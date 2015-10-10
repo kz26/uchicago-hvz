@@ -17,6 +17,7 @@ This codebase is made available under the terms of the MIT license.
 * Award and Mission system to assign additional points to players and track mission participation
 * High-value Target and High-value Dorm system, that awards additional points for killing a specific
 player or players from a specific dorm within a specified timeframe
+
 ### Player Communication Features
 * Kill submission and award/mission code redemption via web form or inbound SMS, powered by Nexmo
 * SMS death notifications via free email-to-SMS gateways
