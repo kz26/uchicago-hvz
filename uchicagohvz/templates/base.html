@@ -21,6 +21,8 @@
 				</style>
 				<link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
 
+
+				{% block optstyle %}{% endblock %}
 				<!--[if lt IE 9]>
 						<script src="{{ STATIC_URL }}js/vendor/html5-3.6-respond-1.1.0.min.js"></script>
 				<![endif]-->
@@ -77,7 +79,10 @@
 			{% for message in messages %}
 			<div class="alert alert-{{ message.tags }}">{{ message }}</div>
 			{% endfor %}
+
+			<div id="content">
 			{% block content %}{% endblock %}
+			</div>
 
 			<hr>
 
