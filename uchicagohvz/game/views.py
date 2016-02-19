@@ -33,6 +33,17 @@ class ListGames(ListView):
 	def get_queryset(self):
 		qs = super(ListGames, self).get_queryset()
 		if self.request.user.is_authenticated():
+			current_game = Game.objects.all()[0]
+			past_players = Player.objects.filter(user=self.request.user).exclude(game=current_game)
+			try:
+				player = Player.objects.get(game=current_game, user=self.request.user)
+
+				if past_players and (not past_players[0].gun_returned) and past_players[0].renting_gun:
+					player.delinquent_gun = True
+					player.save()
+			except:
+				pass
+
 			qs = qs.annotate(is_player=RawSQL("SELECT EXISTS(SELECT 1 FROM game_player WHERE \
 				game_player.game_id = game_game.id AND game_player.user_id = %s AND \
 				game_player.active = true)", (self.request.user.id,)))	
@@ -73,6 +84,14 @@ class ShowGame(DetailView):
 			if in_game:
 				player = Player.objects.get(game=self.object, user=self.request.user)
 				context['player'] = player
+
+				past_players = Player.objects.filter(user=self.request.user).exclude(game=self.object)
+
+				if past_players and (not past_players[0].gun_returned) and past_players[0].renting_gun:
+					player.delinquent_gun = True
+					player.save()
+
+
 				if self.object.status in ('in_progress', 'finished') and player.active:
 					if player.human:
 						context['player_rank'] = player.human_rank

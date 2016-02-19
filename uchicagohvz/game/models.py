@@ -236,6 +236,7 @@ class Player(models.Model):
 	gun_returned = models.BooleanField(default=False)
 	last_words = models.CharField(max_length=255, blank=True)
 	lead_zombie = models.BooleanField(default=False)
+	delinquent_gun = models.BooleanField(default=False)
 
 	def save(self, *args, **kwargs):
 		if self.game.status == 'registration' or not self.major: # allow updates to major during registration
@@ -253,6 +254,12 @@ class Player(models.Model):
 			profile = self.user.profile
 			profile.subscribe_zombies_listhost = True # force subscription to zombies listhost
 			profile.save()
+
+		past_players = Player.objects.filter(user=self.user).exclude(game=self.game)
+
+		if past_players and (not past_players[0].gun_returned) and past_players[0].renting_gun:
+			self.delinquent_gun = True
+
 		super(Player, self).save(*args, **kwargs)
 
 	@property
