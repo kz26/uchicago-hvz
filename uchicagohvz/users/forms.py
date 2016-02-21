@@ -40,14 +40,14 @@ class UserRegistrationForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
 
 	ZOMBIES_LISTHOST_HELP_INACTIVE = """
-		Note: We will only send at most one email per day via this listhost!  Subscribing to this listhost is virtually 
+		Note: We will only send at most one email per day via this listhost!  Subscribing to this listhost is
 		necessary in order to know when the game ends, when safe zones change, and keep up with any official announcements.
 		If you unsubscribe, please also email zombies-request@lists.uchicago.edu to let us know.
 	"""
 
 	ZOMBIES_LISTHOST_HELP_ACTIVE = """
-		Note: You cannot unsubscribe from the Zombies listhost while you are part of a game that is still in progress. Don't worry,
-		we won't spam you! We will only send at most one email per day via this listhost! Subscribing to this listhost is virtually 
+		Note: You cannot unsubscribe from the Zombies listhost while you are part of an active game. Don't worry,
+		we won't spam you! We will only send at most one email per day via this listhost! Subscribing to this listhost is 
 		necessary in order to know when the game ends, when safe zones change, and keep up with any official announcements.
 	"""
 

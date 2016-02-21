@@ -95,7 +95,7 @@ class MailgunHookBase(APIView):
 					text_p = MIMEText(msg.get_payload(decode=True), subtype, msg.get_content_charset('us-ascii'))
 					msg.set_type('multipart/mixed')
 					msg.set_payload([text_p, unsub_p])
-			smtp_localhost_send(listhost_addr, self.get_to_addrs(), msg.as_string())
+			smtp_localhost_send.delay(listhost_addr, self.get_to_addrs(), msg.as_string())
 			return Response()
 		else:
 			return Response(status=406) 
