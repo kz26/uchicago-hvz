@@ -22,7 +22,7 @@ player or players from a specific dorm within a specified timeframe
 * Kill submission and award/mission code redemption via web form or inbound SMS, powered by Nexmo
 * SMS death notifications via free email-to-SMS gateways
 * Separate radio-like chat rooms for humans and zombies (no history and no usernames shown, only timestamps)
-* Webhooks for running all-purpose chatter, humans-only, and zombies-only mailing lists, powered by Mailgun
+* Mailgun webhooks for running all-purpose chatter, humans-only, and zombies-only mailing lists (see `game/mailing_list.py` and `users/mailing_list.py`)
 
 ## Administrative and Technical Features
 * Full Bootstrap 3 frontend
@@ -45,11 +45,11 @@ player or players from a specific dorm within a specified timeframe
 **Familiarity with Python and the Django web framework is highly recommended.**
 
 1. For starters, you'll need to edit templates, API keys, Django settings, views, etc. to reflect your organizations' branding and environment. For example, the hosts header in the auth method in `chat/server/server.coffee` will also need to be updated to reflect your site's domain name.  Also make sure to substitute your own Google API key in `templates/includes/google-maps.html`.
-2. Create a `secrets.py` file in the same directory as `local_settings.py`. Check the imports in `local_settings.py` to get an idea of what `secrets.py` needs to contain.
-3. Implement a Django authentication backend specific to your organization/deployment. Our reference implementation's
+2. Create a `secrets.py` file in the same directory as `local_settings.py`. Check the imports in `local_settings.py` and `production_settings.py` to get an idea of what `secrets.py` needs to contain.
+3. Implement a Django authentication backend specific to your organization/deployment. The reference implementation here
 contains a backend that talks to UChicago's LDAP server and allows us to directly retrieve player names, usernames,
 and major, in addition to authenticating user credentials during login. Ideally, your authentication backend will be able to do all of these
-tasks; otherwise, you will need to fall back to a traditional email registration/activation setup (we have implemented a basic one to allow players without university credentials to register.)
-4. The users and game module contain email listhost management specific to UChicago in `mailing_list.py`; you will want to modify this or remove it altogether.
+tasks; otherwise, you will need to fall back to a traditional email registration/activation setup (we have also implemented a basic registration flow to allow players without university credentials to register.)
+4. The `users` module contains UChicago-specific Sympa mailing list management hooks in `models.py`; you will want to modify this or remove it altogether.
 5. Don't forget to set up a Nexmo SMS account if you wish to enable kill/code redemption via inbound SMS.
 
