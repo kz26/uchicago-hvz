@@ -1,6 +1,8 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
+from rest_framework.exceptions import PermissionDenied
+
 from .models import Game
 from uchicagohvz.users.mailing_list import MailgunHookBase
 
@@ -13,8 +15,11 @@ class HZMailingListBase(MailgunHookBase):
 		raise NotImplementedError()
 
 	def post(self, request, *args, **kwargs):
-		self.game = get_object_or_404(Game, id=kwargs['pk'])	
-		return super(HZMailingListBase, self).post(request, *args, **kwargs)
+		self.game = get_object_or_404(Game, id=kwargs['pk'])
+		if self.game.status == 'in_progress':
+			return super(HZMailingListBase, self).post(request, *args, **kwargs)
+		else:
+			raise PermissionDenied(detail="Game %s is not currently active." % self.game.name)
 
 class HumansMailingList(HZMailingListBase):
 	def get_listhost_id(self):
