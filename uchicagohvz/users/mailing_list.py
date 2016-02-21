@@ -24,6 +24,7 @@ def _verify(token, timestamp, signature):
 							 msg='{}{}'.format(timestamp, token),
 							 digestmod=hashlib.sha256).hexdigest()
 
+
 class MailgunHookBase(APIView):
 	authentication_classes = []
 
@@ -99,6 +100,7 @@ class MailgunHookBase(APIView):
 		else:
 			return Response(status=406) 
 
+
 class ChatterMailingList(MailgunHookBase):
 	
 	listhost_id = 'HvZ-Chatter <https://www.uchicagohvz.org>'
@@ -107,3 +109,16 @@ class ChatterMailingList(MailgunHookBase):
 
 	def get_to_addrs(self):
 		return tuple(Profile.objects.filter(user__is_active=True, subscribe_chatter_listhost=True).values_list('user__email', flat=True))
+
+
+class TestMailingList(MailgunHookBase):
+	"""
+	Used to test the mailing list logic/DKIM/SPF/etc.
+	"""
+	
+	listhost_id = 'HvZ-Test <https://www.uchicagohvz.org>'
+	listhost_name = 'HvZ-Test'
+	listhost_address = 'test@lists.uchicagohvz.org'
+
+	def get_to_addrs(self):
+		return secrets.MAILING_LIST_TEST_RECIPIENTS
