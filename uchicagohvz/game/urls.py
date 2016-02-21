@@ -39,7 +39,7 @@ urlpatterns = patterns('',
 	url(r'^squad/(?P<pk>[0-9]+)/$', ShowSquad.as_view(), name='squad|show'),
     url(r'^squad/(?P<pk>[0-9]+)/data/kills/$', SquadKillFeed.as_view(), name='squad|data|kills'),
     url(r'^new_squad/(?P<pk>[0-9]+)/$', ShowNewSquad.as_view(), name='new_squad|show'),
-    url(r'^squad/(?P<pk>[0-9]+)/data/kills/$', NewSquadKillFeed.as_view(), name='new_squad|data|kills'),
+    url(r'^new_squad/(?P<pk>[0-9]+)/data/kills/$', NewSquadKillFeed.as_view(), name='new_squad|data|kills'),
     url(r'^feb-26-2015/$', TemplateView.as_view(template_name='game/feb-26-2015.html'), name='feb-26-2015-charlie-hebdo'),
     url(r'^mission/(?P<pk>[0-9]+)/$', ShowMission.as_view(), name='mission|show')
 )

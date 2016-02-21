@@ -12,7 +12,6 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import *
 from django.utils.safestring import mark_safe
-from django.utils.html import escape
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -184,7 +183,7 @@ class EnterBiteCode(FormView):
 			if victim_profile.last_words:
 				victim.last_words = victim_profile.last_words
 				victim.save()
-				messages.error(self.request, escape("{0}'s last words: {1}".format(victim.user.get_full_name(), victim.last_words)))
+				messages.error(self.request, mark_safe("{0}'s last words: {1}".format(victim.user.get_full_name(), victim.last_words)))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
 	def get_form_kwargs(self):
