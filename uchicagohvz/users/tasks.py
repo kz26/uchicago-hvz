@@ -5,7 +5,7 @@ from django.core import mail
 import smtplib
 
 
-@task(rate_limit=0.2)
+@task
 def do_sympa_update(user, listname, subscribe):
 	if subscribe:
 		body = "QUIET ADD %s %s %s" % (listname, user.email, user.get_full_name())
