@@ -160,7 +160,7 @@
 			send them one at a time.{% if not player.human %} Kills submitted via text will not be geotagged, but you can
 			come back here and geotag them later.{% endif %}
 		{% else %}
-			Add your phone number to your <a href="{% url 'users|update_profile' %}">profile</a> so you can submit
+			Add your phone number to your <a href="{% url 'users|account' %}">profile</a> so you can submit
 			{% if not player.human %}bite codes and {% endif %}mission codes via text message!
 		{% endif %}
 		</p>
@@ -202,7 +202,7 @@
 		{% if player.user.profile.phone_number %}
 		{% if player.user.profile.subscribe_death_notifications %}
 		<p class="text-success">We'll send death notifications to you via text message.
-			You can disable these in your <a href="{% url 'users|update_profile' %}">profile</a>.
+			You can disable these in your <a href="{% url 'users|account' %}">profile</a>.
 		</p>
 		{% else %}
 		<p class="text-danger">
@@ -210,7 +210,7 @@
 		</p>
 		{% endif %}
 		{% else %}
-		<p class="text-warning">We don't have a phone number on file for you! Add it to your <a href="{% url 'users|update_profile' %}">profile</a>
+		<p class="text-warning">We don't have a phone number on file for you! Add it to your <a href="{% url 'users|account' %}">profile</a>
 			and check the appropriate box if you want to receive death notifications via text message.*
 		</p>
 		<p class="text-default">* Standard text messaging rates apply.</p>

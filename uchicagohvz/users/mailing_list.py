@@ -29,7 +29,7 @@ class MailgunHookBase(APIView):
 	authentication_classes = []
 
 	listhost_unsubscribe_template = 'users/emails/how_to_unsubscribe.txt'
-	listhost_unsubscribe = '<https://www.uchicagohvz.org/users/update_profile/>'
+	listhost_unsubscribe = '<https://www.uchicagohvz.org/users/account/>'
 
 	anonymize_from = False
 
