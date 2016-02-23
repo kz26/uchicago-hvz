@@ -111,16 +111,16 @@ class MyAccount(UpdateView):
 
 	@method_decorator(login_required)
 	def dispatch(self, request, *args, **kwargs):
-		return super(UpdateProfile, self).dispatch(request, *args, **kwargs)
+		return super(MyAccount, self).dispatch(request, *args, **kwargs)
 
 	def get_object(self, queryset=None):
 		return get_object_or_404(Profile, user=self.request.user)
 
 	def form_valid(self, form):
 		messages.success(self.request, "Account settings updated successfully.")
-		return super(UpdateProfile, self).form_valid(form)
+		return super(MyAccount, self).form_valid(form)
 
 	def get_form_kwargs(self):
-		kwargs = super(UpdateProfile, self).get_form_kwargs()
+		kwargs = super(MyAccount, self).get_form_kwargs()
 		kwargs['user'] = self.request.user
 		return kwargs
