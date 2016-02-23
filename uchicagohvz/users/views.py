@@ -105,9 +105,9 @@ class ShowProfile(DetailView):
 
 		return context
 
-class UpdateProfile(UpdateView):
+class MyAccount(UpdateView):
 	form_class = ProfileForm
-	template_name = "users/update_profile.html"
+	template_name = "users/account.html"
 
 	@method_decorator(login_required)
 	def dispatch(self, request, *args, **kwargs):
@@ -117,7 +117,7 @@ class UpdateProfile(UpdateView):
 		return get_object_or_404(Profile, user=self.request.user)
 
 	def form_valid(self, form):
-		messages.success(self.request, "Profile updated successfully.")
+		messages.success(self.request, "Account settings updated successfully.")
 		return super(UpdateProfile, self).form_valid(form)
 
 	def get_form_kwargs(self):
