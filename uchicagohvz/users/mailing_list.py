@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 from uchicagohvz import secrets
-from .tasks import smtp_localhost_send
+from .tasks import smtp_uchicago_send
 from .models import Profile
 
 from rest_framework.response import Response
@@ -95,7 +95,7 @@ class MailgunHookBase(APIView):
 					text_p = MIMEText(msg.get_payload(decode=True), subtype, msg.get_content_charset('us-ascii'))
 					msg.set_type('multipart/mixed')
 					msg.set_payload([text_p, unsub_p])
-			smtp_localhost_send(listhost_addr, self.get_to_addrs(), msg.as_string())
+			smtp_uchicago_send(listhost_addr, self.get_to_addrs(), msg.as_string())
 			return Response()
 		else:
 			return Response(status=406) 
