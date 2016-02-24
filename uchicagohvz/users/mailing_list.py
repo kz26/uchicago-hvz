@@ -35,7 +35,7 @@ class MailgunHookBase(APIView):
 
 	def get_listhost_id(self):
 		return "%s <%s>" % (self.get_listhost_name(),
-			self.get_listhost_address.replace('@', '.'))
+			self.get_listhost_address().replace('@', '.'))
 
 	def get_listhost_name(self):
 		return getattr(self, 'listhost_name')
