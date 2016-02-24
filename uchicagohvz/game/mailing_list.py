@@ -22,8 +22,6 @@ class HZMailingListBase(MailgunHookBase):
 			raise PermissionDenied(detail="Game %s is not currently active." % self.game.name)
 
 class HumansMailingList(HZMailingListBase):
-	def get_listhost_id(self):
-		return "%s Humans <https://www.uchicagohvz.org%s>" % (self.game.name, self.game.get_absolute_url())
 
 	def get_listhost_name(self):
 		return "%s Humans" % (self.game.name)
@@ -38,9 +36,7 @@ class HumansMailingList(HZMailingListBase):
 
 
 class ZombiesMailingList(HZMailingListBase):
-	def get_listhost_id(self):
-		return "%s Zombies <https://www.uchicagohvz.org%s>" % (self.game.name, self.game.get_absolute_url())
-
+	
 	def get_listhost_name(self):
 		return "%s Zombies" % (self.game.name)
 

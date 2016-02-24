@@ -34,7 +34,8 @@ class MailgunHookBase(APIView):
 	anonymize_from = False
 
 	def get_listhost_id(self):
-		return getattr(self, 'listhost_id')
+		return "%s <%s>" % (self.get_listhost_name(),
+			self.get_listhost_address.replace('@', '.'))
 
 	def get_listhost_name(self):
 		return getattr(self, 'listhost_name')
@@ -73,6 +74,7 @@ class MailgunHookBase(APIView):
 			else:
 				msg['Subject'] = request.data['subject']
 			msg['List-Id'] = self.get_listhost_id()
+			msg['List-Post'] = "<mailto:%s>" % (listhost_addr)
 			msg['List-Unsubscribe'] = self.listhost_unsubscribe
 			include_unsub = True 
 			for p in msg.walk():
@@ -103,7 +105,6 @@ class MailgunHookBase(APIView):
 
 class ChatterMailingList(MailgunHookBase):
 	
-	listhost_id = 'HvZ-Chatter <https://www.uchicagohvz.org>'
 	listhost_name = 'HvZ-Chatter'
 	listhost_address = 'chatter@lists.uchicagohvz.org'
 
@@ -116,7 +117,6 @@ class TestMailingList(MailgunHookBase):
 	Used to test the mailing list logic/DKIM/SPF/etc.
 	"""
 	
-	listhost_id = 'HvZ-Test <https://www.uchicagohvz.org>'
 	listhost_name = 'HvZ-Test'
 	listhost_address = 'test@lists.uchicagohvz.org'
 
