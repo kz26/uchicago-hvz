@@ -461,6 +461,8 @@ class Kill(MPTTModel):
 		self.points = points
 
 	def save(self, *args, **kwargs):
+		if self.killer.game != self.victim.game:
+			raise Exception('killer.game and victim.game do not match.')
 		try:
 			parent = Kill.objects.exclude(id=self.id).filter(victim=self.killer)[0]
 		except:

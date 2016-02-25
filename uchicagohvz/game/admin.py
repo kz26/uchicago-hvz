@@ -73,7 +73,7 @@ class KillAdminForm(forms.ModelForm):
 	def clean(self):
 		cleaned_data = super(KillAdminForm, self).clean()
 		if cleaned_data['killer'].game != cleaned_data['victim'].game:
-			raise forms.ValidationError('Killer and victim games do not match.')
+			raise forms.ValidationError('killer.game and victim.game do not match.')
 		return cleaned_data
 
 class KillAdmin(admin.ModelAdmin):
