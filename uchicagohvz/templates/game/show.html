@@ -106,11 +106,17 @@
 		<p><a href="{{ player.kill_object.get_absolute_url }}">Killed by {{ player.kill_object.killer.user.get_full_name }} on {{ player.kill_object.date }}</a></p>
 		{% endif %}
 		{% endif %}
+		
 		{% if player.active and  game.status == 'in_progress' %}
 		<h3>My Bite Code</h3>
 		<h4 id="bite_code" style="font-weight: bold;">{{ player.bite_code }}</h4>
+		{% if player.human %}
 		<input type="button" value="Hide Bite Code" class="btn btn-danger" onclick="$('#bite_code').hide()">
 		<input type="button" value="Show Bite Code" class="btn btn-success" onclick="$('#bite_code').show()">
+		<p class="text-danger">Keep your bite code safe from prying eyes! Don't share it with other humans, don't send it over
+		the public chatter listhost, etc. (unless you have a death wish, of course.)</p>
+		{% endif %}
+
 
 		{% if not player.human %}
 		{% if player.unannotated_kills.count %}
