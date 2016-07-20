@@ -19,6 +19,7 @@ body {
 	margin-top: 10px;
 }
 .row{
+	margin-left: 0 !Important;
 }
 
 .errorlist {
