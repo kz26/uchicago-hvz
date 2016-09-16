@@ -36,7 +36,7 @@ class PlayerAdmin(admin.ModelAdmin):
 				p.user.email,
 				p.user.profile.phone_number,
 				p.game.name,
-				str(p.awards),
+				str(p.awards.all()),
 				str(p.time_of_death),
 				p.major,
 				str(p.active),
