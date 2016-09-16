@@ -23,16 +23,16 @@ DATABASES = {
 
 # REST framework settings
 REST_FRAMEWORK = {
-	'DEFAULT_RENDERER_CLASSES': (
-		'rest_framework.renderers.JSONRenderer',
-	)
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
 }
 
 # Email settings
 EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 CELERY_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 from secrets import EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
-#EMAIL_USE_TLS = True
+EMAIL_USE_TLS = True
 
 # Chat settings
 CHAT_SERVER_URL = '//www.uchicagohvz.org/chat'
