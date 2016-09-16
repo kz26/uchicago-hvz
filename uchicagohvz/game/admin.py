@@ -37,7 +37,7 @@ class PlayerAdmin(admin.ModelAdmin):
 				p.user.profile.phone_number,
 				p.game.name,
 				str(p.awards),
-				p.time_of_death,
+				str(p.time_of_death),
 				p.major,
 				str(p.active),
 				p.get_dorm_display(),
