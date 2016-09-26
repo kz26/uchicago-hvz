@@ -36,6 +36,7 @@ def kills_in_last_hour(game, **kwargs):
 @cache_func(settings.LEADERBOARD_CACHE_DURATION)
 def survival_by_dorm(game, **kwargs):
 	data = []
+	DORMS = OLD_DORMS if game.end_date < DORMS_CLOSE else DORMS
 	for dorm, dormName in DORMS:
 		players = game.get_players_in_dorm(dorm)
 		if players.count():
@@ -116,6 +117,7 @@ def top_zombies(game, **kwargs):
 @cache_func(settings.LEADERBOARD_CACHE_DURATION)
 def most_courageous_dorms(game, **kwargs): # points = 100 * average human points per player in dorm
 	data = []
+	DORMS = OLD_DORMS if game.end_date < DORMS_CLOSE else DORMS
 	for dorm, dormName in DORMS:
 		players = Player.objects.filter(active=True, dorm=dorm, game=game)
 		pc = players.count()
@@ -130,6 +132,7 @@ def most_courageous_dorms(game, **kwargs): # points = 100 * average human points
 
 def most_infectious_dorms(game, **kwargs): # points = 100 * average zombie points per player in dorm
 	data = []
+	DORMS = OLD_DORMS if game.end_date < DORMS_CLOSE else DORMS
 	for dorm, dormName in DORMS:
 		players = Player.objects.filter(active=True, dorm=dorm, game=game)
 		pc = players.count()
@@ -148,6 +151,7 @@ def humans_per_hour(game, **kwargs):
 	end_date = min(timezone.now(), game.end_date)
 	end_td = end_date - game.start_date
 	end_hour = end_td.days * 24 + round(end_td.seconds / 3600, 0)
+	DORMS = OLD_DORMS if game.end_date < DORMS_CLOSE else DORMS
 	for dorm, dormName in DORMS:
 		sh = game.get_active_players().filter(dorm=dorm).count() # starting humans in this dorm
 		d = OrderedDict([(0, sh)])

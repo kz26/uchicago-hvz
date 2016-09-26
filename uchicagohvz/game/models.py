@@ -95,7 +95,7 @@ class Game(models.Model):
 	def get_absolute_url(self):
 		return ('game|show', [self.pk])
 
-DORMS = (
+OLD_DORMS = (
 	("BS", "Blackstone"),
 	("BR", "Breckinridge"),
 	("BV", "Broadview"),
@@ -109,6 +109,19 @@ DORMS = (
 	("ST", "Stony Island"),
 	("OFF", "Off campus")
 )
+
+DORMS = (
+	("BJ", "Burton-Judson Courts"),
+	("IH", "International House"),
+	("MAX", "Max Palevsky"),
+	("NC", "North Campus"),
+	("SH", "Snell-Hitchcock"),
+	("SC", "South Campus"),
+	("ST", "Stony Island"),
+	("OFF", "Off campus")
+)
+
+DORMS_CLOSE = datetime(2016, 6, 14)
 
 NOUNS = open(os.path.join(settings.BASE_DIR, "game/word-lists/nouns.txt")).read().split('\n')[:-1]
 ADJECTIVES = open(os.path.join(settings.BASE_DIR, "game/word-lists/adjs.txt")).read().split('\n')[:-1]
