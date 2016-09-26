@@ -4,9 +4,12 @@ from django.conf import settings
 from django.http import HttpResponse
 from uchicagohvz.game.models import *
 
+
 # Register your models here.
 
-admin.site.register(Game)
+class GameAdmin(admin.ModelAdmin):
+	readonly_fields = ('status', 'humans_listhost_address', 'zombies_listhost_address')
+
 
 class PlayerAdminForm(forms.ModelForm):
 	def clean_squad(self):
@@ -144,6 +147,7 @@ class MissionPictureAdmin(admin.ModelAdmin):
 	form = MissionPictureAdminForm
 	filter_horizontal = ('players',)
 
+admin.site.register(Game, GameAdmin)
 admin.site.register(Squad)
 admin.site.register(New_Squad)
 admin.site.register(Player, PlayerAdmin)

@@ -19,17 +19,17 @@ RECAPTCHA_USE_SSL = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
 try:
-	from secrets import SECRET_KEY
+    from secrets import SECRET_KEY
 except:
-	SECRET_KEY = 'SECRET KEY PLACEHOLDER'
+    SECRET_KEY = 'SECRET KEY PLACEHOLDER'
 try:
-	from secrets import RECAPTCHA_PUBLIC_KEY
+    from secrets import RECAPTCHA_PUBLIC_KEY
 except:
-	RECAPTCHA_PUBLIC_KEY = 'PUBLIC KEY PLACEHOLDER'
+    RECAPTCHA_PUBLIC_KEY = 'PUBLIC KEY PLACEHOLDER'
 try:
-	from secrets import RECAPTCHA_PRIVATE_KEY
+    from secrets import RECAPTCHA_PRIVATE_KEY
 except:
-	RECAPTCHA_PRIVATE_KEY = 'PRIVATE KEY PLACEHOLDER'
+    RECAPTCHA_PRIVATE_KEY = 'PRIVATE KEY PLACEHOLDER'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -44,23 +44,23 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-	'django.contrib.admin',
-	'django.contrib.auth',
-	'django.contrib.contenttypes',
-	'django.contrib.sessions',
-	'django.contrib.messages',
-	'django.contrib.staticfiles',
-	'mptt', 'localflavor', 'djcelery_email', 'compressor', 'rest_framework', 'captcha', 'django_redis',
-	'uchicagohvz.users', 'uchicagohvz.game',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'mptt', 'localflavor', 'djcelery_email', 'compressor', 'rest_framework', 'captcha', 'django_redis',
+    'uchicagohvz.users', 'uchicagohvz.game',
 )
 
 MIDDLEWARE_CLASSES = (
-	'django.contrib.sessions.middleware.SessionMiddleware',
-	'django.middleware.common.CommonMiddleware',
-	'django.middleware.csrf.CsrfViewMiddleware',
-	'django.contrib.auth.middleware.AuthenticationMiddleware',
-	'django.contrib.messages.middleware.MessageMiddleware',
-	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
@@ -76,10 +76,10 @@ WSGI_APPLICATION = 'uchicagohvz.wsgi.application'
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.sqlite3',
-		'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-	}
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
 
 # Internationalization
@@ -97,7 +97,7 @@ USE_TZ = True
 
 # Templates
 TEMPLATE_DIRS = (
-	os.path.join(BASE_DIR, "templates"),
+    os.path.join(BASE_DIR, "templates"),
 )
 
 # Static files (CSS, JavaScript, Images)
@@ -105,7 +105,7 @@ TEMPLATE_DIRS = (
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-	os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "static"),
 )
 
 # Django Compressor
@@ -131,21 +131,19 @@ MEDIA_URL = "/media/"
 
 # Authentication
 AUTHENTICATION_BACKENDS = (
-	'uchicagohvz.users.backend.UChicagoLDAPBackend',
-	'django.contrib.auth.backends.ModelBackend',
+    'uchicagohvz.users.backend.UChicagoLDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 LOGIN_URL = "/users/login/?required=true"
 LOGIN_REDIRECT_URL = "/"
 
 # Caching and sessions
+KEY_PREFIX = 'uchicagohvz'
 CACHES = {
-	'default': {
-		'BACKEND': 'django_redis.cache.RedisCache',
-		'LOCATION': 'redis://localhost:6379/3',
-        	'OPTIONS': {
-            		'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        	}
-	}
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': '127.0.0.1:11211'
+    }
 }
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_HTTPONLY = False # required for reading sessionid cookie in chat JS
