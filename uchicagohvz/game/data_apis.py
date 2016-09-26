@@ -3,7 +3,7 @@ from django.shortcuts import *
 from django.utils import timezone
 from django.conf import settings
 from cache_utils import cache_func
-from datetime import timedelta
+from datetime import timedelta, datetime
 from collections import OrderedDict
 from uchicagohvz.game.models import *
 
