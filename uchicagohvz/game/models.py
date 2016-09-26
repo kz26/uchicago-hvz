@@ -122,7 +122,7 @@ DORMS = (
 	("OFF", "Off campus")
 )
 
-DORMS_CLOSE = datetime(2016, 6, 14)
+DORMS_CLOSE = timezone.make_aware(datetime(2016, 6, 14), timezone.get_default_timezone())
 
 NOUNS = open(os.path.join(settings.BASE_DIR, "game/word-lists/nouns.txt")).read().split('\n')[:-1]
 ADJECTIVES = open(os.path.join(settings.BASE_DIR, "game/word-lists/adjs.txt")).read().split('\n')[:-1]
