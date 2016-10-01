@@ -2,7 +2,7 @@ from django.contrib import admin
 from django import forms
 from django.conf import settings
 from django.http import HttpResponse
-from uchicagohvz.game.models import *
+from uchicagohvz.game.models import Award, Dorm, Game, HighValueDorm, HighValueTarget, Kill, Mission, MissionPicture, Player, New_Squad, Squad
 
 
 # Register your models here.
@@ -43,7 +43,7 @@ class PlayerAdmin(admin.ModelAdmin):
 				str(p.time_of_death),
 				p.major,
 				str(p.active),
-				p.get_dorm_display(),
+				p.dorm.name,
 				str(p.renting_gun),
 				str(p.gun_returned)
 			)
@@ -147,6 +147,7 @@ class MissionPictureAdmin(admin.ModelAdmin):
 	form = MissionPictureAdminForm
 	filter_horizontal = ('players',)
 
+admin.site.register(Dorm)
 admin.site.register(Game, GameAdmin)
 admin.site.register(Squad)
 admin.site.register(New_Squad)

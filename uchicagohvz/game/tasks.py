@@ -3,10 +3,8 @@ from django.core import mail
 from django.db import transaction
 from django.conf import settings
 from uchicagohvz.game.models import Game, Player, Kill, Award
-from uchicagohvz.game.forms import *
 from uchicagohvz.users.models import Profile
 from uchicagohvz.users.phone import CARRIERS
-from uchicagohvz.game.data_apis import *
 import random
 import json
 import re
@@ -68,6 +66,7 @@ def process_sms_code(msisdn, text):
 		profile = Profile.objects.get(phone_number=phone_number)
 	except:
 		return
+	from uchicagohvz.game.data_apis import AwardCodeForm, BiteCodeForm
 	for game in Game.objects.games_in_progress().order_by('-start_date'):
 		try:
 			player = Player.objects.get(game=game, user=profile.user)
@@ -117,7 +116,7 @@ def send_zombie_text(msg):
 def send_death_notification(kill):
 	killer = kill.killer
 	victim = kill.victim
-	victim_dorm_name = victim.get_dorm_display()
+	victim_dorm_name = victim.dorm.name
 	game = kill.killer.game
 	players_in_dorm = game.get_players_in_dorm(victim.dorm)
 	players = game.players.filter(active=True, user__profile__phone_number__isnull=False, user__profile__subscribe_death_notifications=True)

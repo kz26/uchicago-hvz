@@ -26,6 +26,16 @@ def gen_rules_filename(instance, fn):
 def gen_pics_filename(instance, fn):
 	return "pictures/%s%s" % (instance.picture.url, os.path.splitext(fn)[1])
 
+class Dorm(models.Model):
+	class Meta:
+		ordering = ['name']
+
+	name = models.CharField(max_length=255)
+
+	def __unicode__(self):
+		return self.name
+
+
 class GameManager(models.Manager):
 	def games_in_progress(self):
 		now = timezone.now()
@@ -39,6 +49,7 @@ class Game(models.Model):
 	registration_date = models.DateTimeField()
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
+	dorms = models.ManyToManyField(Dorm)
 	rules = models.FileField(upload_to=gen_rules_filename, storage=OverwriteFileSystemStorage())
 	picture = models.FileField(upload_to=gen_pics_filename, storage=OverwriteFileSystemStorage(), null=True, blank=True)
 	color = models.CharField(max_length=64, default="#FFFFFF")	
@@ -96,42 +107,11 @@ class Game(models.Model):
 	def get_absolute_url(self):
 		return ('game|show', [self.pk])
 
-OLD_DORMS = (
-	("BS", "Blackstone"),
-	("BR", "Breckinridge"),
-	("BV", "Broadview"),
-	("BJ", "Burton-Judson Courts"),
-	("IH", "International House"),
-	("MC", "Maclean"),
-	("MAX", "Max Palevsky"),
-	("NG", "New Graduate Residence Hall"),
-	("SH", "Snell-Hitchcock"),
-	("SC", "South Campus"),
-	("ST", "Stony Island"),
-	("OFF", "Off campus")
-)
-
-DORMS = (
-	("BJ", "Burton-Judson Courts"),
-	("IH", "International House"),
-	("MAX", "Max Palevsky"),
-	("NC", "North Campus"),
-	("SH", "Snell-Hitchcock"),
-	("SC", "South Campus"),
-	("ST", "Stony Island"),
-	("OFF", "Off campus")
-)
-
-DORMS_CLOSE = timezone.make_aware(datetime(2016, 6, 14), timezone.get_default_timezone())
-
-NOUNS = open(os.path.join(settings.BASE_DIR, "game/word-lists/nouns.txt")).read().split('\n')[:-1]
-ADJECTIVES = open(os.path.join(settings.BASE_DIR, "game/word-lists/adjs.txt")).read().split('\n')[:-1]
-
-def gen_bite_code():
-	return random.choice(ADJECTIVES) + ' ' + random.choice(NOUNS)
 
 class New_Squad(models.Model):
 	class Meta:
+		verbose_name = "New-style squad"
+		verbose_name_plural = "New-style squads"
 		unique_together = (('game', 'name'))
 
 	game = models.ForeignKey(Game, related_name='new_squads')
@@ -164,6 +144,8 @@ class New_Squad(models.Model):
 
 class Squad(models.Model):
 	class Meta:
+		verbose_name = "Old-style squad"
+		verbose_name_plural = "Old-style squads"
 		unique_together = (('game', 'name'))
 
 	game = models.ForeignKey(Game, related_name='squads')
@@ -230,6 +212,14 @@ class Squad(models.Model):
 		scores = [x['zombie_points'] for x in tzs]
 		return (Ranking(scores, start=1).rank(squad_score), len(tzs))
 
+
+NOUNS = open(os.path.join(settings.BASE_DIR, "game/word-lists/nouns.txt")).read().split('\n')[:-1]
+ADJECTIVES = open(os.path.join(settings.BASE_DIR, "game/word-lists/adjs.txt")).read().split('\n')[:-1]
+
+def gen_bite_code():
+	return random.choice(ADJECTIVES) + ' ' + random.choice(NOUNS)
+
+
 class Player(models.Model):
 	class Meta:
 		unique_together = (('user', 'game'), ('game', 'bite_code'))
@@ -241,7 +231,7 @@ class Player(models.Model):
 	squad = models.ForeignKey(Squad, null=True, blank=True, related_name='players')
 	new_squad = models.ForeignKey(New_Squad, null=True, blank=True, related_name='players')
 	bite_code = models.CharField(max_length=255, blank=True, help_text='leave blank for automatic (re-)generation')
-	dorm = models.CharField(max_length=4, choices=DORMS)
+	dorm = models.ForeignKey(Dorm)
 	major = models.CharField(max_length=255, blank=True, editable=settings.DEBUG, help_text='autopopulates from LDAP')
 	human = models.BooleanField(default=True)
 	opt_out_hvt = models.BooleanField(default=False)
@@ -348,7 +338,7 @@ class Player(models.Model):
 		name = ''
 		if self.game.status == 'in_progress':
 			if self.human:
-				name = "%s %s" % (self.get_dorm_display(), hashlib.sha256(self.bite_code).hexdigest()[:2].upper())
+				name = "%s %s" % (self.dorm.name, hashlib.sha256(self.bite_code).hexdigest()[:2].upper())
 			else:
 				name = self.bite_code
 		else:
@@ -547,13 +537,13 @@ class HighValueDorm(models.Model):
 	class Meta:
 		unique_together = ('game', 'dorm')
 	game = models.ForeignKey(Game)
-	dorm = models.CharField(max_length=4, choices=DORMS)
+	dorm = models.ForeignKey(Dorm)
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
 	points = models.IntegerField(default=settings.HVD_KILL_POINTS)
 
 	def __unicode__(self):
-		return "%s (%s)" % (self.get_dorm_display(), self.game.name)
+		return "%s (%s)" % (self.dorm.name, self.game.name)
 
 	def save(self, *args, **kwargs):
 		super(HighValueDorm, self).save(*args, **kwargs)

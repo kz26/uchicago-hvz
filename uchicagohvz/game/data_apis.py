@@ -36,11 +36,10 @@ def kills_in_last_hour(game, **kwargs):
 @cache_func(settings.LEADERBOARD_CACHE_DURATION)
 def survival_by_dorm(game, **kwargs):
 	data = []
-	DORMS = OLD_DORMS if game.end_date < DORMS_CLOSE else DORMS
-	for dorm, dormName in DORMS:
+	for dorm in game.dorms.all():
 		players = game.get_players_in_dorm(dorm)
 		if players.count():
-			e = {'dorm': dormName, 'alive': players.filter(human=True).count(), 'original': players.count()}
+			e = {'dorm': dorm.name, 'alive': players.filter(human=True).count(), 'original': players.count()}
 			e['percent']  = 100 * e['alive'] / e['original']
 			data.append(e)
 	data.sort(key=lambda x: x['percent'], reverse=True)
@@ -117,30 +116,28 @@ def top_zombies(game, **kwargs):
 @cache_func(settings.LEADERBOARD_CACHE_DURATION)
 def most_courageous_dorms(game, **kwargs): # points = 100 * average human points per player in dorm
 	data = []
-	DORMS = OLD_DORMS if game.end_date < DORMS_CLOSE else DORMS
-	for dorm, dormName in DORMS:
+	for dorm in game.dorms.all():
 		players = Player.objects.filter(active=True, dorm=dorm, game=game)
 		pc = players.count()
 		if pc != 0:
 			points = 100 * (1.0 / pc) * sum([p.human_points for p in players])
 		else:
 			points = 0
-		data.append({'dorm': dormName, 'points': points})
+		data.append({'dorm': dorm.name, 'points': points})
 	data.sort(key=lambda x: x['dorm'])
 	data.sort(key=lambda x: x['points'], reverse=True)
 	return data
 
 def most_infectious_dorms(game, **kwargs): # points = 100 * average zombie points per player in dorm
 	data = []
-	DORMS = OLD_DORMS if game.end_date < DORMS_CLOSE else DORMS
-	for dorm, dormName in DORMS:
+	for dorm in game.dorms.all():
 		players = Player.objects.filter(active=True, dorm=dorm, game=game)
 		pc = players.count()
 		if pc != 0:
 			points = 100 * (1.0 / pc) * sum([p.zombie_points for p in players])
 		else:
 			points = 0
-		data.append({'dorm': dormName, 'points': points})
+		data.append({'dorm': dorm.name, 'points': points})
 	data.sort(key=lambda x: x['dorm'])
 	data.sort(key=lambda x: x['points'], reverse=True)
 	return data
@@ -151,8 +148,7 @@ def humans_per_hour(game, **kwargs):
 	end_date = min(timezone.now(), game.end_date)
 	end_td = end_date - game.start_date
 	end_hour = end_td.days * 24 + round(end_td.seconds / 3600, 0)
-	DORMS = OLD_DORMS if game.end_date < DORMS_CLOSE else DORMS
-	for dorm, dormName in DORMS:
+	for dorm in game.dorms.all():
 		sh = game.get_active_players().filter(dorm=dorm).count() # starting humans in this dorm
 		d = OrderedDict([(0, sh)])
 		kills = Kill.objects.exclude(parent=None).filter(victim__game=game, victim__dorm=dorm).order_by('date')
@@ -162,7 +158,7 @@ def humans_per_hour(game, **kwargs):
 			d[min(hours, end_hour)] = sh - index # overwrite
 		if end_hour not in d:
 			d[end_hour] = d[d.keys()[-1]]
-		data.append({'name': dormName, 'data': d.items()})
+		data.append({'name': dorm.name, 'data': d.items()})
 	# add dataset for all dorms
 	sh = game.get_active_players().count() - Kill.objects.filter(parent=None, killer__game=game).count() # subtract LZs
 	d = OrderedDict([(0, sh)])
