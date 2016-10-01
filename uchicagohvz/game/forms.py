@@ -33,7 +33,9 @@ class GameRegistrationForm(forms.ModelForm):
 	
 
 	def __init__(self, *args, **kwargs):
+		self.game = kwargs.pop('game')
 		super(GameRegistrationForm, self).__init__(*args, **kwargs)
+		self.fields['dorm'].queryset = game.dorms.all()
 		self.fields['dorm'].widget.attrs['class'] = 'form-control' # for Bootstrap 3
 		self.fields['dorm'].widget.attrs['required'] = 'required'
 

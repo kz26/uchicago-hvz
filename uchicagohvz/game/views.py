@@ -123,6 +123,11 @@ class RegisterForGame(FormView):
 		context['game'] = self.game
 		return context
 
+	def get_form_kwargs(self):
+		kwargs = super(RegisterForGame, self).get_form_kwargs()
+		kwargs['game'] = self.game
+		return kwargs
+
 class ChooseSquad(FormView):
 	form_class = SquadForm
 	template_name = 'game/choose_squad.html'
