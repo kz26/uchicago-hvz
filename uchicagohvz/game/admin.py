@@ -8,6 +8,7 @@ from uchicagohvz.game.models import Award, Dorm, Game, HighValueDorm, HighValueT
 # Register your models here.
 
 class GameAdmin(admin.ModelAdmin):
+	list_display = ('__unicode__', 'start_date', 'end_date', 'status', 'active_players_count')
 	filter_horizontal = ('dorms',)
 	readonly_fields = ('status', 'humans_listhost_address', 'zombies_listhost_address')
 
@@ -23,7 +24,8 @@ class PlayerAdminForm(forms.ModelForm):
 
 class PlayerAdmin(admin.ModelAdmin):
 	form = PlayerAdminForm
-	list_filter = ('game', 'active', 'human', 'dorm', 'squad', 'new_squad', 'renting_gun', 'gun_requested', 'gun_returned', 'major')
+	list_display = ('__unicode__', 'user', 'game', 'bite_code', 'human', 'dorm', 'new_squad')
+	list_filter = ('game', 'active', 'human', 'dorm', 'new_squad', 'renting_gun', 'gun_requested', 'gun_returned')
 	if not settings.DEBUG:
 		readonly_fields = ('major',)
 	search_fields = ('user__username', 'user__first_name', 'user__last_name', 'bite_code')
@@ -85,6 +87,7 @@ class KillAdminForm(forms.ModelForm):
 
 class KillAdmin(admin.ModelAdmin):
 	form = KillAdminForm
+	list_display = ('killer', 'victim', 'game', 'date', 'points')
 	list_filter = ('killer__game',)
 	readonly_fields = ('parent',)
 	search_fields = ('killer__user__username', 'killer__user__first_name', 'killer__user__last_name', 

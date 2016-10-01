@@ -67,6 +67,10 @@ class Game(models.Model):
 	def get_active_players(self):
 		return self.players.filter(active=True)
 
+	@property
+	def active_players_count(self):
+		return self.get_active_players().count()
+
 	def get_humans(self):
 		return self.get_active_players().filter(human=True)
 
@@ -110,8 +114,8 @@ class Game(models.Model):
 
 class New_Squad(models.Model):
 	class Meta:
-		verbose_name = "New-style squad"
-		verbose_name_plural = "New-style squads"
+		verbose_name = "Squad"
+		verbose_name_plural = "Squads"
 		unique_together = (('game', 'name'))
 
 	game = models.ForeignKey(Game, related_name='new_squads')
@@ -390,10 +394,7 @@ class Player(models.Model):
 		return (Ranking(scores, start=1).rank(player_score), len(tz))
 
 	def __unicode__(self):
-		name = self.user.get_full_name()
-		if self.squad:
-			name = "%s [%s]" % (name, self.squad.name)
-		return "%s, %s, %s, %s" % (self.user.username, name, self.bite_code, self.game.name)
+		return self.user.get_full_name()
 
 	@models.permalink
 	def get_absolute_url(self):
@@ -442,6 +443,11 @@ class Kill(MPTTModel):
 
 	def __unicode__(self):
 		return "%s (%s) --> %s (%s) [%s]" % (self.killer.user.get_full_name(), self.killer.user.username, self.victim.user.get_full_name(), self.victim.user.username, self.killer.game.name)
+
+	@property
+	def game(self):
+	    return self.killer.game
+	
 
 	@property
 	def geotagged(self):
