@@ -8,6 +8,7 @@ from uchicagohvz.game.models import Award, Dorm, Game, HighValueDorm, HighValueT
 # Register your models here.
 
 class GameAdmin(admin.ModelAdmin):
+	filter_horizontal = ('dorms',)
 	readonly_fields = ('status', 'humans_listhost_address', 'zombies_listhost_address')
 
 
