@@ -1,11 +1,11 @@
 celery[redis]
 dealer>=1.1.0
-django>=1.8.2
-djangorestframework>=2.3.12
+django==1.8.15
+djangorestframework==3.4.7
 django-celery-email>=1.0.4
 django-compressor>=1.3
 django-localflavor>=1.0
-django-mptt>=0.6.0
+django-mptt
 django-recaptcha
 pylibmc
 python-ldap>=2.3.13

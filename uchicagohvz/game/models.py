@@ -585,3 +585,5 @@ class Mission(models.Model):
                     attendees.append(player)
 
         return len(attendees)
+
+from . import signals

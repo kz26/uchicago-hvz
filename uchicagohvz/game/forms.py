@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from django.contrib.admin.widgets import FilteredSelectMultiple
-from uchicagohvz.game.models import *
+from uchicagohvz.game.models import Kill, MissionPicture, New_Squad, Player
 
 class SquadForm(forms.Form):
 	create_squad = forms.CharField(required=False)
@@ -135,7 +135,7 @@ class AwardCodeForm(forms.Form):
 				raise forms.ValidationError('Sorry, the redemption limit for this code has been reached.')
 		return data
 
-class ZombieTextForm(forms.ModelForm):
+class ZombieTextForm(forms.Form):
 	message = forms.CharField()
 
 	def __init__(self, *args, **kwargs):

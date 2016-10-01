@@ -50,7 +50,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mptt', 'localflavor', 'djcelery_email', 'compressor', 'rest_framework', 'captcha', 'django_redis',
+    'mptt', 'localflavor', 'djcelery_email', 'compressor', 'rest_framework', 'captcha',
     'uchicagohvz.users', 'uchicagohvz.game',
 )
 
@@ -77,8 +77,12 @@ WSGI_APPLICATION = 'uchicagohvz.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'uchicagohvz',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -162,7 +166,7 @@ MESSAGE_TAGS = {
 } # Bootstrap 3 alert integration
 
 # Celery configuration
-BROKER_URL = 'redis://localhost:6379/3'
+BROKER_URL = 'redis://localhost:6379/0'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

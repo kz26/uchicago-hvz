@@ -3,7 +3,7 @@ import django.dispatch
 from django.dispatch import receiver
 from django.core.cache import cache
 from uchicagohvz.game.models import *
-from uchicagohvz.game.tasks import *
+from uchicagohvz.game import tasks
 
 @receiver(models.signals.post_delete, sender=Kill, dispatch_uid='unzombify')
 def unzombify(sender, **kwargs):
@@ -24,7 +24,7 @@ def refresh_stats(sender, **kwargs):
 		Add/edit/delete Award
 		Add/edit/delete HVT, HVD
 	"""
-	regenerate_stats.delay(kwargs['game'].pk)
+	tasks.regenerate_stats.delay(kwargs['game'].pk)
 
 def kill_changed(sender, **kwargs):
 	if not kwargs.get('raw'):
@@ -47,7 +47,7 @@ def player_changed(sender, **kwargs):
 			if old_player.squad != new_player.squad or old_player.active != new_player.active:
 				score_update_required.send(sender=sender, game=new_player.game)
 			if old_player.human != new_player.human:
-				update_chat_privs.delay(new_player.pk)
+				tasks.update_chat_privs.delay(new_player.pk)
 		if new_player.active and new_player.game.status in ('registration', 'in_progress'):
 			new_player.user.profile.subscribe_zombies_listhost = True
 			new_player.user.profile.save()
@@ -84,6 +84,6 @@ def hvt_changed(sender, **kwargs):
 models.signals.post_save.connect(hvt_changed, sender=HighValueTarget, dispatch_uid='hvt_saved')
 
 def hvt_deleted(sender, **kwargs):
-	refresh_kill_points.delay(game=kwargs['instance'].player.game.pk)
+	tasks.refresh_kill_points.delay(game=kwargs['instance'].player.game.pk)
 
 models.signals.post_delete.connect(hvt_deleted, sender=HighValueTarget, dispatch_uid='hvt_deleted')
