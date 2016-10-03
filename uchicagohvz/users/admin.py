@@ -19,7 +19,7 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(Moderator, ModelAdmin)
+admin.site.register(Moderator, ModeratorAdmin)
 # admin.site.register(Profile, ProfileAdmin)
 
 # Register your models here.
