@@ -11,6 +11,7 @@
         <td>{{ m.title }}</td>
         <td>{{ m.name }}</td>
         <td><a href="mailto:{{ m.email }}">{{ m.email }}</a></td>
+        <td>{% if user.is_authenticated %}{{ m.phone_number }}{% else %}&nbsp;{% endif %}</td>
     </tr>
 {% endfor %}
 </table>
