@@ -4,23 +4,20 @@
     <h1>Contact Us</h1>
 </div>
 
-<p>Please contact a game moderator if you have any further questions or concerns.</p>
-<ul>
-    <li>President Michael Procassini (mrprocassini (at) uchicago.edu{% if user.is_authenticated %}, 971-533-6544{% endif %})</li>
-    <li>Vice President Matthew Cartier (mcartier (at) uchicago.edu{% if user.is_authenticated %}, 269-626-5095{% endif %})</li>
-    <li>Co-Treasurer Adrian Bustos (adrianbustos (at) uchicago.edu{% if user.is_authenticated %}, 214-907-3976{% endif %})</li>
-    <li>Co-Treasurer Elliot Mertz (emertz (at) uchicago.edu{% if user.is_authenticated %}, 708-714-2936{% endif %})</li>
-    <li>Ben Herrera (bherrera (at) uchicago.edu{% if user.is_authenticated %}, 732-309-1553{% endif %})</li>
-    <li>Maria Llanos (mllanos (at) uchicago.edu{% if user.is_authenticated %}, 314-596-1580{% endif %})</li>
-    <li>Helena Ambrose (hambrose (at) uchicago.edu{% if user.is_authenticated %}, (773) 450-8369{% endif %})</li>
-    <li>Katherine Wheeler (kwheeler1 (at) uchicago.edu)</li>
-    <li>Isaiah Newman (inewman (at) uchicago.edu{% if user.is_authenticated %}, (917) 734-7795{% endif %})</li>
-    <li>Connor Pfister (connorpfister (at) uchicago.edu{% if user.is_authenticated %}, (347) 75700506{% endif %})</li>
+<p>Please contact a game moderator if you have any questions or concerns.</p>
+<table class="table">
+{% for m in moderators %}
+    <tr>
+        <td>{{ m.title }}</td>
+        <td>{{ m.name }}</td>
+        <td><a href="mailto:{{ m.email }}">{{ m.email }}</a></td>
+    </tr>
+{% endfor %}
+</table>
 
-</ul>
-
-<p>To contact all moderators at once, send an email to <b>zombies-request (at) lists.uchicago.edu</b>.</p>
+<p>To contact all moderators at once, send an email to
+<b><a href="mailto:zombies-request@lists.uchicago.edu">zombies-request@lists.uchicago.edu</a></b>.</p>
 
 <p>For bug reports and any other urgent inquiries regarding the functionality of this website during gameplay,
-you may send an email to <b>admin (at) uchicagohvz.org</b>.</p>
+please email <a href="mailto:admin@uchicagohvz.org">admin@uchicagohvz.org</a></b>.</p>
 {% endblock %}

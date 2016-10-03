@@ -5,10 +5,10 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.shortcuts import render_to_response
-from django.views.generic import *
-from uchicagohvz.users.forms import *
-from uchicagohvz.users.models import *
-from uchicagohvz.game.models import *
+from django.views.generic import DetailView, FormView, TemplateView, UpdateView
+from uchicagohvz.game.models import Player
+from uchicagohvz.users import forms
+from uchicagohvz.users.models import Moderator, Profile
 from uchicagohvz.game.templatetags.game_extras import pp_timedelta
 import datetime
 
@@ -21,7 +21,7 @@ def logout(request):
 	return auth_views.logout(request, "/")
 
 class RegisterUser(FormView):
-	form_class = UserRegistrationForm
+	form_class = forms.UserRegistrationForm
 	template_name = "users/register.html"
 
 	def form_valid(self, form):
@@ -34,17 +34,28 @@ class RegisterUser(FormView):
 		context = super(RegisterUser, self).get_context_data(**kwargs)
 		return context
 
+
+class ContactPage(TemplateView):
+	template_name = "users/contact.html"
+
+	def get_context_data(self, **kwargs):
+		context = super(ContactPage, self).get_context_data(**kwargs)
+		context['moderators'] = Moderator.objects.all()
+		return context
+
+
 class ResetPassword(FormView):
 	form_class = PasswordResetForm
 	template_name = "users/reset_password.html"
 
 	def form_valid(self, form):
 		form.save(request=self.request)
+		messages.success(self.request, "Password changed successfully.")
 		return HttpResponseRedirect('/')
 
-	def get_context_data(self, **kwargs):
-		context = super(ResetPassword, self).get_context_data(**kwargs)
-		return context
+	# def get_context_data(self, **kwargs):
+	# 	context = super(ResetPassword, self).get_context_data(**kwargs)
+	# 	return context
 
 class ShowProfile(DetailView):
 	model = Profile
@@ -55,15 +66,15 @@ class ShowProfile(DetailView):
 			try:
 				return x+y
 			except TypeError:
-				if isinstance( x, datetime.timedelta ):
+				if isinstance( x,datetime.timedelta):
 					return x
-				elif isinstance( y, datetime.timedelta ):
+				elif isinstance(y, datetime.timedelta):
 					return y
 				else:
 					return 0
 
 		def f(t):
-			return isinstance( t, datetime.timedelta )
+			return isinstance(t, datetime.timedelta)
 
 		context = super(ShowProfile, self).get_context_data(**kwargs)
 		if self.request.user.is_authenticated():		
@@ -106,7 +117,7 @@ class ShowProfile(DetailView):
 		return context
 
 class MyAccount(UpdateView):
-	form_class = ProfileForm
+	form_class = forms.ProfileForm
 	template_name = "users/account.html"
 
 	@method_decorator(login_required)

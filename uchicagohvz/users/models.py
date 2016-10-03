@@ -6,6 +6,18 @@ from uchicagohvz.users.phone import CARRIERS
 
 # Create your models here.
 
+class Moderator(models.Model):
+	class Meta:
+		ordering = ['rank']
+
+	name = models.CharField(max_length=128)
+	title = models.CharField(max_length=64)
+	rank = models.PositiveIntegerField(db_index=True)
+	email = models.EmailField()
+	phone_number = PhoneNumberField(blank=True)
+
+
+
 class Profile(models.Model):
 	user = models.OneToOneField(settings.AUTH_USER_MODEL)
 	use_ldap_name = models.BooleanField(default=True, help_text="If true, use LDAP as authoritative source \
