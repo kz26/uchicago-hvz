@@ -8,7 +8,7 @@
 <table class="table">
 {% for m in moderators %}
     <tr>
-        <td>{{ m.title }}</td>
+        <td><b>{{ m.title }}</b></td>
         <td>{{ m.name }}</td>
         <td><a href="mailto:{{ m.email }}">{{ m.email }}</a></td>
         <td>{% if user.is_authenticated %}{{ m.phone_number }}{% else %}&nbsp;{% endif %}</td>
