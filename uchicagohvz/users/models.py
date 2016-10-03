@@ -16,6 +16,9 @@ class Moderator(models.Model):
 	email = models.EmailField()
 	phone_number = PhoneNumberField(blank=True)
 
+	def __unicode__(self):
+		return self.name
+
 
 
 class Profile(models.Model):

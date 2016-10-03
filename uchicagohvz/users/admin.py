@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from uchicagohvz.users.models import Moderator, Profile
 
 class ModeratorAdmin(admin.ModelAdmin):
-	list_display = ('__unicode__', 'title', 'rank', 'email', 'phone_number')
+	list_display = ('name', 'title', 'rank', 'email', 'phone_number')
 
 # class ProfileAdmin(admin.ModelAdmin):
 # 	search_fields = ('user__username', 'user__first_name', 'user__last_name', 'phone_number')
