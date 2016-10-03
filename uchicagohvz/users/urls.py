@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.views import password_reset, password_reset_done, password_reset_confirm, password_reset_complete
 from django.http import HttpResponse
-from uchicagohvz.users.views import *
+from uchicagohvz.users import views
 from uchicagohvz.users import mailing_list
 
 urlpatterns = patterns('',
@@ -9,11 +9,12 @@ urlpatterns = patterns('',
     # url(r'^$', 'uchicagohvz.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^login/$', login, name="users|login"),
-    url(r'^logout/$', logout, name="users|logout"),
-    url(r'^profile/(?P<pk>[0-9]+)/$', ShowProfile.as_view(), name="users|profile"),
-    url(r'^account/$', MyAccount.as_view(), name="users|account"),
-    url(r'^register/$', RegisterUser.as_view(), name="users|register"),
+    url(r'^login/$', views.login, name="users|login"),
+    url(r'^logout/$', views.logout, name="users|logout"),
+    url(r'^contact/$', views.ContactPage.as_view(), name="users|contact"),
+    url(r'^profile/(?P<pk>[0-9]+)/$', views.ShowProfile.as_view(), name="users|profile"),
+    url(r'^account/$', views.MyAccount.as_view(), name="users|account"),
+    url(r'^register/$', views.RegisterUser.as_view(), name="users|register"),
     url(r'^ml/chatter_mailgun_mime$', mailing_list.ChatterMailingList.as_view()),
     url(r'^ml/test_mailgun_mime$', mailing_list.TestMailingList.as_view()),
 
