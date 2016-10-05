@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from django.contrib.admin.widgets import FilteredSelectMultiple
-from uchicagohvz.game.models import Kill, MissionPicture, New_Squad, Player
+from uchicagohvz.game.models import Award, Kill, MissionPicture, New_Squad, Player
 
 class SquadForm(forms.Form):
 	create_squad = forms.CharField(required=False)
@@ -151,3 +151,4 @@ class ZombieTextForm(forms.Form):
 		message = data.get('message', '').strip()
 		if message:
 			self.message = message
+		return data
