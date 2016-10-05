@@ -2,6 +2,7 @@ from celery import task
 from django.core import mail
 from django.db import transaction
 from django.conf import settings
+from uchicagohvz.game import data_apis
 from uchicagohvz.game.models import Game, Player, Kill, Award
 from uchicagohvz.users.models import Profile
 from uchicagohvz.users.phone import CARRIERS
@@ -28,9 +29,9 @@ def regenerate_stats(game_id):
 		'humans_by_major',
 		'zombies_by_major'
 	)
-	g = globals()
 	# regenerate 
-	for fn in keys:
+	for k in keys:
+		fn = getattr('data_apis', k)
 		g[fn](game, use_cache=False)
 
 @task
