@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django import forms
+from django.db.models import Q
 from django.conf import settings
 from django.http import HttpResponse
 from uchicagohvz.game.models import Award, Dorm, Game, HighValueDorm, HighValueTarget, Kill, Mission, MissionPicture, Player, New_Squad, Squad
@@ -14,6 +15,18 @@ class GameAdmin(admin.ModelAdmin):
 
 
 class PlayerAdminForm(forms.ModelForm):
+
+	def clean_game(self):
+		new_game = self.cleaned_data.get('game')
+		if new_game and self.instance:
+			player = Player.objects.get(id=self.instance.id)
+			for kill in Kill.objects.filter(Q(killer=player) | Q(victim=player)):
+				if kill.killer.game != new_game or kill.victim.game != new_game:
+					raise forms.ValidationError(
+						"Cannot change game - doing so would result in Kill inconsistencies")
+		return new_game
+
+
 	def clean_squad(self):
 		squad = self.cleaned_data.get('squad')
 		if squad:
@@ -108,6 +121,7 @@ class AwardAdminForm(forms.ModelForm):
 class AwardAdmin(admin.ModelAdmin):
 	form = AwardAdminForm
 	list_display = ('name', 'game', 'points', 'redeem_type', 'redeem_limit')
+	list_filter = ('game',)
 	filter_horizontal = ('players',)
 
 class HVTAdminForm(forms.ModelForm):
