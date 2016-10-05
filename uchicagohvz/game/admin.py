@@ -19,7 +19,10 @@ class PlayerAdminForm(forms.ModelForm):
 	def clean_game(self):
 		new_game = self.cleaned_data.get('game')
 		if new_game and self.instance:
-			player = Player.objects.get(id=self.instance.id)
+			try:
+				player = Player.objects.get(id=self.instance.id)
+			except Player.DoesNotExist:
+				return new_game
 			for kill in Kill.objects.filter(Q(killer=player) | Q(victim=player)):
 				if kill.killer.game != new_game or kill.victim.game != new_game:
 					raise forms.ValidationError(
