@@ -378,7 +378,7 @@ class Player(models.Model):
 		try:
 			player_score = [x['human_points'] for x in th if x['player_id'] == self.id][0]
 		except IndexError:
-			player_score = None
+			player_score = 0
 		scores = [x['human_points'] for x in th]
 		return (Ranking(scores, start=1).rank(player_score), len(th))
 
