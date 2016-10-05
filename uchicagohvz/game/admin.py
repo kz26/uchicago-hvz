@@ -107,6 +107,7 @@ class AwardAdminForm(forms.ModelForm):
 
 class AwardAdmin(admin.ModelAdmin):
 	form = AwardAdminForm
+	list_display = ('name', 'game', 'points', 'redeem_type', 'redeem_limit')
 	filter_horizontal = ('players',)
 
 class HVTAdminForm(forms.ModelForm):

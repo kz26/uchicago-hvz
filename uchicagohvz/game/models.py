@@ -231,8 +231,8 @@ class Player(models.Model):
 
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='+')
 	game = models.ForeignKey(Game, related_name='players',
-		help_text="CHANGE THIS ONLY IF YOU KNOW WHAT YOU'RE DOING. \
-		To register a player for a game, a new Player record should be created.")
+		help_text="To register a player for a game, a new Player record should be created. \
+		CHANGE THIS FOR EXISTING PLAYERS ONLY IF YOU KNOW WHAT YOU'RE DOING.")
 	active = models.BooleanField(default=False)
 	squad = models.ForeignKey(Squad, null=True, blank=True, related_name='players')
 	new_squad = models.ForeignKey(New_Squad, null=True, blank=True, related_name='players')
