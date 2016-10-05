@@ -31,7 +31,7 @@ def regenerate_stats(game_id):
 	)
 	# regenerate 
 	for k in keys:
-		fn = getattr('data_apis', k)
+		fn = getattr(data_apis, k)
 		fn(game, use_cache=False)
 
 @task
