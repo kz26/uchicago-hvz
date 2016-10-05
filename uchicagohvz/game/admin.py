@@ -30,7 +30,7 @@ class PlayerAdminForm(forms.ModelForm):
 	def clean_squad(self):
 		squad = self.cleaned_data.get('squad')
 		if squad:
-			player_game = self.cleaned_data['game']
+			player_game = self.cleaned_data.get('game')
 			if squad.game != player_game:
 				raise forms.ValidationError("Squad game (%s) does not match player game (%s)." % (squad.game.name, player_game.name))
 		return squad
