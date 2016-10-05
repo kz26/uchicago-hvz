@@ -10,7 +10,7 @@ class KillFeed(ListAPIView):
 
 	def get_queryset(self):
 		game = get_object_or_404(Game, id=self.kwargs['pk'])
-		return Kill.objects.exclude(parent=None).filter(victim__game=game).order_by('-date')
+		return Kill.objects.exclude(parent=None).filter(killer__game=game).order_by('-date')
 
 class PlayerKillFeed(ListAPIView):
 	serializer_class = KillSerializer

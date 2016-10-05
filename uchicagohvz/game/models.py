@@ -230,7 +230,9 @@ class Player(models.Model):
 		ordering = ['-game__start_date', 'user__username', 'user__last_name', 'user__first_name']
 
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='+')
-	game = models.ForeignKey(Game, related_name='players')
+	game = models.ForeignKey(Game, related_name='players',
+		help_text="CHANGE THIS ONLY IF YOU KNOW WHAT YOU'RE DOING. \
+		To register a player for a game, a new Player record should be created.")
 	active = models.BooleanField(default=False)
 	squad = models.ForeignKey(Squad, null=True, blank=True, related_name='players')
 	new_squad = models.ForeignKey(New_Squad, null=True, blank=True, related_name='players')
@@ -394,7 +396,7 @@ class Player(models.Model):
 		return (Ranking(scores, start=1).rank(player_score), len(tz))
 
 	def __unicode__(self):
-		return self.user.get_full_name()
+		return "%s [%s]" % (self.user.get_full_name(), self.game)
 
 	@models.permalink
 	def get_absolute_url(self):
