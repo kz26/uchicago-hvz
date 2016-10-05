@@ -30,14 +30,14 @@ class PlayerAdminForm(forms.ModelForm):
 		return new_game
 
 
-	def clean(self):
-		cleaned_data = super(PlayerAdminForm, self).clean()
-		squad = cleaned_data.get('squad')
-		if squad:
-			player_game = cleaned_data.get('game')
-			if squad.game != player_game:
-				raise forms.ValidationError(
-					"Squad game (%s) does not match player game (%s)." % (squad.game.name, player_game.name))
+	# def clean(self):
+	# 	cleaned_data = super(PlayerAdminForm, self).clean()
+	# 	player_game = cleaned_data.get('game')
+	# 	squad = cleaned_data.get('squad')
+	# 	if squad:
+	# 		if player_game and squad.game != player_game:
+	# 			raise forms.ValidationError(
+	# 				"Squad game (%s) does not match player game (%s)." % (squad.game.name, player_game.name))
 
 class PlayerAdmin(admin.ModelAdmin):
 	form = PlayerAdminForm
