@@ -135,34 +135,19 @@ class ChooseSquad(FormView):
 	@method_decorator(login_required)
 	def dispatch(self, request, *args, **kwargs):
 		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
+		self.player = get_object_or_404(Player, game=self.game, user=self.request.user)
 		return super(ChooseSquad, self).dispatch(request, *args, **kwargs)
 
 	def form_valid(self, form):
-
-		try:
-			player = Player.objects.get(game=self.game, user=self.request.user)
-		except:
-			return HttpResponseRedirect(self.game.get_absolute_url())
-
-
-		if form.squad_name:
-			try:
-				new_squad = New_Squad.objects.create(game=form.game, name=form.squad_name)
-				player.new_squad = new_squad
-			except:
-				messages.error(self.request, "There is already a squad named %s. Please join %s or use a different squad name." % (form.squad_name, form.squad_name))
-				return HttpResponseRedirect(self.request.get_full_path())
-
-		elif form.squad:
-			player.new_squad = form.squad
-
-		player.save()
-
+		if form.cleaned_data['choose_squad']:
+			self.player.new_squad = New_Squad.objects.create(game=self.game, user=self.request.user)
+		elif form.cleaned_data['choose_squad']:
+			player.new_squad = form.cleaned_data['choose_squad']
+		self.player.save(update_fields=['new_squad']
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
 	def get_form_kwargs(self):
 		kwargs = super(ChooseSquad, self).get_form_kwargs()
-		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
 		kwargs['game'] = self.game
 		return kwargs
 
@@ -184,11 +169,13 @@ class EnterBiteCode(FormView):
 			kill.notes = form.cleaned_data.get('notes')
 			kill.save()
 			victim_profile = Profile.objects.get(user=victim.user)
-			messages.success(self.request, mark_safe("Kill logged successfully! <b>%s</b> has joined the ranks of the undead." % (victim.user.get_full_name())))
+			messages.success(self.request, mark_safe(
+				u"Kill logged successfully! <b>%s</b> has joined the ranks of the undead." % (victim.user.get_full_name())))
 			if victim_profile.last_words:
 				victim.last_words = victim_profile.last_words
 				victim.save()
-				messages.error(self.request, mark_safe("{0}'s last words: {1}".format(victim.user.get_full_name(), victim.last_words)))
+				messages.error(self.request, mark_safe(
+					u"{0}'s last words: {1}".format(victim.user.get_full_name(), victim.last_words)))
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
 	def get_form_kwargs(self):
@@ -350,6 +337,15 @@ class SendZombieText(BaseFormView):
     	self.game = get_object_or_404(Game, id=self.kwargs['pk'])
         return super(SendZombieText, self).dispatch(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+    	if self.game.status == 'in_progress':
+            self.player = get_object_or_404(Player, game=self.game, active=True, user=request.user)
+            if not self.player.lead_zombie:
+            	raise PermissionDenied
+            return super(SendZombieText, self).post(request, *args, **kwargs)
+        else:
+        	raise PermissionDenied
+
     @transaction.atomic
     def form_valid(self, form):
         message = form.message
@@ -361,13 +357,3 @@ class SendZombieText(BaseFormView):
         for e in form.non_field_errors():
             messages.error(self.request, e)
         return HttpResponseRedirect(self.game.get_absolute_url())
-
-    def get_form_kwargs(self):
-        kwargs = super(SendZombieText, self).get_form_kwargs()
-        self.game = get_object_or_404(Game, id=self.kwargs['pk'])
-        if self.game.status == 'in_progress':
-            self.player = get_object_or_404(Player, game=self.game, active=True, user=self.request.user)
-            kwargs['player'] = self.player
-            return kwargs
-        else:
-            raise PermissionDenied

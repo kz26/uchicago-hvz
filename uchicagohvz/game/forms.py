@@ -7,21 +7,28 @@ from uchicagohvz.game.models import Award, Kill, MissionPicture, New_Squad, Play
 
 class SquadForm(forms.Form):
 	create_squad = forms.CharField(required=False)
-	choose_squad = forms.ModelChoiceField(required=False, queryset=New_Squad.objects.all())
+	choose_squad = forms.ModelChoiceField(required=False, queryset=New_Squad.objects.none())
 
 	def __init__(self, *args, **kwargs):
 		self.game = kwargs.pop('game')
 		super(SquadForm, self).__init__(*args, **kwargs)
 		self.fields['choose_squad'].queryset = New_Squad.objects.filter(game=self.game)
 		self.fields['choose_squad'].widget.attrs['class'] = 'form-control' # for Bootstrap 3
-		
-	def clean(self):
-		self.squad_name = self.cleaned_data['create_squad']
-		self.squad = self.cleaned_data['choose_squad']
-		
-		data = super(SquadForm, self).clean()
+			
+	def clean_create_squad(self):
+		sn = self.cleaned_data.get('create_squad')
+		if sn and New_Squad.objects.filter(game=self.game, name=sn).exists():
+			raise forms.ValidationError(
+				"There is already a squad named %s. Please join %s or use a different squad name." \
+				% (sn, sn))
+		return sn
 
-		return data
+	def clean(self):
+		cleaned_data = super(SquadForm, self).clean()
+		if not (cleaned_data['create_squad'] or cleaned_data['choose_squad']):
+			raise forms.ValidationError(
+				"You must either create a squad or join an existing squad.")
+		return cleaned_data
 
 
 class GameRegistrationForm(forms.ModelForm):
@@ -94,7 +101,8 @@ class UploadMissionPictureForm(forms.ModelForm):
 		model = MissionPicture
 		fields = ('lat', 'lng', 'picture', 'players')
 
-	players = forms.ModelMultipleChoiceField(required=False, queryset=Player.objects.all(), widget=FilteredSelectMultiple(('Players'), False,))
+	players = forms.ModelMultipleChoiceField(required=False, queryset=Player.objects.none(),
+		widget=FilteredSelectMultiple(('Players'), False,))
 	lat = forms.FloatField(required=False, validators=[validate_lat])
 	lng = forms.FloatField(required=False, validators=[validate_lng])
 	picture = forms.FileField(required=False)
@@ -139,16 +147,3 @@ class AwardCodeForm(forms.Form):
 
 class ZombieTextForm(forms.Form):
 	message = forms.CharField()
-
-	def __init__(self, *args, **kwargs):
-		self.player = kwargs.pop('player')
-		super(ZombieTextForm, self).__init__(*args, **kwargs)
-
-	def clean(self):
-		if not self.player.lead_zombie:
-			raise forms.ValidationError('Player is not the Lead Zombie')
-		data = super(ZombieTextForm, self).clean()
-		message = data.get('message', '').strip()
-		if message:
-			self.message = message
-		return data
