@@ -73,6 +73,7 @@ class MailgunHookBase(APIView):
 				msg['Subject'] = subject_tag + ' ' + request.data['subject']
 			else:
 				msg['Subject'] = request.data['subject']
+			msg['X-Mailer'] = 'uchicago-hvz/' + request.revision
 			msg['List-Id'] = self.get_listhost_id()
 			msg['List-Post'] = "<mailto:%s>" % (listhost_addr)
 			msg['List-Unsubscribe'] = self.listhost_unsubscribe
