@@ -61,6 +61,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'dealer.contrib.django.Middleware'
 )
 
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
