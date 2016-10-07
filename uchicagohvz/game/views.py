@@ -143,7 +143,7 @@ class ChooseSquad(FormView):
 			self.player.new_squad = New_Squad.objects.create(game=self.game, user=self.request.user)
 		elif form.cleaned_data['choose_squad']:
 			player.new_squad = form.cleaned_data['choose_squad']
-		self.player.save(update_fields=['new_squad']
+		self.player.save(update_fields=['new_squad'])
 		return HttpResponseRedirect(self.game.get_absolute_url())
 
 	def get_form_kwargs(self):
