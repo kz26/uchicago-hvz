@@ -139,8 +139,9 @@ class ChooseSquad(FormView):
 		return super(ChooseSquad, self).dispatch(request, *args, **kwargs)
 
 	def form_valid(self, form):
-		if form.cleaned_data['choose_squad']:
-			self.player.new_squad = New_Squad.objects.create(game=self.game, user=self.request.user)
+		if form.cleaned_data['create_squad']:
+			self.player.new_squad = New_Squad.objects.create(
+				game=self.game, name=form.cleaned_data['create_squad'])
 		elif form.cleaned_data['choose_squad']:
 			player.new_squad = form.cleaned_data['choose_squad']
 		self.player.save(update_fields=['new_squad'])
