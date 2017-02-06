@@ -88,15 +88,18 @@ class Game(models.Model):
 
 	@property
 	def status(self):
-		now = timezone.now()
-		if self.registration_date < now < self.start_date:
-			return 'registration'
-		elif self.start_date < now < self.end_date:
-			return 'in_progress'
-		elif now > self.end_date:
-			return 'finished'
+		if self.registration_date and self.start_date:
+			now = timezone.now()
+			if self.registration_date < now < self.start_date:
+				return 'registration'
+			elif self.start_date < now < self.end_date:
+				return 'in_progress'
+			elif now > self.end_date:
+				return 'finished'
+			else:
+				return 'future'
 		else:
-			return 'future'
+			return 'N/A'
 
 	@property
 	def humans_listhost_address(self):
