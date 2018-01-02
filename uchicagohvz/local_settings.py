@@ -18,19 +18,10 @@ RECAPTCHA_USE_SSL = True
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-try:
-    from secrets import SECRET_KEY
-except:
-    SECRET_KEY = 'SECRET KEY PLACEHOLDER'
-try:
-    from secrets import RECAPTCHA_PUBLIC_KEY
-except:
-    RECAPTCHA_PUBLIC_KEY = 'PUBLIC KEY PLACEHOLDER'
-try:
-    from secrets import RECAPTCHA_PRIVATE_KEY
-except:
-    RECAPTCHA_PRIVATE_KEY = 'PRIVATE KEY PLACEHOLDER'
 
+SECRET_KEY = os.environ.get('SECRET_KEY', 'SECRET KEY PLACEHOLDER')
+RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY', 'RECAPTCHA_PUBLIC_KEY_PLACEHOLDER')
+RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY', 'RECAPTCHA_PRIVATE_KEY_PLACEHOLDER')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

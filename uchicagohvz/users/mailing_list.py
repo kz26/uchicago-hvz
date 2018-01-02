@@ -1,10 +1,10 @@
 # Mailing list configuration
 
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
-from uchicagohvz import secrets
 from .tasks import smtp_uchicago_send
 from .models import Profile
 
@@ -20,7 +20,7 @@ import hmac
 
 def _verify(token, timestamp, signature):
 	return signature == hmac.new(
-							 key=secrets.MAILGUN_API_KEY,
+							 key=settings.MAILGUN_API_KEY,
 							 msg='{}{}'.format(timestamp, token),
 							 digestmod=hashlib.sha256).hexdigest()
 
@@ -122,4 +122,4 @@ class TestMailingList(MailgunHookBase):
 	listhost_address = 'test@lists.uchicagohvz.org'
 
 	def get_to_addrs(self):
-		return secrets.MAILING_LIST_TEST_RECIPIENTS
+		return settings.MAILING_LIST_TEST_RECIPIENTS

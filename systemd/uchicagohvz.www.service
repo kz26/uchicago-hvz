@@ -1,0 +1,17 @@
+[Unit]
+Description=www.uchicagohvz.org
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=uchicagohvz
+Group=uchicagohvz
+WorkingDirectory=/home/uchicagohvz/app/
+EnvironmentFile=/home/uchicagohvz/environment
+ExecStart=/home/uchicagohvz/bin/gunicorn -w 3 -b localhost:8001 uchicagohvz.wsgi
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+

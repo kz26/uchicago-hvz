@@ -45,3 +45,4 @@ uchicagohvz/static/CACHE/
 secrets.py
 db.sqlite3
 migrations/
+.vscode/

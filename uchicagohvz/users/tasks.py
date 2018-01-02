@@ -2,8 +2,6 @@ from celery import task
 from django.conf import settings
 from django.core import mail
 
-from uchicagohvz import secrets
-
 import smtplib
 
 
@@ -29,6 +27,6 @@ def smtp_localhost_send(from_addr, to_addrs, msg):
 def smtp_uchicago_send(from_addr, to_addrs, msg):
 	# send using UChicago authenticated SMTP
 	server = smtplib.SMTP_SSL('authsmtp.uchicago.edu')
-	server.login(secrets.UCHICAGO_SMTP_USER, secrets.UCHICAGO_SMTP_PASSWORD)
+	server.login(settings.SMTP_UCHICAGO_USER, settings.SMTP_UCHICAGO_PASSWORD)
 	server.sendmail(from_addr, to_addrs, msg)
 	server.quit()

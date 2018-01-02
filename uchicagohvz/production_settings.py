@@ -30,10 +30,15 @@ REST_FRAMEWORK = {
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-# CELERY_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-from secrets import EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', '')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = True
+MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY', '')
+MAILING_LIST_TEST_RECIPIENTS = os.environ.get('MAILING_LIST_TEST_RECIPIENTS', '').split(',')
+SMTP_UCHICAGO_USER = os.environ.get('SMTP_UCHICAGO_USER', '')
+SMTP_UCHICAGO_PASSWORD = os.environ.get('SMTP_UCHICAGO_PASSWORD', '')
 
 # Chat settings
 CHAT_SERVER_URL = '//www.uchicagohvz.org/chat'
