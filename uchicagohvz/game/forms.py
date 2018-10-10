@@ -25,7 +25,7 @@ class SquadForm(forms.Form):
 
 	def clean(self):
 		cleaned_data = super(SquadForm, self).clean()
-		if not (cleaned_data['create_squad'] or cleaned_data['choose_squad']):
+		if not (cleaned_data.get('create_squad') or cleaned_data.get('choose_squad')):
 			raise forms.ValidationError(
 				"You must either create a squad or join an existing squad.")
 		return cleaned_data
