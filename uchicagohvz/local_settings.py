@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 import os
 BASE_DIR = os.path.dirname(__file__)
 
-RECAPTCHA_USE_SSL = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
@@ -20,8 +19,6 @@ RECAPTCHA_USE_SSL = True
 # SECURITY WARNING: keep the secret key used in production secret!
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'SECRET KEY PLACEHOLDER')
-RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY', 'RECAPTCHA_PUBLIC_KEY_PLACEHOLDER')
-RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY', 'RECAPTCHA_PRIVATE_KEY_PLACEHOLDER')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -41,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mptt', 'localflavor', 'djcelery_email', 'compressor', 'rest_framework', 'captcha',
+    'mptt', 'localflavor', 'djcelery_email', 'compressor', 'rest_framework', 'snowpenguin.django.recaptcha2',
     'uchicagohvz.users', 'uchicagohvz.game',
 )
 
@@ -166,6 +163,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'UChicago HvZ <noreply@uchicagohvz.org>'
 SYMPA_FROM_EMAIL = 'admin@uchicagohvz.org'
 SYMPA_TO_EMAIL = 'sympa@lists.uchicago.edu'
+
+# RECAPTCHA settings
+RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY', 'RECAPTCHA_PUBLIC_KEY_PLACEHOLDER')
+RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY', 'RECAPTCHA_PRIVATE_KEY_PLACEHOLDER')
 
 # HvZ game configuration
 HUMAN_KILL_POINTS = 1 # how many points killing a human is worth
