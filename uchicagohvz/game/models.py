@@ -9,6 +9,8 @@ from datetime import datetime
 
 from uchicagohvz.overwrite_fs import OverwriteFileSystemStorage
 from uchicagohvz.users.backend import UChicagoLDAPBackend
+from uchicagohvz.webhooks import * 
+
 
 from mptt.models import MPTTModel, TreeForeignKey
 from ranking import Ranking
@@ -16,6 +18,7 @@ from ranking import Ranking
 import hashlib
 import os
 import random
+ 
 
 
 # Create your models here.
@@ -57,6 +60,10 @@ class Game(models.Model):
 
 
 	objects = GameManager()
+
+	def save(self, *args, **kwargs):
+		webhook_new_game()
+		super(Game, self).save(*args, **kwargs)
 
 	def __unicode__(self):
 		return self.name
@@ -273,6 +280,8 @@ class Player(models.Model):
 		if past_players and (not past_players[0].gun_returned) and past_players[0].renting_gun:
 			self.delinquent_gun = True
 
+		if self.user.profile.discord_tag != "":
+			webhook_register_user(self.user.profile.discord_tag, self.human)
 		super(Player, self).save(*args, **kwargs)
 
 	@property
@@ -340,6 +349,8 @@ class Player(models.Model):
 			points += hvd.points
 		if not (hvt or hvd):
 			points = settings.HUMAN_KILL_POINTS
+		if self.user.profile.discord_tag != "":
+			webhook_kill_player(self.user.profile.discord_tag)
 		return Kill.objects.create(parent=parent_kill, killer=killer, victim=self, points=points, date=now, hvt=hvt, hvd=hvd)
 
 	@property

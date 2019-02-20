@@ -1,16 +1,11 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from snowpenguin.django.recaptcha2.fields import ReCaptchaField
-from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
-
 from uchicagohvz.users.models import *
 from uchicagohvz.game.models import Game, Player
 
 
 class UserRegistrationForm(forms.ModelForm):
-    captcha = ReCaptchaField(widget=ReCaptchaWidget())
-
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password')

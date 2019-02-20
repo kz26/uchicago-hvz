@@ -10,6 +10,8 @@ from uchicagohvz.game.models import Player
 from uchicagohvz.users import forms
 from uchicagohvz.users.models import Moderator, Profile
 from uchicagohvz.game.templatetags.game_extras import pp_timedelta
+from uchicagohvz.game.models import *
+from uchicagohvz.webhooks import *
 import datetime
 
 # Create your views here.
@@ -128,7 +130,16 @@ class MyAccount(UpdateView):
 		return get_object_or_404(Profile, user=self.request.user)
 
 	def form_valid(self, form):
-		messages.success(self.request, "Account settings updated successfully.")
+		user = self.request.user
+		current_game = Game.objects.all()[0];
+		try:
+			current_player = current_game.players.get(user_id = user.id)
+		except Player.DoesNotExist:
+			current_player = None
+		tag = form.clean().get('discord_tag')
+		if(tag != "" and current_player):
+			webhook_register_user(tag, current_player.human);
+		messages.success(self.request, "Account settings updated successfully")
 		return super(MyAccount, self).form_valid(form)
 
 	def get_form_kwargs(self):

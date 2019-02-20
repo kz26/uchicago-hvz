@@ -78,9 +78,20 @@
 
 {% if player %}
 <hr>
+</div>
+<div class="row" style="display: flex; flex-direction:column; align-items:center">
+	<button class="btn btn-primary" style="margin: 0 auto; display: block; background: #7289da; font-size: 16px" onclick="window.location.href = 'https://discord.gg/EQB4Mn3';">Join the HvZ Discord Server to Coordinate With Other Players!</button>
+	<form class="form-horizontal" style="position:relative" method="post">
+		<label for="id_discord_tag" class="control-label center"></label>
+			<input id="id_discord_tag"  class="form-control" placeholder="Input discord tag (e.g. Username#1234) for access to the human/zombie chat" style="width:507px; display:inline-block" type="text" name="discord_tag" value="{{ form.discord_tag.value|default_if_none:"" }}">
+			<div class="help-tip"><p>What is a discord tag and how do I get one? <br /> If you have a discord account, simply look at the bottom left corner of the client or webpage and you will see your username, a #, and some numbers. That's your tag! Don't have a discord account? Click the button just above this!</p></div>
+			{{ form.phone_number.errors }}
+			<button type="submit" style="margin: 0 auto; display: block; margin-top: 5px" class="btn btn-primary">Update</button>
+	</form>
+</div>
+<br>
 <div class="row">
-
-	{% if player.active and game.status == 'in_progress' %}
+	{% if player.active and  game.status == 'in_progress' %}
 	<div class="center" style="font-size: 16pt;">
 	{% if player.user.profile.subscribe_chatter_listhost %}
 		<p><a href="mailto:chatter@lists.uchicagohvz.org" target="_blank">Chatter listhost (all players): chatter@lists.uchicagohvz.org</a></p>
@@ -90,10 +101,6 @@
 		<p><a href="mailto:{{ game.zombies_listhost_address }}" target="_blank">Zombies-only chatter listhost (anonymized): {{ game.zombies_listhost_address }}</a></p>
 		{% endif %}
 	{% endif %}
-	</div>
-	<a class="btn btn-block bigger btn-{% if player.human %}success{% else %}danger{% endif %}" href="{% url 'game|chat' pk=game.pk %}" target="_blank">
-		{% if player.human %}Get on the radio{% else %}ENTER FEEDING AREA{% endif %}
-	</a>
 	{% endif %}
 
 	<div class="col-lg-4">
@@ -224,8 +231,8 @@
 		{% endif %}
 	</div>
 	{% if game.status == 'registration' or game.status == 'in_progress' %}
-	<div class="col-lg-4">
-	<h2>Squads are back!</h2>
+	<div class="col-lg-3">
+	<h2>Squads!</h2>
 	<a href="{% url 'game|choose_squad' pk=game.id %}">Register a new squad or join an existing one here.</a>
 	</div>
 	{% endif %}
@@ -246,7 +253,7 @@
 		{% endif %}
 	</div>
 	{% if game.picture %}
-	<div class="col-lg-4">
+	<div class="col-lg-4">	
 		<img src={{ game.picture.url }} alt="relic site">
 	</div>
 	{% endif %}
@@ -547,295 +554,5 @@
 	{% endrecursetree %}
 {% endcache %}
 </ul>
-{% endif %}
-{% endblock %}
-
-{% block script %}
-{% if game.status == "in_progress" or game.status == "finished" %}
-{% include 'includes/google-maps.html' %}
-{% include 'includes/moment.html' %}
-{% include 'includes/highcharts.html' %}
-<script>
-{% if player %}
-var PLAYER_NAME = '{{ player.display_name }}';
-{% else %}
-var PLAYER_NAME = null;
-{% endif %}
-$(document).ready(function(){
-	$('#bite_code').hide();
-});
-</script>
-{% compress js %}
-<script type="text/coffeescript">
-swPoint = new google.maps.LatLng(GAME_SW_BOUND[0], GAME_SW_BOUND[1])
-nePoint = new google.maps.LatLng(GAME_NE_BOUND[0], GAME_NE_BOUND[1])
-bounds = new google.maps.LatLngBounds(swPoint, nePoint)
-mapOptions = {
-	center: new google.maps.LatLng(GAME_CENTER[0], GAME_CENTER[1]),
-	zoom: 15
-}
-map = new google.maps.Map($('#killMap').get(0), mapOptions)
-
-lvc = map.getCenter()
-google.maps.event.addListener map, 'center_changed', (e) ->
-	nc = map.getCenter()
-	if bounds.contains(nc)
-		lvc = nc
-	else
-		map.panTo(lvc)
-
-$.get("data/kills/")
-	.done (data) ->
-		infoWin = new google.maps.InfoWindow()
-		markers = []
-		for k in data
-			k.date = new Date(k.date)
-			if k.location != null
-				marker = new google.maps.Marker {
-						map: map,
-						icon: '{{ STATIC_URL }}img/skull.png',
-						position: new google.maps.LatLng(k.location[0], k.location[1])
-					}
-				killDT = moment(k.date).format('M/D/YY h:mm:ss A')
-				content = $(
-					"<ul style='color:black'>
-						<li><b>Killer:</b> #{k.killer}</li>
-						<li><b>Victim:</b> #{k.victim}</li>
-						<li><b>Date:</b> #{killDT}</li>
-						<li><a href=\"/kill/#{ k.id }/\" target='_blank' style='font-weight: bold; color:black;'>Details</a></li>
-					</ul>"
-				)
-				content.css('width', '300px')
-				markers.push([marker, k])
-				google.maps.event.addListener marker, 'click', ((marker, content) ->
-					return ->
-						infoWin.setContent(content)
-						infoWin.open(map, marker)
-				)(marker, content.get(0))
-
-
-		$('#mapTimeFilters label').click (e) ->
-			inp = $(this).children('input')
-			if inp.val() == 'all'
-				markers.forEach (o) ->
-					o[0].setVisible true
-				return
-			else if inp.val() == 'my-kills'
-				markers.forEach (o) ->
-					if o[1].killer == PLAYER_NAME
-						o[0].setVisible true
-					else
-						o[0].setVisible false
-			else
-				hours = parseInt inp.val()
-				now = Date.now()
-				markers.forEach (o) ->
-					m = o[0]
-					k = o[1]
-					if now - k.date.getTime() <= hours * 3600 * 1000
-						m.setVisible true
-					else
-						m.setVisible false
-
-
-
-
-whiteStyle = {color: "white"}
-$.get("data/humans-per-hour/")
-	.done (data) ->
-		$("#hphChart").highcharts {
-			chart: {
-				type: 'line',
-				backgroundColor: '#333',
-				zoomType: 'xy',
-			},
-			colors: ['#7cb5ec', '#4369FF', '#90ed7d', '#f7a35c', '#8085e9',
-   '#f15c80', '#e4d354', '#FF85e8', '#8d4653', '#91e8e1', '#2397fe', '#FF115a', '#102bBF'],
-			credits: {
-				enabled: false
-			},
-			legend: {
-				backgroundColor: 'white';
-			},
-			title: {
-				text: null,
-			},
-			plotOptions: {
-				series: {
-
-					marker: {
-						enabled: false
-					}
-				}
-			},
-			xAxis: {
-				tickInterval: null,
-				title: {
-					text: 'Hours into game',
-					style: whiteStyle
-				},
-				labels: {
-					style: whiteStyle
-				}
-			},
-			yAxis: {
-				title: {
-					text: '# humans',
-					style: whiteStyle,
-				},
-				tickInterval: null,
-				labels: {
-					style: whiteStyle
-				}
-			},
-			series: data
-		}
-
-$('#hphcheckAll').click (e) ->
-	chart = $('#hphChart').highcharts()
-	box.show() for box in chart.series
-
-$('#hphuncheckAll').click (e) ->
-	chart = $('#hphChart').highcharts()
-	box.hide() for box in chart.series
-
-$.get("data/kills-by-tod/")
-	.done (data) ->
-		$("#todChart").highcharts {
-			chart: {
-				type: 'column',
-				backgroundColor: '#333',
-			},
-			credits: {
-				enabled: false
-			},
-			title: {
-				text: null,
-			},
-			legend: {
-				enabled: false
-			},
-			xAxis: {
-				tickInterval: 1,
-				title: {
-					text: 'Time of Day',
-					style: whiteStyle
-				},
-				labels: {
-					style: whiteStyle
-				},
-				categories: [
-					'12a', '1a', '2a', '3a', '4a', '5a', '6a', '7a', '8a', '9a', '10a', '11a',
-					'12p', '1p', '2p', '3p', '4p', '5p', '6p', '7p', '8p', '9p', '10p', '11p'
-				]
-			},
-			yAxis: {
-				title: {
-					text: 'cumulative # of kills',
-					style: whiteStyle
-				},
-				tickInterval: 1,
-				labels: {
-					style: whiteStyle
-				}
-			},
-			series: [
-				{
-					data: data,
-					color: '#800000',
-					name: 'Kills'
-				}
-			]
-		}
-
-$.get("data/humans-by-major/")
-	.done (data) ->
-		$("#hMajorsChart").highcharts {
-			chart: {
-				type: 'scatter',
-				backgroundColor: '#333',
-				zoomType: 'xy',
-			},
-			credits: {
-				enabled: false
-			},
-			colors: ['#7cb5ec', '#4369FF', '#90ed7d', '#f7a35c', '#8085e9',
-   '#f15c80', '#e4d354', '#FF85e8', '#8d4653', '#91e8e1', '#2397fe', '#FF115a', '#102bBF'],
-			title: {
-				text: null,
-			},
-			legend: {
-				enabled: false
-			},
-			xAxis: {
-				title: {
-					text: 'Average lifespan (hours)',
-					style: whiteStyle
-				},
-				labels: {
-					style: whiteStyle
-				}
-			},
-			yAxis: {
-				title: {
-					text: 'Average human points/player',
-					style: whiteStyle
-				},
-				labels: {
-					style: whiteStyle
-				}
-			},
-			series: data,
-			tooltip: {
-				formatter: ->
-					return "#{this.series.name}<br><b>Players:</b> #{this.point.name}<br><b>Hours:</b> #{this.point.x}<br><b>Points:</b> #{this.point.y}"
-			}
-		}
-
-$.get("data/zombies-by-major/")
-	.done (data) ->
-		$("#zMajorsChart").highcharts {
-			chart: {
-				type: 'scatter',
-				backgroundColor: '#333',
-				zoomType: 'xy',
-			},
-			credits: {
-				enabled: false
-			},
-			colors: ['#7cb5ec', '#4369FF', '#90ed7d', '#f7a35c', '#8085e9',
-   '#f15c80', '#e4d354', '#FF85e8', '#8d4653', '#91e8e1', '#2397fe', '#FF115a', '#102bBF'],
-			title: {
-				text: null,
-			},
-			legend: {
-				enabled: false
-			},
-			xAxis: {
-				title: {
-					text: 'Average time spent as zombie (hours)',
-					style: whiteStyle
-				},
-				labels: {
-					style: whiteStyle
-				}
-			},
-			yAxis: {
-				title: {
-					text: 'Average zombie points/player',
-					style: whiteStyle
-				},
-				labels: {
-					style: whiteStyle
-				}
-			},
-			series: data,
-			tooltip: {
-				formatter: ->
-					return "#{this.series.name}<br><b>Players:</b> #{this.point.name}<br><b>Hours:</b> #{this.point.x}<br><b>Points:</b> #{this.point.y}"
-			}
-		}
-</script>
-{% endcompress %}
 {% endif %}
 {% endblock %}
