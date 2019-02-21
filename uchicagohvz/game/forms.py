@@ -156,17 +156,22 @@ class DiscordTagForm(forms.Form):
 
 	def clean(self): 
 		data = super(DiscordTagForm, self).clean()
-		self.tag = data.get('tag').strip()
+		self.tag = data.get('tag')
+		if self.tag:
+			self.tag = self.tag.strip()
+		if not self.tag or self.tag == "":
+			self.user.profile.discord_tag = ""
+			self.user.profile.save()
+			return data
 		if not "#" in self.tag:
 			raise forms.ValidationError("Invalid tag entered, tag must have # and must be of the form Username#1234")
 		else:
 			tagnums = self.tag.split("#")[1]
 			if len(tagnums) != 4:
 				raise forms.ValidationError("Invalid tag entered, tag did not contain four numbers after #")
-		if self.tag:
-			webhook_send_command("!register_player %s %d" %(self.tag, self.player.human))
-			self.user.profile.discord_tag = self.tag
-			self.user.profile.save()
+		webhook_send_command("!register_player %s %d" %(self.tag, self.player.human))
+		self.user.profile.discord_tag = self.tag
+		self.user.profile.save()
 		return data
 
 

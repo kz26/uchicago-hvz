@@ -136,9 +136,6 @@ class MyAccount(UpdateView):
 			current_player = current_game.players.get(user_id = user.id)
 		except Player.DoesNotExist:
 			current_player = None
-		tag = form.clean().get('discord_tag')
-		if(tag != "" and current_player):
-			webhook_send_command("!register_player %s %d" %(tag, current_player.human))
 		messages.success(self.request, "Account settings updated successfully")
 		return super(MyAccount, self).form_valid(form)
 
