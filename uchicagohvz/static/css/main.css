@@ -43,7 +43,7 @@ h4.point-marker {
 	}
 }
 
-@media screen and (min-width: 320px){
+@media screen and (max-width: 320px){
 	.tag_input{
 		width: 250px;
 		margin-left: 60px;
