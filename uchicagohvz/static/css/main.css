@@ -31,11 +31,26 @@ h4.point-marker {
 	overflow: scroll;
 }
 
+
+
+
 @media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi), (max-width: 767px), (min-width: 768px) and (max-width: 979px) {
 	.chat-mobile {
 		height: 250px !important;
 	}
+	.tag_input{
+		width: 350px;
+	}
 }
+
+@media screen and (min-width: 320px){
+	.tag_input{
+		width: 250px;
+		margin-left: 60px;
+	}
+}
+
+
 
 #chat-input {
 	margin-top: 5px;
