@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from uchicagohvz.game.models import Award, Kill, MissionPicture, New_Squad, Player
+from uchicagohvz.webhooks import *
 
 class SquadForm(forms.Form):
 	create_squad = forms.CharField(required=False)
@@ -144,6 +145,24 @@ class AwardCodeForm(forms.Form):
 			if self.award.players.all().count() >= self.award.redeem_limit:
 				raise forms.ValidationError('Sorry, the redemption limit for this code has been reached.')
 		return data
+
+class DiscordTagForm(forms.Form):
+	tag = forms.CharField()
+
+	def __init__(self, *args, **kwargs):
+		self.player = kwargs.pop('player')
+		self.user = kwargs.pop('user')
+		super(DiscordTagForm, self).__init__(*args, **kwargs)
+
+	def clean(self): 
+		data = super(DiscordTagForm, self).clean()
+		self.tag = data.get('tag')
+		if self.tag:
+			webhook_register_user(self.tag, self.player.human)
+			self.user.profile.discord_tag = self.tag
+			self.user.profile.save()
+		return data
+
 
 class ZombieTextForm(forms.Form):
 	message = forms.CharField()

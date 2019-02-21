@@ -81,12 +81,17 @@
 </div>
 <div class="row" style="display: flex; flex-direction:column; align-items:center">
 	<button class="btn btn-primary" style="margin: 0 auto; display: block; background: #7289da; font-size: 16px" onclick="window.location.href = 'https://discord.gg/EQB4Mn3';">Join the HvZ Discord Server to Coordinate With Other Players!</button>
-	<form class="form-horizontal" style="position:relative" method="post">
-		<label for="id_discord_tag" class="control-label center"></label>
-			<input id="id_discord_tag"  class="form-control" placeholder="Input discord tag (e.g. Username#1234) for access to the human/zombie chat" style="width:507px; display:inline-block" type="text" name="discord_tag" value="{{ form.discord_tag.value|default_if_none:"" }}">
-			<div class="help-tip"><p>What is a discord tag and how do I get one? <br /> If you have a discord account, simply look at the bottom left corner of the client or webpage and you will see your username, a #, and some numbers. That's your tag! Don't have a discord account? Click the button just above this!</p></div>
-			{{ form.phone_number.errors }}
-			<button type="submit" style="margin: 0 auto; display: block; margin-top: 5px" class="btn btn-primary">Update</button>
+	<form class="form-inline" style="position:relative" action="{% url 'game|tag' pk=game.pk %}" role="form" method="post">
+		<label for="id_tag" class="control-label center"></label>
+			{% csrf_token %}
+			<div class="form-group">
+				<input id="id_tag" name="tag" class="form-control" placeholder="Input discord tag (e.g. Username#1234) for access to the human/zombie chat" style="width:507px" type="text" value="{{ user.profile.discord_tag|default_if_none:"" }}">
+			</div>
+			<div class="help-tip"><p>What is a discord tag and how do I get one? <br /> If you have a discord account, simply look at the bottom left corner of the client or webpage and you will see your username, a #, and some numbers. That's your tag! <br/> Don't have a discord account? Click the button just above this!</p></div>
+			{{ form.tag.errors }}
+			<div class ="form-group center" style="display:block">
+				<button type="submit" class="btn btn-primary">Update</button>
+			</div>
 	</form>
 </div>
 <br>

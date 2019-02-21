@@ -252,6 +252,33 @@ class SubmitAwardCode(BaseFormView):
 		else:
 			raise PermissionDenied
 
+class SubmitDiscordTag(BaseFormView):
+	form_class = DiscordTagForm
+	http_method_names = ['post']
+
+	@method_decorator(login_required)
+	def dispatch(self, request, *args, **kwargs):
+		return super(SubmitDiscordTag, self).dispatch(request, *args, **kwargs)
+
+	@transaction.atomic
+	def form_valid(self, form):
+		tag = form.tag
+		messages.success(self.request, mark_safe("Registered Discord Tag!"))
+		return HttpResponseRedirect(self.game.get_absolute_url())
+
+	def form_invalid(self, form):
+		for e in form.non_field_errors():
+			messages.error(self.request, e)
+		return HttpResponseRedirect(self.game.get_absolute_url())
+
+	def get_form_kwargs(self):
+		kwargs = super(SubmitDiscordTag, self).get_form_kwargs()
+		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
+		self.player = get_object_or_404(Player, game=self.game, active=True, user=self.request.user)
+		kwargs['user'] = self.request.user
+		kwargs['player'] = self.player
+		return kwargs
+
 class ShowPlayer(DetailView):
 	model = Player
 	template_name = 'game/show_player.html'
