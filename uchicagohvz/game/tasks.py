@@ -157,4 +157,3 @@ def send_sms_invalid_code(profile, code):
 	to_addr = CARRIERS[profile.phone_carrier] % (phone_number)
 	email = mail.EmailMessage(body=body, to=[to_addr])
 	email.send()
-

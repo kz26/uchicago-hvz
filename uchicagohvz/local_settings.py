@@ -168,6 +168,10 @@ SYMPA_TO_EMAIL = 'sympa@lists.uchicago.edu'
 RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY', 'RECAPTCHA_PUBLIC_KEY_PLACEHOLDER')
 RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY', 'RECAPTCHA_PRIVATE_KEY_PLACEHOLDER')
 
+
+#Discord webhook settings
+DISCORD_WEBHOOK_KEY = os.environ.get('DISCORD_WEBHOOK_KEY', '')
+
 # HvZ game configuration
 HUMAN_KILL_POINTS = 1 # how many points killing a human is worth
 HVT_KILL_POINTS = 3 # default points a high-value target is worth (replaces regular human kill points)
@@ -185,3 +189,4 @@ DEALER_PATH = os.path.dirname(BASE_DIR)
 # Chat settings
 CHAT_SERVER_URL = 'http://192.168.1.20:36452/chat'
 CHAT_ADMIN_URL = 'http://localhost:36452/admin/'
+

@@ -158,7 +158,7 @@ class DiscordTagForm(forms.Form):
 		data = super(DiscordTagForm, self).clean()
 		self.tag = data.get('tag')
 		if self.tag:
-			webhook_register_user(self.tag, self.player.human)
+			webhook_send_command("!register_player %s %d" %(self.tag, self.player.human))
 			self.user.profile.discord_tag = self.tag
 			self.user.profile.save()
 		return data

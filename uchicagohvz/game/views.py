@@ -274,7 +274,7 @@ class SubmitDiscordTag(BaseFormView):
 	def get_form_kwargs(self):
 		kwargs = super(SubmitDiscordTag, self).get_form_kwargs()
 		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
-		self.player = get_object_or_404(Player, game=self.game, active=True, user=self.request.user)
+		self.player = get_object_or_404(Player, game=self.game, user=self.request.user)
 		kwargs['user'] = self.request.user
 		kwargs['player'] = self.player
 		return kwargs

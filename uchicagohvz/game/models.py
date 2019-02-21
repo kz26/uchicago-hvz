@@ -62,7 +62,7 @@ class Game(models.Model):
 	objects = GameManager()
 
 	def save(self, *args, **kwargs):
-		webhook_new_game()
+		webhook_send_command("!reset_roles")
 		super(Game, self).save(*args, **kwargs)
 
 	def __unicode__(self):
@@ -281,7 +281,7 @@ class Player(models.Model):
 			self.delinquent_gun = True
 
 		if self.user.profile.discord_tag != "":
-			webhook_register_user(self.user.profile.discord_tag, self.human)
+			webhook_send_command("!register_player %s %d" %(self.user.profile.discord_tag, self.human))
 		super(Player, self).save(*args, **kwargs)
 
 	@property
@@ -350,7 +350,7 @@ class Player(models.Model):
 		if not (hvt or hvd):
 			points = settings.HUMAN_KILL_POINTS
 		if self.user.profile.discord_tag != "":
-			webhook_kill_player(self.user.profile.discord_tag)
+			webhook_send_command("!record_death %s" %(self.user.profile.discord_tag))
 		return Kill.objects.create(parent=parent_kill, killer=killer, victim=self, points=points, date=now, hvt=hvt, hvd=hvd)
 
 	@property
