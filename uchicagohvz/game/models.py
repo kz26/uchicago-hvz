@@ -349,8 +349,6 @@ class Player(models.Model):
 			points += hvd.points
 		if not (hvt or hvd):
 			points = settings.HUMAN_KILL_POINTS
-		if self.user.profile.discord_tag != "":
-			webhook_send_command("!record_death %s" %(self.user.profile.discord_tag))
 		return Kill.objects.create(parent=parent_kill, killer=killer, victim=self, points=points, date=now, hvt=hvt, hvd=hvd)
 
 	@property
