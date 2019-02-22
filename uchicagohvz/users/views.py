@@ -130,13 +130,7 @@ class MyAccount(UpdateView):
 		return get_object_or_404(Profile, user=self.request.user)
 
 	def form_valid(self, form):
-		user = self.request.user
-		current_game = Game.objects.all()[0];
-		try:
-			current_player = current_game.players.get(user_id = user.id)
-		except Player.DoesNotExist:
-			current_player = None
-		messages.success(self.request, "Account settings updated successfully")
+		messages.success(self.request, "Account settings updated successfully.")
 		return super(MyAccount, self).form_valid(form)
 
 	def get_form_kwargs(self):
