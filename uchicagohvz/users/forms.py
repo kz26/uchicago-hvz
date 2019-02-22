@@ -8,7 +8,7 @@ from uchicagohvz.game.models import Game, Player
 
 
 class UserRegistrationForm(forms.ModelForm):
-    # captcha = ReCaptchaField(widget=ReCaptchaWidget())
+    captcha = ReCaptchaField(widget=ReCaptchaWidget())
 
     class Meta:
         model = User
