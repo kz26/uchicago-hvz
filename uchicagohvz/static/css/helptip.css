@@ -18,21 +18,13 @@
     color:#fff;
 }
 
-.help-tip:hover p{
+.help-tip:hover p, .help-tip p:active{
     display:block;
     transform-origin: 100% 0%;
     z-index: 1;
     -webkit-animation: fadeIn 0.3s ease-in-out;
     animation: fadeIn 0.3s ease-in-out;
 
-}
-
-.help-tip:active p{
-    display:block;
-    transform-origin: 100% 0%;
-    z-index: 1;
-    -webkit-animation: fadeIn 0.3s ease-in-out;
-    animation: fadeIn 0.3s ease-in-out;
 }
 
 .help-tip p{    /* The tooltip */
