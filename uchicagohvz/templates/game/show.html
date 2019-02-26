@@ -86,7 +86,8 @@
 		<label for="id_tag" class="control-label center"></label>
 			{% csrf_token %}
 			<div class="form-group" style="position:relative">
-				<input id="id_tag" name="tag" class="form-control tag_input"  placeholder="Input discord tag" type="text" value="{{ user.profile.discord_tag|default_if_none:"" }}">
+				Discord Username:
+				<input id="id_tag" name="tag" class="form-control tag_input"  placeholder="Username#1234" type="text" value="{{ user.profile.discord_tag|default_if_none:"" }}">
 				<div class="help-tip"><p>What is a discord tag and how do I get one? <br /> If you have a discord account, simply look at the bottom left corner of the client or webpage and you will see your username, a #, and some numbers. That's your tag! <br/> Don't have a discord account? Click the button just above this!</p></div>
 			</div>		
 			{{ form.tag.errors }}
