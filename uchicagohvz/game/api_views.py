@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from uchicagohvz.game.models import *
 from uchicagohvz.game.data_apis import *
 from uchicagohvz.game.serializers import *
+from uchicagohvz.users.models import Profile
+import json
 
 class KillFeed(ListAPIView):
 	serializer_class = KillSerializer
@@ -60,3 +62,34 @@ class ZombiesByMajor(APIView):
 		game = get_object_or_404(Game, id=kwargs['pk'])
 		data = zombies_by_major(game)
 		return Response(data)
+
+class RecordMinecraftKill(APIView):
+	def post(self, request, *args, **kwargs):
+		parsedBody = json.loads(request.body)
+		killer_mc_user = get_object_or_404(MinecraftUser, player_uuid=parsedBody['killer'])
+		killed_mc_user = get_object_or_404(MinecraftUser, player_uuid=parsedBody['killed'])
+		kill = killed_mc_user.player.kill_me(killer_mc_user.player)
+		if kill:
+			kill.save()
+		return Response()
+
+class RegisterMinecraftUser(APIView):
+	def post(self, request, *args, **kwargs):
+		parsedBody = json.loads(request.body)
+		try:
+			MinecraftUser.objects.get(player_uuid=parsedBody['uuid'])
+			return Response() # if the user already exists we're good
+		except:
+			profile = get_object_or_404(Profile, minecraft_username=parsedBody['name'])
+			player = get_object_or_404(Player, user_id=profile.user.id)
+			MinecraftUser(player_id=player.id, player_uuid=parsedBody['uuid']).save()
+		return Response()
+
+class UpdateMinecraftUser(APIView):
+	def put(self, request, *args, **kwargs):
+		user = get_object_or_404(MinecraftUser, player_uuid=kwargs['pk'])
+		parsedBody = json.loads(request.body)
+		user.human_score = int(parsedBody['human_score'])
+		user.zombie_score = int(parsedBody['zombie_score'])
+		user.save()
+		return Response()
