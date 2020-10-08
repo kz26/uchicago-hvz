@@ -178,6 +178,27 @@ class DiscordTagForm(forms.Form):
 		self.user.profile.save()
 		return data
 
+class MinecraftUsernameForm(forms.Form):
+	mc_username = forms.CharField()
+
+	def __init__(self, *args, **kwargs):
+		self.player = kwargs.pop('player')
+		self.user = kwargs.pop('user')
+		super(MinecraftUsernameForm, self).__init__(*args, **kwargs)
+	
+	def clean(self):
+		data = super(MinecraftUsernameForm, self).clean()
+		self.mc_username = data.get('mc_username')
+		if self.mc_username:
+			self.mc_username = self.mc_username.strip()
+		if not self.mc_username or self.mc_username == "":
+			self.user.profile.minecraft_username = ""
+			self.user.profile.save()
+			return data
+		self.user.profile.minecraft_username = self.mc_username
+		self.user.profile.save()
+		return data
+
 
 class ZombieTextForm(forms.Form):
 	message = forms.CharField()
