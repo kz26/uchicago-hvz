@@ -32,7 +32,7 @@ class ListGames(ListView):
 	def get_queryset(self):
 		qs = super(ListGames, self).get_queryset()
 		if self.request.user.is_authenticated():
-			current_game = None
+			current_game = Game.objects.all()[0]
 			past_players = Player.objects.filter(user=self.request.user).exclude(game=current_game)
 			try:
 				player = Player.objects.get(game=current_game, user=self.request.user)
@@ -185,7 +185,7 @@ class EnterBiteCode(FormView):
 		if self.game.status == 'in_progress':
 			self.killer = get_object_or_404(Player, game=self.game, active=True, human=False, user=self.request.user)
 			kwargs['killer'] = self.killer
-			kwargs['require_location'] = False
+			kwargs['require_location'] = True
 			return kwargs
 		else:
 			raise PermissionDenied
