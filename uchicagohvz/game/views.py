@@ -32,7 +32,7 @@ class ListGames(ListView):
 	def get_queryset(self):
 		qs = super(ListGames, self).get_queryset()
 		if self.request.user.is_authenticated():
-			current_game = Game.objects.all()[0]
+			current_game = None
 			past_players = Player.objects.filter(user=self.request.user).exclude(game=current_game)
 			try:
 				player = Player.objects.get(game=current_game, user=self.request.user)
@@ -185,7 +185,7 @@ class EnterBiteCode(FormView):
 		if self.game.status == 'in_progress':
 			self.killer = get_object_or_404(Player, game=self.game, active=True, human=False, user=self.request.user)
 			kwargs['killer'] = self.killer
-			kwargs['require_location'] = True
+			kwargs['require_location'] = False
 			return kwargs
 		else:
 			raise PermissionDenied
@@ -273,6 +273,33 @@ class SubmitDiscordTag(BaseFormView):
 
 	def get_form_kwargs(self):
 		kwargs = super(SubmitDiscordTag, self).get_form_kwargs()
+		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
+		self.player = get_object_or_404(Player, game=self.game, user=self.request.user)
+		kwargs['user'] = self.request.user
+		kwargs['player'] = self.player
+		return kwargs
+
+class SubmitMinecraftUsername(BaseFormView):
+	form_class = MinecraftUsernameForm
+	http_method_names = ['post']
+
+	@method_decorator(login_required)
+	def dispatch(self, request, *args, **kwargs):
+		return super(SubmitMinecraftUsername, self).dispatch(request, *args, **kwargs)
+
+	@transaction.atomic
+	def form_valid(self, form):
+		mc_username = form.mc_username
+		messages.success(self.request, mark_safe("Registered minecraft username!"))
+		return HttpResponseRedirect(self.game.get_absolute_url())
+
+	def form_invalid(self, form):
+		for e in form.non_field_errors():
+			messages.error(self.request, e)
+		return HttpResponseRedirect(self.game.get_absolute_url())
+
+	def get_form_kwargs(self):
+		kwargs = super(SubmitMinecraftUsername, self).get_form_kwargs()
 		self.game = get_object_or_404(Game, id=self.kwargs['pk'])
 		self.player = get_object_or_404(Player, game=self.game, user=self.request.user)
 		kwargs['user'] = self.request.user

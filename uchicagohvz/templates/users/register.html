@@ -1,7 +1,4 @@
-{% extends 'base.html' %}{% load recaptcha2 %}
-{% block head %}
-{% recaptcha_init %}
-{% endblock %}
+{% extends 'base.html' %}
 {% block content %}
 
 {% if user.is_authenticated %}
