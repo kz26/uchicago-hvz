@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     url(r'^game/(?P<pk>[0-9]+)/upload_mission_picture/$', UploadMissionPicture.as_view(), name='game|upload-mission-picture'),
     url(r'^game/(?P<pk>[0-9]+)/code/$', SubmitAwardCode.as_view(), name='game|code'),
     url(r'^game/(?P<pk>[0-9]+)/tag/$', SubmitDiscordTag.as_view(), name='game|tag'),
+    url(r'^game/(?P<pk>[0-9]+)/mc_username/$', SubmitMinecraftUsername.as_view(), name='game|mc_username'),
     url(r'^game/(?P<pk>[0-9]+)/data/kills/$', KillFeed.as_view(), name='game|data|kills'),
     url(r'^game/(?P<pk>[0-9]+)/data/humans-per-hour/$', HumansPerHour.as_view(), name='game|data|hph'),
     url(r'^game/(?P<pk>[0-9]+)/data/kills-by-tod/$', KillsByTimeOfDay.as_view(), name='game|data|kbtod'),
@@ -42,5 +43,8 @@ urlpatterns = patterns('',
     url(r'^new_squad/(?P<pk>[0-9]+)/$', ShowNewSquad.as_view(), name='new_squad|show'),
     url(r'^new_squad/(?P<pk>[0-9]+)/data/kills/$', NewSquadKillFeed.as_view(), name='new_squad|data|kills'),
     url(r'^feb-26-2015/$', TemplateView.as_view(template_name='game/feb-26-2015.html'), name='feb-26-2015-charlie-hebdo'),
-    url(r'^mission/(?P<pk>[0-9]+)/$', ShowMission.as_view(), name='mission|show')
+    url(r'^mission/(?P<pk>[0-9]+)/$', ShowMission.as_view(), name='mission|show'),
+    url(r'^minecraft/kill', RecordMinecraftKill.as_view(), name='minecraft-kill'),
+    url(r'^minecraft/register/', RegisterMinecraftUser.as_view(), name='minecraft-register'),
+    url(r'^minecraft/user/(?P<pk>[0-9a-f-]+)/$', UpdateMinecraftUser.as_view(), name='minecraft-update')
 )

@@ -80,22 +80,41 @@
 {% if player and game.status != "finished" %}
 <hr>
 </div>
-<div class="row" style="display: flex; flex-direction:column; align-items:center">
-	<button class="btn btn-primary" style="margin: 0 auto; display: block; background: #7289da; font-size: 16px" onclick="window.location.href = 'https://discord.gg/EQB4Mn3';">Join the HvZ Discord Server to Coordinate With Other Players!</button>
-	<form class="form-inline" action="{% url 'game|tag' pk=game.pk %}" role="form" method="post">
-		<label for="id_tag" class="control-label center"></label>
-			{% csrf_token %}
-			<div class="form-group" style="position:relative">
-				<input id="id_tag" name="tag" class="form-control tag_input"  placeholder="Username#1234" type="text" value="{{ user.profile.discord_tag|default_if_none:"" }}">
-				<div class="help-tip"><p>What is a discord username and how do I get one? <br /> If you have a discord account, simply look at the bottom left corner of the client or webpage and you will see your username, a #, and some numbers. That's your full username! <br/> Don't have a di	scord account? Click the button just above this!</p></div>
-			</div>		
-			{{ form.tag.errors }}
-			<div class ="form-group center" style="display:block">
-				<button type="submit" style="font-size: 12px" class="btn btn-primary">Update Discord Username</button>
-			</div>
-	</form>
+<div class="row" >
+		
+	<div class="col-sm-6" style="display: flex; flex-direction:column; align-items:center">
+		<button class="btn btn-primary" style="margin: 0 auto; display: block; background: #7289da; font-size: 16px; max-width: 320px;white-space:normal" onclick="window.location.href = 'https://discord.gg/EQB4Mn3';">Join the HvZ Discord Server to Coordinate With Other Players!</button>
+		<form class="form-inline" style="margin-top: 12px;" action="{% url 'game|tag' pk=game.pk %}" role="form" method="post">
+			<label for="id_tag" class="control-label center"></label>
+				{% csrf_token %}
+				<div class="form-group" style="position:relative">
+					<input id="id_tag" name="tag" class="form-control tag_input"  placeholder="Username#1234" type="text" value="{{ user.profile.discord_tag|default_if_none:"" }}">
+					<div class="help-tip"><p>What is a discord username and how do I get one? <br /> If you have a discord account, simply look at the bottom left corner of the client or webpage and you will see your username, a #, and some numbers. That's your full username! <br/> Don't have a di	scord account? Click the button just above this!</p></div>
+				</div>		
+				{{ form.tag.errors }}
+				<div class ="form-group center" style="display:block;margin-top:12px;">
+					<button type="submit" style="font-size: 12px" class="btn btn-primary">Update Discord Username</button>
+				</div>
+		</form>
+	</div>		
+
+	<div class="col-sm-6" style="display: flex; flex-direction:column; align-items:center">
+		<h5>Add your minecraft username to join the server</h5>
+		<form class="form-inline" action="{% url 'game|mc_username' pk=game.pk %}" role="form" method="post">
+			<label for="id_mc_username" class="control-label center"></label>
+				{% csrf_token %}
+				<div class="form-group" style="position:relative">
+					<input id="id_mc_username" name="mc_username" class="form-control mc_username_input"  placeholder="Minecraft Username" type="text" value="{{ user.profile.minecraft_username|default_if_none:"" }}">
+				</div>		
+				{{ form.tag.errors }}
+				<div class ="form-group center" style="display:block;margin-top:12px;">
+					<button type="submit" style="font-size: 12px" class="btn btn-primary">Update minecraft username</button>
+				</div>
+		</form>
+	</div>
 </div>
 <br>
+
 <div class="row">
 	{% if player.active and  game.status == 'in_progress' %}
 	<div class="center" style="font-size: 16pt;">

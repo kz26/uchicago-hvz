@@ -29,6 +29,7 @@ class Profile(models.Model):
 	phone_carrier = models.CharField(max_length=32, blank=True, choices=[(k, k) for k in sorted(CARRIERS.keys())])
 	last_words = models.CharField(max_length=255, blank=True)
 	discord_tag = models.CharField(max_length=255, blank=True)
+	minecraft_username = models.CharField(max_length=255, blank=True)
 	subscribe_death_notifications = models.BooleanField(default=False)
 	subscribe_chatter_listhost = models.BooleanField(default=True)
 	subscribe_zombies_listhost = models.BooleanField(default=True)

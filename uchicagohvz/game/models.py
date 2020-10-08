@@ -349,7 +349,8 @@ class Player(models.Model):
 			points += hvd.points
 		if not (hvt or hvd):
 			points = settings.HUMAN_KILL_POINTS
-		return Kill.objects.create(parent=parent_kill, killer=killer, victim=self, points=points, date=now, hvt=hvt, hvd=hvd)
+
+		return Kill.objects.create(parent=parent_kill, killer=killer, victim=self, points=points, date=now, hvt=hvt, hvd=hvd, notes='')
 
 	@property
 	def display_name(self): # real name when game is over; otherwise, dorm + obfuscated code for humans and bite code for zombies
@@ -384,7 +385,7 @@ class Player(models.Model):
 		kill_points = Kill.objects.exclude(parent=None, killer=self, victim=self).filter(killer=self).aggregate(points=models.Sum('points'))['points'] or 0
 		award_points =  self.awards.filter(redeem_type__in=('Z', 'A')).aggregate(points=models.Sum('points'))['points'] or 0
 		return kill_points + award_points
-
+ 
 	@property
 	def human_rank(self):
 		from data_apis import top_humans
@@ -595,5 +596,18 @@ class Mission(models.Model):
                     attendees.append(player)
 
         return len(attendees)
+
+class MinecraftUser(models.Model):
+	player = models.OneToOneField(Player, unique=True, related_name='minecraft_user')
+	human_score = models.IntegerField(default=0)
+	zombie_score = models.IntegerField(default=0)
+	player_uuid = models.CharField(max_length=255)
+
+
+
+	def save(self, *args, **kwargs):
+			super(MinecraftUser, self).save(*args, **kwargs)
+	
+		
 
 from . import signals
