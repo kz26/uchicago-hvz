@@ -66,14 +66,9 @@ class ZombiesByMajor(APIView):
 class RecordMinecraftKill(APIView):
 	def post(self, request, *args, **kwargs):
 		parsedBody = json.loads(request.body)
-
 		killer_mc_user = get_object_or_404(MinecraftUser, player_uuid=parsedBody['killer'])
 		killed_mc_user = get_object_or_404(MinecraftUser, player_uuid=parsedBody['killed'])
-		current_game = Game.objects.all()[0]
-		killer_player = get_object_or_404(Player, game=current_game, user=killer_mc_user.user)
-		killed_player = get_object_or_404(Player, game=current_game, user=killed_mc_user.user)
-
-		kill = killed_player.kill_me(killer_player)
+		kill = killed_mc_user.player.kill_me(killer_mc_user.player)
 		if kill:
 			kill.save()
 		return Response()
@@ -86,7 +81,8 @@ class RegisterMinecraftUser(APIView):
 			return Response() # if the user already exists we're good
 		except:
 			profile = get_object_or_404(Profile, minecraft_username=parsedBody['name'])
-			MinecraftUser(user=profile.user, player_uuid=parsedBody['uuid']).save()
+			player = get_object_or_404(Player, user_id=profile.user.id)
+			MinecraftUser(player_id=player.id, player_uuid=parsedBody['uuid']).save()
 		return Response()
 
 class UpdateMinecraftUser(APIView):
@@ -96,4 +92,4 @@ class UpdateMinecraftUser(APIView):
 		user.human_score = int(parsedBody['human_score'])
 		user.zombie_score = int(parsedBody['zombie_score'])
 		user.save()
-		return Response()   
+		return Response()

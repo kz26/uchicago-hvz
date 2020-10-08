@@ -598,7 +598,7 @@ class Mission(models.Model):
         return len(attendees)
 
 class MinecraftUser(models.Model):
-	user = models.OneToOneField(settings.AUTH_USER_MODEL, unique=True, related_name='minecraft_user')
+	player = models.OneToOneField(Player, unique=True, related_name='minecraft_user')
 	human_score = models.IntegerField(default=0)
 	zombie_score = models.IntegerField(default=0)
 	player_uuid = models.CharField(max_length=255)
